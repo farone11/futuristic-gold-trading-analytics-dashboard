@@ -8,12 +8,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-        .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-        .live-dot { animation: pulse 2s infinite; }
+       .font-orbitron { font-family: 'Orbitron', sans-serif; }
+       .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+       .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+       .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .transition-all { transition: all 0.3s ease; }
+       .transition-all { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -85,36 +85,47 @@
                     </p>
                 </div>
 
-                <!-- STATS GRID - UDAH 5 CARD -->
-                <div class="grid grid-cols-5 gap-6 mb-8">
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <p class="text-gray-400 text-sm mb-2">XAUUSD PRICE</p>
-                        <h2 class="font-orbitron text-4xl font-bold text-yellow-400" data-price>$----.--</h2>
+                <!-- STATS GRID - 6 CARD SEKARANG -->
+                <div class="grid grid-cols-6 gap-4 mb-8">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
                         <p class="text-xs text-gray-500 mt-2">Live Update</p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <p class="text-gray-400 text-sm mb-2">SMART MONEY BIAS</p>
-                        <h2 class="font-orbitron text-4xl font-bold text-green-400" data-bias>STANDBY</h2>
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
                         <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <p class="text-gray-400 text-sm mb-2">CFTC NET</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">CFTC NET</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
                         <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <p class="text-gray-400 text-sm mb-2">DAILY RISK</p>
-                        <h2 class="font-orbitron text-4xl font-bold text-yellow-400">1.2%</h2>
-                        <p class="text-xs text-gray-500 mt-2">Institutional Allocation</p>
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">DAILY RISK</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400">1.2%</h2>
+                        <p class="text-xs text-gray-500 mt-2">Inst. Allocation</p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <p class="text-gray-400 text-sm mb-2">CME MAX PAIN</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-cme-strike>$----</h2>
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cme-strike>$----</h2>
                         <p class="text-xs text-gray-500 mt-2" data-cme-oi>OI: ---,---</p>
+                    </div>
+
+                    <!-- CARD BARU: RETAIL SENTIMENT LIVE -->
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
+                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
+                        </div>
+                        <h2 class="font-orbitron text-xl font-bold text-red-400" id="retail-long">--% Long</h2>
+                        <h2 class="font-orbitron text-xl font-bold text-green-400" id="retail-short">--% Short</h2>
+                        <p class="text-xs text-gray-600 mt-2" id="retail-updated">Loading...</p>
                     </div>
                 </div>
 
@@ -170,6 +181,7 @@
                         <div class="mt-6 pt-6 border-t border-gray-800">
                             <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
                             <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">Retail Lots: <span id="retail-lots">-</span></p>
                         </div>
                     </div>
                 </div>
@@ -234,10 +246,11 @@
         }
     </script>
 
-    <!-- LIVE MT5 + INSTITUTIONAL DATA -->
+    <!-- LIVE MT5 + INSTITUTIONAL DATA + RETAIL SENTIMENT -->
     <script>
         const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
-        const INST_FLOW_URL = '/institutional_flow.json';
+        const INST_FLOW_URL = './institutional_flow.json';
+        const RETAIL_URL = './retail_sentiment.json';
         
         async function updateDashboard() {
             // 1. FETCH MT5 LIVE PRICE
@@ -254,12 +267,12 @@
                         document.querySelector('[data-time]').innerText = data.time;
                         
                         const smc = document.querySelector('[data-model="smc"]');
-                        smc.innerText = data.smc_active ? 'Active' : 'Standby';
-                        smc.className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                        smc.innerText = data.smc_active? 'Active' : 'Standby';
+                        smc.className = data.smc_active? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                         
                         const prz = document.querySelector('[data-model="prz"]');
-                        prz.innerText = data.prz_ready ? 'Ready' : 'Scanning';
-                        prz.className = data.prz_ready ? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
+                        prz.innerText = data.prz_ready? 'Ready' : 'Scanning';
+                        prz.className = data.prz_ready? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
                     }
                 }
             } catch (e) {
@@ -269,7 +282,7 @@
             
             // 2. FETCH INSTITUTIONAL FLOW JSON
             try {
-                const res = await fetch(INST_FLOW_URL);
+                const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
                 if (res.ok) {
                     const inst = await res.json();
                     
@@ -283,12 +296,12 @@
                     const biasEl = document.querySelector('[data-bias]');
                     biasEl.innerText = inst.bias;
                     biasEl.className = inst.bias === 'BULLISH' 
-                        ? 'font-orbitron text-4xl font-bold text-green-400' 
+                       ? 'font-orbitron text-3xl font-bold text-green-400' 
                         : inst.bias === 'BEARISH'
-                        ? 'font-orbitron text-4xl font-bold text-red-400'
-                        : 'font-orbitron text-4xl font-bold text-yellow-400';
+                       ? 'font-orbitron text-3xl font-bold text-red-400'
+                        : 'font-orbitron text-3xl font-bold text-yellow-400';
                     
-                    // CME OI DATA - AMBIL STRIKE OI TERBESAR
+                    // CME OI DATA
                     if (inst.cme_options_oi && inst.cme_options_oi.max_pain_strikes) {
                         const topStrike = inst.cme_options_oi.max_pain_strikes[0];
                         document.querySelector('[data-cme-strike]').innerText = '$' + topStrike.STRIKE;
@@ -298,11 +311,36 @@
             } catch (e) {
                 console.log('Inst Flow error:', e);
             }
+
+            // 3. FETCH RETAIL SENTIMENT LIVE
+            try {
+                const res = await fetch(RETAIL_URL + '?v=' + Date.now());
+                if (res.ok) {
+                    const d = await res.json();
+                    document.getElementById('retail-long').innerText = d.long_pct + '% Long';
+                    document.getElementById('retail-short').innerText = d.short_pct + '% Short';
+                    document.getElementById('retail-updated').innerText = d.updated;
+                    document.getElementById('retail-lots').innerText = d.lots.toLocaleString('en-US');
+                    document.getElementById('retail-source').innerText = d.source.split(' ')[0];
+                    
+                    // Kasih pulse kalo extreme
+                    if(d.long_pct > 70) {
+                        document.getElementById('retail-long').classList.add('animate-pulse');
+                        document.getElementById('retail-source').className = 'text-xs bg-red-900/30 text-red-300 px-2 py-0.5 rounded';
+                        document.getElementById('retail-source').innerText = 'EXTREME';
+                    } else if(d.short_pct > 70) {
+                        document.getElementById('retail-short').classList.add('animate-pulse');
+                        document.getElementById('retail-source').className = 'text-xs bg-green-900/30 text-green-300 px-2 py-0.5 rounded';
+                        document.getElementById('retail-source').innerText = 'EXTREME';
+                    }
+                }
+            } catch (e) {
+                console.log('Retail sentiment error:', e);
+            }
         }
 
         updateDashboard();
         setInterval(updateDashboard, 15000);
     </script>
 </body>
-</html></body>
 </html>
