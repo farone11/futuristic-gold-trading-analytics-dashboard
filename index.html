@@ -13,6 +13,7 @@
         .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
         .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .transition-all { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -103,20 +104,25 @@
                 </div>
 
                 <!-- CHART + AI PANEL -->
-                <div class="grid grid-cols-3 gap-6">
+                <div class="grid grid-cols-3 gap-6 transition-all" id="main-grid">
                     
                     <!-- TRADINGVIEW CHART -->
-                    <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">
-                            Institutional Momentum Engine - Live XAUUSD M15
-                        </h3>
+                    <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="chart-container">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-orbitron text-lg font-bold text-yellow-400">
+                                Institutional Momentum Engine - Live XAUUSD M15
+                            </h3>
+                            <button onclick="toggleChart()" id="expand-btn" class="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">
+                                Expand 50/50
+                            </button>
+                        </div>
                         <div class="tradingview-widget-container" style="height:500px;width:100%">
                           <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
                         </div>
                     </div>
 
                     <!-- AI EXECUTION PANEL -->
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
                         
                         <div class="space-y-4">
@@ -182,9 +188,36 @@
         });
     </script>
 
-    <!-- LOGIC TAMPILAN: AMBIL DATA MENTAH DARI server.py TERUS OLAH DI SINI -->
+    <!-- TOGGLE CHART LOGIC -->
     <script>
-        // GANTI PAKE LINK NGROK LU YANG AKTIF
+        let isExpanded = false;
+        
+        function toggleChart() {
+            const grid = document.getElementById('main-grid');
+            const chart = document.getElementById('chart-container');
+            const panel = document.getElementById('ai-panel');
+            const btn = document.getElementById('expand-btn');
+            
+            if (!isExpanded) {
+                // EXPAND 50/50
+                grid.className = 'grid grid-cols-2 gap-6 transition-all';
+                chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                btn.innerText = 'Default View';
+                isExpanded = true;
+            } else {
+                // BALIK DEFAULT 2/3 vs 1/3
+                grid.className = 'grid grid-cols-3 gap-6 transition-all';
+                chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                btn.innerText = 'Expand 50/50';
+                isExpanded = false;
+            }
+        }
+    </script>
+
+    <!-- LIVE MT5 CONNECTION -->
+    <script>
         const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
         
         async function updateDashboard() {
@@ -202,31 +235,25 @@
                     return;
                 }
                 
-                // 1. STATUS
                 document.getElementById('status-text').innerText = 'Live from MT5';
                 document.getElementById('status-text').className = 'text-sm text-green-400';
                 
-                // 2. HARGA - TULIS XAUUSD, DATA DARI XAUUSDc
                 document.querySelector('[data-price]').innerText = '$' + data.price;
                 
-                // 3. BIAS - GANTI WARNA OTOMATIS
                 const biasEl = document.querySelector('[data-bias]');
                 biasEl.innerText = data.bias;
                 biasEl.className = data.bias === 'BULLISH' 
                     ? 'font-orbitron text-4xl font-bold text-green-400' 
                     : 'font-orbitron text-4xl font-bold text-red-400';
                 
-                // 4. SMC ENGINE - UBAH true/false JADI TEKS + WARNA
                 const smc = document.querySelector('[data-model="smc"]');
                 smc.innerText = data.smc_active ? 'Active' : 'Standby';
                 smc.className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                 
-                // 5. PRZ SCANNER - UBAH true/false JADI TEKS + WARNA
                 const prz = document.querySelector('[data-model="prz"]');
                 prz.innerText = data.prz_ready ? 'Ready' : 'Scanning';
                 prz.className = data.prz_ready ? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
                 
-                // 6. WAKTU
                 document.querySelector('[data-time]').innerText = data.time;
                 
             } catch (e) {
