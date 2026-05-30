@@ -3,155 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FARONE.AI — Proudly Presents</title>
+    <title>FARONE GOLD AI — FUTURISTIC GOLD TRADING ANALYTICS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #fff; }
-        .glow-text { text-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
-        .card-glow { box-shadow: 0 0 30px rgba(59, 130, 246, 0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
         .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
+<body class="bg-[#0a0a0f] text-white">
+    <div class="flex h-screen">
         
-        <!-- HEADER -->
-        <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-2 glow-text">
-                FARONE<span class="text-blue-500">.AI</span>
-            </h1>
-            <p class="text-gray-400 text-lg">Proudly Presents: The Next Generation Trading Intelligence</p>
-            <div class="flex items-center justify-center gap-2 mt-4">
-                <span class="live-dot w-3 h-3 bg-green-500 rounded-full"></span>
-                <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
-            </div>
-        </div>
-
-        <!-- PRICE PANEL -->
-        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 mb-8 card-glow border border-gray-700">
-            <div class="text-center">
-                <p class="text-gray-400 text-sm mb-2">XAUUSD</p>
-                <h2 class="text-6xl font-bold mb-4" data-price>$----.--</h2>
-                <div class="flex items-center justify-center gap-4">
-                    <span class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg font-semibold" data-bias>STANDBY</span>
-                    <span class="text-gray-500">|</span>
-                    <span class="text-gray-400 text-sm">Last Update: <span data-time>--:--:--</span></span>
+        <!-- SIDEBAR -->
+        <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg"></div>
+                <div>
+                    <h1 class="font-orbitron font-bold text-lg">FARONE</h1>
+                    <p class="text-xs text-yellow-500">GOLD AI</p>
                 </div>
             </div>
-        </div>
-
-        <!-- AI MODELS GRID -->
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
             
-            <!-- SMC ENGINE -->
-            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 border border-gray-700 card-glow">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold">SMC Engine</h3>
-                    <span class="w-2 h-2 bg-yellow-400 rounded-full live-dot"></span>
-                </div>
-                <p class="text-gray-400 text-sm mb-3">Order Block Detection</p>
-                <p class="text-3xl font-bold text-yellow-400" data-model="smc">Standby</p>
-                <p class="text-xs text-gray-500 mt-2">Scanning M15 timeframe</p>
-            </div>
-
-            <!-- PRZ SCANNER -->
-            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 border border-gray-700 card-glow">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold">PRZ Scanner</h3>
-                    <span class="w-2 h-2 bg-blue-400 rounded-full live-dot"></span>
-                </div>
-                <p class="text-gray-400 text-sm mb-3">Priority Reversal Zone</p>
-                <p class="text-3xl font-bold text-blue-400" data-model="prz">Scanning</p>
-                <p class="text-xs text-gray-500 mt-2">Target: 4520 - 4545</p>
-            </div>
-
-            <!-- RISK MANAGER -->
-            <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 border border-gray-700 card-glow">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold">Risk Manager</h3>
-                    <span class="w-2 h-2 bg-green-400 rounded-full live-dot"></span>
-                </div>
-                <p class="text-gray-400 text-sm mb-3">Account Protection</p>
-                <p class="text-3xl font-bold text-green-400" data-model="risk">Protected</p>
-                <p class="text-xs text-gray-500 mt-2">Max DD: 2% | SL: Active</p>
-            </div>
+            <nav class="space-y-2">
+                <a class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
+                    <span>Dashboard</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400">
+                    <span>Institutional Flow</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400">
+                    <span>Liquidity Zones</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400">
+                    <span>Risk Engine</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400">
+                    <span>AI Signals</span>
+                </a>
+            </nav>
         </div>
 
-        <!-- FOOTER -->
-        <div class="text-center text-gray-600 text-sm">
-            <p>© 2026 FARONE.AI — Powered by MetaTrader 5</p>
-            <p class="mt-1">Last synced: <span id="last-sync">--</span></p>
-        </div>
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 overflow-auto">
+            <div class="p-8">
+                
+                <!-- HEADER -->
+                <div class="mb-8">
+                    <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">
+                        FUTURISTIC GOLD TRADING ANALYTICS
+                    </h1>
+                    <p class="text-gray-400">Institutional Intelligence Layer · XAUUSDc Analytics · Professional Environment</p>
+                    <div class="flex items-center gap-2 mt-3">
+                        <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
+                    </div>
+                </div>
 
+                <!-- STATS GRID -->
+                <div class="grid grid-cols-4 gap-6 mb-8">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <p class="text-gray-400 text-sm mb-2">XAUUSD PRICE</p>
+                        <h2 class="font-orbitron text-4xl font-bold text-yellow-400" data-price>$----.--</h2>
+                        <p class="text-xs text-gray-500 mt-2">Live Update</p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <p class="text-gray-400 text-sm mb-2">SMART MONEY BIAS</p>
+                        <h2 class="font-orbitron text-4xl font-bold text-green-400" data-bias>STANDBY</h2>
+                        <p class="text-xs text-gray-500 mt-2">Confidence 88%</p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <p class="text-gray-400 text-sm mb-2">DAILY RISK</p>
+                        <h2 class="font-orbitron text-4xl font-bold text-yellow-400">1.2%</h2>
+                        <p class="text-xs text-gray-500 mt-2">Institutional Allocation</p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <p class="text-gray-400 text-sm mb-2">LIQUIDITY INDEX</p>
+                        <h2 class="font-orbitron text-4xl font-bold text-yellow-400">72</h2>
+                        <p class="text-xs text-gray-500 mt-2">High Participation</p>
+                    </div>
+                </div>
+
+                <!-- CHART + AI PANEL -->
+                <div class="grid grid-cols-3 gap-6">
+                    
+                    <!-- TRADINGVIEW CHART -->
+                    <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">
+                            Institutional Momentum Engine - Live XAUUSD M15
+                        </h3>
+                        <div id="tradingview_chart" style="height: 500px;"></div>
+                    </div>
+
+                    <!-- AI EXECUTION PANEL -->
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+                                <span class="text-gray-400">Model</span>
+                                <span class="text-gray-400">Status</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">SMC Engine</span>
+                                <span class="font-bold text-green-400" data-model="smc">Standby</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">PRZ Scanner</span>
+                                <span class="font-bold text-yellow-400" data-model="prz">Scanning</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Liquidity Sweep</span>
+                                <span class="font-bold text-blue-400" data-model="liquidity">Monitoring</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Risk AI</span>
+                                <span class="font-bold text-green-400" data-model="risk">Protected</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
+    <!-- TRADINGVIEW WIDGET -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+        new TradingView.widget({
+            "width": "100%",
+            "height": 500,
+            "symbol": "FX:XAUUSD",
+            "interval": "15",
+            "timezone": "Asia/Jakarta",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#13131f",
+            "enable_publishing": false,
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "save_image": false,
+            "container_id": "tradingview_chart"
+        });
+    </script>
+
+    <!-- LIVE MT5 CONNECTION -->
     <script>
-        // ============================================
-        // CONFIG: GANTI PAKE LINK NGROK LU YANG AKTIF
-        // ============================================
+        // GANTI PAKE LINK NGROK LU YANG AKTIF
         const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
         
         async function updateDashboard() {
             try {
                 const res = await fetch(API_URL, {
-                    method: 'GET',
-                    headers: {
-                        'ngrok-skip-browser-warning': 'true'
-                    }
+                    headers: { 'ngrok-skip-browser-warning': 'true' }
                 });
-                
                 if (!res.ok) throw new Error('Network error');
                 
                 const data = await res.json();
                 
-                // Kalo MT5 error
                 if (data.error) {
                     document.getElementById('status-text').innerText = 'MT5 Disconnected';
                     document.getElementById('status-text').className = 'text-sm text-red-400';
-                    console.log('MT5 Error:', data.error);
                     return;
                 }
                 
-                // Status Connected
+                // Status Live
                 document.getElementById('status-text').innerText = 'Live from MT5';
                 document.getElementById('status-text').className = 'text-sm text-green-400';
                 
-                // Update Harga Real MT5
+                // Update Harga & Bias dari MT5 XAUUSDc
                 document.querySelector('[data-price]').innerText = '$' + data.price;
                 document.querySelector('[data-bias]').innerText = data.bias;
-                document.querySelector('[data-time]').innerText = data.time;
+                document.querySelector('[data-bias]').className = data.bias === 'BULLISH' 
+                    ? 'font-orbitron text-4xl font-bold text-green-400' 
+                    : 'font-orbitron text-4xl font-bold text-red-400';
                 
-                // Update SMC Engine LIVE dari MT5
+                // Update AI Engine dari MT5
                 const smc = document.querySelector('[data-model="smc"]');
                 smc.innerText = data.smc;
-                smc.className = data.smc === 'Active' 
-                    ? 'text-3xl font-bold text-green-400' 
-                    : 'text-3xl font-bold text-yellow-400';
+                smc.className = data.smc === 'Active' ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                 
-                // Update PRZ Scanner LIVE dari MT5  
                 const prz = document.querySelector('[data-model="prz"]');
                 prz.innerText = data.prz;
-                prz.className = data.prz === 'Ready' 
-                    ? 'text-3xl font-bold text-yellow-400' 
-                    : 'text-3xl font-bold text-blue-400';
+                prz.className = data.prz === 'Ready' ? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
                 
-                // Update waktu sync
-                document.getElementById('last-sync').innerText = new Date().toLocaleTimeString('id-ID');
+                document.querySelector('[data-model="liquidity"]').innerText = data.liquidity || 'Monitoring';
+                document.querySelector('[data-model="risk"]').innerText = data.risk || 'Protected';
+                document.querySelector('[data-time]').innerText = data.time;
                 
             } catch (e) {
                 document.getElementById('status-text').innerText = 'Server Offline';
                 document.getElementById('status-text').className = 'text-sm text-red-400';
-                console.log('Server PC mati atau ngrok putus:', e);
+                console.log('Error:', e);
             }
         }
 
-        // Jalanin pas load pertama
         updateDashboard();
-        
-        // Auto refresh tiap 15 detik
-        setInterval(updateDashboard, 15000);
+        setInterval(updateDashboard, 15000); // Update tiap 15 detik
     </script>
 </body>
 </html>
