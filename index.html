@@ -85,8 +85,8 @@
                     </p>
                 </div>
 
-                <!-- STATS GRID -->
-                <div class="grid grid-cols-4 gap-6 mb-8">
+                <!-- STATS GRID - UDAH 5 CARD -->
+                <div class="grid grid-cols-5 gap-6 mb-8">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                         <p class="text-gray-400 text-sm mb-2">XAUUSD PRICE</p>
                         <h2 class="font-orbitron text-4xl font-bold text-yellow-400" data-price>$----.--</h2>
@@ -96,7 +96,13 @@
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                         <p class="text-gray-400 text-sm mb-2">SMART MONEY BIAS</p>
                         <h2 class="font-orbitron text-4xl font-bold text-green-400" data-bias>STANDBY</h2>
-                        <p class="text-xs text-gray-500 mt-2">Confidence 88%</p>
+                        <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <p class="text-gray-400 text-sm mb-2">CFTC NET</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
+                        <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
                     </div>
                     
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
@@ -106,9 +112,9 @@
                     </div>
                     
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <p class="text-gray-400 text-sm mb-2">LIQUIDITY INDEX</p>
-                        <h2 class="font-orbitron text-4xl font-bold text-yellow-400">72</h2>
-                        <p class="text-xs text-gray-500 mt-2">High Participation</p>
+                        <p class="text-gray-400 text-sm mb-2">CME MAX PAIN</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-cme-strike>$----</h2>
+                        <p class="text-xs text-gray-500 mt-2" data-cme-oi>OI: ---,---</p>
                     </div>
                 </div>
 
@@ -163,6 +169,7 @@
                         
                         <div class="mt-6 pt-6 border-t border-gray-800">
                             <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
                         </div>
                     </div>
                 </div>
@@ -227,50 +234,69 @@
         }
     </script>
 
-    <!-- LIVE MT5 CONNECTION -->
+    <!-- LIVE MT5 + INSTITUTIONAL DATA -->
     <script>
         const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
+        const INST_FLOW_URL = '/institutional_flow.json';
         
         async function updateDashboard() {
+            // 1. FETCH MT5 LIVE PRICE
             try {
                 const res = await fetch(API_URL, {
                     headers: { 'ngrok-skip-browser-warning': 'true' }
                 });
-                if (!res.ok) throw new Error('Network error');
-                
-                const data = await res.json();
-                
-                if (data.error) {
-                    document.getElementById('status-text').innerText = 'MT5 Disconnected: ' + data.error;
-                    document.getElementById('status-text').className = 'text-sm text-red-400';
-                    return;
+                if (res.ok) {
+                    const data = await res.json();
+                    if (!data.error) {
+                        document.getElementById('status-text').innerText = 'Live from MT5';
+                        document.getElementById('status-text').className = 'text-sm text-green-400';
+                        document.querySelector('[data-price]').innerText = '$' + data.price;
+                        document.querySelector('[data-time]').innerText = data.time;
+                        
+                        const smc = document.querySelector('[data-model="smc"]');
+                        smc.innerText = data.smc_active ? 'Active' : 'Standby';
+                        smc.className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                        
+                        const prz = document.querySelector('[data-model="prz"]');
+                        prz.innerText = data.prz_ready ? 'Ready' : 'Scanning';
+                        prz.className = data.prz_ready ? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
+                    }
                 }
-                
-                document.getElementById('status-text').innerText = 'Live from MT5';
-                document.getElementById('status-text').className = 'text-sm text-green-400';
-                
-                document.querySelector('[data-price]').innerText = '$' + data.price;
-                
-                const biasEl = document.querySelector('[data-bias]');
-                biasEl.innerText = data.bias;
-                biasEl.className = data.bias === 'BULLISH' 
-                    ? 'font-orbitron text-4xl font-bold text-green-400' 
-                    : 'font-orbitron text-4xl font-bold text-red-400';
-                
-                const smc = document.querySelector('[data-model="smc"]');
-                smc.innerText = data.smc_active ? 'Active' : 'Standby';
-                smc.className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
-                
-                const prz = document.querySelector('[data-model="prz"]');
-                prz.innerText = data.prz_ready ? 'Ready' : 'Scanning';
-                prz.className = data.prz_ready ? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
-                
-                document.querySelector('[data-time]').innerText = data.time;
-                
             } catch (e) {
-                document.getElementById('status-text').innerText = 'Server Offline';
+                document.getElementById('status-text').innerText = 'MT5 Offline';
                 document.getElementById('status-text').className = 'text-sm text-red-400';
-                console.log('Error:', e);
+            }
+            
+            // 2. FETCH INSTITUTIONAL FLOW JSON
+            try {
+                const res = await fetch(INST_FLOW_URL);
+                if (res.ok) {
+                    const inst = await res.json();
+                    
+                    // CFTC DATA
+                    document.querySelector('[data-cftc-net]').innerText = inst.cftc.net_noncomm.toLocaleString();
+                    document.querySelector('[data-cftc-date]').innerText = 'As of ' + inst.cftc.date;
+                    document.querySelector('[data-cot-update]').innerText = inst.updated;
+                    
+                    // SMI DATA
+                    document.querySelector('[data-smi]').innerText = inst.smart_money_index;
+                    const biasEl = document.querySelector('[data-bias]');
+                    biasEl.innerText = inst.bias;
+                    biasEl.className = inst.bias === 'BULLISH' 
+                        ? 'font-orbitron text-4xl font-bold text-green-400' 
+                        : inst.bias === 'BEARISH'
+                        ? 'font-orbitron text-4xl font-bold text-red-400'
+                        : 'font-orbitron text-4xl font-bold text-yellow-400';
+                    
+                    // CME OI DATA - AMBIL STRIKE OI TERBESAR
+                    if (inst.cme_options_oi && inst.cme_options_oi.max_pain_strikes) {
+                        const topStrike = inst.cme_options_oi.max_pain_strikes[0];
+                        document.querySelector('[data-cme-strike]').innerText = '$' + topStrike.STRIKE;
+                        document.querySelector('[data-cme-oi]').innerText = 'OI: ' + topStrike.total_oi.toLocaleString();
+                    }
+                }
+            } catch (e) {
+                console.log('Inst Flow error:', e);
             }
         }
 
@@ -278,6 +304,5 @@
         setInterval(updateDashboard, 15000);
     </script>
 </body>
-</html>
-</body>
+</html></body>
 </html>
