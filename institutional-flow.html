@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Institutional Flow - FARONE GOLD AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white p-8">
+  <a href="/" class="text-yellow-400 mb-6 block">← Back to Dashboard</a>
+  <h1 class="text-3xl font-bold text-yellow-400 mb-6">Institutional Flow Analysis</h1>
+  <div id="content">Loading...</div>
+
+  <script>
+    fetch('/institutional_flow.json')
+      .then(res => res.json())
+      .then(data => {
+        const { cftc, orderflow, smart_money_index } = data;
+        const bias = smart_money_index >= 60 ? 'BULLISH' : smart_money_index <= 40 ? 'BEARISH' : 'NEUTRAL';
+        const biasColor = bias === 'BULLISH' ? 'text-green-400' : bias === 'BEARISH' ? 'text-red-400' : 'text-yellow-400';
+        
+        document.getElementById('content').innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
+              <h2 class="text-xl text-yellow-400 mb-2">CFTC COT Report</h2>
+              <p class="text-sm text-gray-400">As of ${cftc.date}</p>
+              <p class="text-4xl mt-3">${cftc.net_noncomm.toLocaleString()}</p>
+              <p class="text-gray-400">Net Non-Commercial</p>
+              <div class="mt-4 text-sm space-y-1">
+                <p>Long: <span class="text-green-400">${cftc.noncomm_long.toLocaleString()}</span></p>
+                <p>Short: <span class="text-red-400">${cftc.noncomm_short.toLocaleString()}</span></p>
+              </div>
+            </div>
+
+            <div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
+              <h2 class="text-xl text-yellow-400 mb-2">Retail Sentiment SWFX</h2>
+              <p class="text-sm text-gray-400">${orderflow.source}</p>
+              <div class="flex justify-between mt-4">
+                <div>
+                  <p class="text-4xl text-green-400">${orderflow.long_percent}%</p>
+                  <p class="text-gray-400">Long</p>
+                </div>
+                <div>
+                  <p class="text-4xl text-red-400">${orderflow.short_percent}%</p>
+                  <p class="text-gray-400">Short</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
+              <h2 class="text-xl text-yellow-400 mb-2">Smart Money Index</h2>
+              <p class="text-6xl mt-2 ${biasColor}">${smart_money_index}</p>
+              <p class="text-2xl ${biasColor}">${bias}</p>
+              <p class="text-xs text-gray-500 mt-4">Updated: ${cftc.updated}</p>
+            </div>
+          </div>
+        `;
+      });
+  </script>
+</body>
+</html>
