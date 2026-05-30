@@ -21,13 +21,12 @@
         
         <!-- SIDEBAR -->
         <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
-            <div class="flex items-center gap-3 mb-10">
-                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                    <span class="font-orbitron font-black text-black text-xl">F</span>
-                </div>
+            <div class="flex items-center gap-4 mb-10">
+                <!-- LOGO PNG LU DI SINI -->
+                <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain">
                 <div>
-                    <h1 class="font-orbitron font-bold text-lg">FARONE</h1>
-                    <p class="text-xs text-yellow-500">GOLD AI</p>
+                    <h1 class="font-orbitron font-black text-2xl glow-gold">FARONE</h1>
+                    <p class="text-sm text-yellow-400 font-semibold tracking-widest">GOLD AI</p>
                 </div>
             </div>
             
@@ -199,14 +198,12 @@
             const btn = document.getElementById('expand-btn');
             
             if (!isExpanded) {
-                // EXPAND 50/50
                 grid.className = 'grid grid-cols-2 gap-6 transition-all';
                 chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
                 panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
                 btn.innerText = 'Default View';
                 isExpanded = true;
             } else {
-                // BALIK DEFAULT 2/3 vs 1/3
                 grid.className = 'grid grid-cols-3 gap-6 transition-all';
                 chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
                 panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
