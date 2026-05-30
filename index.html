@@ -21,7 +21,9 @@
         <!-- SIDEBAR -->
         <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
             <div class="flex items-center gap-3 mb-10">
-                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg"></div>
+                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                    <span class="font-orbitron font-black text-black text-xl">F</span>
+                </div>
                 <div>
                     <h1 class="font-orbitron font-bold text-lg">FARONE</h1>
                     <p class="text-xs text-yellow-500">GOLD AI</p>
@@ -45,6 +47,16 @@
                     <span>AI Signals</span>
                 </a>
             </nav>
+
+            <!-- AUTHOR SECTION -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <div class="border-t border-gray-800 pt-4">
+                    <p class="text-xs text-gray-500 mb-2">Author</p>
+                    <p class="text-sm font-bold text-yellow-400">Farly Setiawan</p>
+                    <p class="text-xs text-gray-500 mt-1">Founder @ Aitopia | Specialist Data Engineer</p>
+                    <p class="text-xs text-gray-600 mt-2">Helping 2M Indonesian traders lose less money</p>
+                </div>
+            </div>
         </div>
 
         <!-- MAIN CONTENT -->
@@ -66,7 +78,7 @@
                 <!-- STATS GRID -->
                 <div class="grid grid-cols-4 gap-6 mb-8">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                        <p class="text-gray-400 text-sm mb-2" data-price-label>XAUUSD PRICE</p>
+                        <p class="text-gray-400 text-sm mb-2">XAUUSD PRICE</p>
                         <h2 class="font-orbitron text-4xl font-bold text-yellow-400" data-price>$----.--</h2>
                         <p class="text-xs text-gray-500 mt-2">Live Update</p>
                     </div>
@@ -140,6 +152,12 @@
                     </div>
                 </div>
 
+                <!-- FOOTER -->
+                <div class="mt-8 text-center text-xs text-gray-600">
+                    <p>© 2026 FARONE.AI — Powered by MetaTrader 5</p>
+                    <p class="mt-1">Contact: farone2013@gmail.com for licensing</p>
+                </div>
+
             </div>
         </div>
     </div>
@@ -164,7 +182,7 @@
         });
     </script>
 
-    <!-- LIVE MT5 CONNECTION -->
+    <!-- LOGIC TAMPILAN: AMBIL DATA MENTAH DARI server.py TERUS OLAH DI SINI -->
     <script>
         // GANTI PAKE LINK NGROK LU YANG AKTIF
         const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
@@ -184,29 +202,31 @@
                     return;
                 }
                 
-                // Status Live
+                // 1. STATUS
                 document.getElementById('status-text').innerText = 'Live from MT5';
                 document.getElementById('status-text').className = 'text-sm text-green-400';
                 
-                // Update Harga & Bias dari MT5 XAUUSDc tapi tampil XAUUSD
-                document.querySelector('[data-price-label]').innerText = data.display_symbol + ' PRICE';
+                // 2. HARGA - TULIS XAUUSD, DATA DARI XAUUSDc
                 document.querySelector('[data-price]').innerText = '$' + data.price;
-                document.querySelector('[data-bias]').innerText = data.bias;
-                document.querySelector('[data-bias]').className = data.bias === 'BULLISH' 
+                
+                // 3. BIAS - GANTI WARNA OTOMATIS
+                const biasEl = document.querySelector('[data-bias]');
+                biasEl.innerText = data.bias;
+                biasEl.className = data.bias === 'BULLISH' 
                     ? 'font-orbitron text-4xl font-bold text-green-400' 
                     : 'font-orbitron text-4xl font-bold text-red-400';
                 
-                // Update AI Engine dari MT5
+                // 4. SMC ENGINE - UBAH true/false JADI TEKS + WARNA
                 const smc = document.querySelector('[data-model="smc"]');
-                smc.innerText = data.smc;
-                smc.className = data.smc === 'Active' ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                smc.innerText = data.smc_active ? 'Active' : 'Standby';
+                smc.className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                 
+                // 5. PRZ SCANNER - UBAH true/false JADI TEKS + WARNA
                 const prz = document.querySelector('[data-model="prz"]');
-                prz.innerText = data.prz;
-                prz.className = data.prz === 'Ready' ? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
+                prz.innerText = data.prz_ready ? 'Ready' : 'Scanning';
+                prz.className = data.prz_ready ? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
                 
-                document.querySelector('[data-model="liquidity"]').innerText = data.liquidity || 'Monitoring';
-                document.querySelector('[data-model="risk"]').innerText = data.risk || 'Protected';
+                // 6. WAKTU
                 document.querySelector('[data-time]').innerText = data.time;
                 
             } catch (e) {
