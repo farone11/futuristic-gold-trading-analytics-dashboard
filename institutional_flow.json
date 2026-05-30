@@ -5,13 +5,13 @@
     "noncomm_long": 200704,
     "noncomm_short": 46444,
     "net_noncomm": 154260,
-    "updated": "2026-05-30 21:24:08",
+    "updated": "2026-05-30 22:02:43",
     "source": "CFTC Short Format"
   },
   "orderflow": {
-    "source": "Ducascopy SWFX",
-    "long_percent": 62.5,
-    "short_percent": 37.5,
+    "source": "Ducascopy Fallback",
+    "long_percent": 65.0,
+    "short_percent": 35.0,
     "volume_delta": 2500000,
     "liquidity_score": 72,
     "note": "Retail sentiment"
