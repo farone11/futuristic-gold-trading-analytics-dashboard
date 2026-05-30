@@ -1,0 +1,16 @@
+{
+  "cftc": {
+    "market": "XAUUSD",
+    "date": "05/26/26                         |",
+    "noncomm_long": 200704,
+    "noncomm_short": 46444,
+    "net_noncomm": 154260,
+    "updated": "2026-05-30 21:00:25",
+    "source": "CFTC Short Format"
+  },
+  "orderflow": {
+    "volume_delta": 3000000,
+    "liquidity_score": 72
+  },
+  "smart_money_index": 69
+}
