@@ -1,109 +1,346 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>XAUUSD Live OB + CVD</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FARONE GOLD AI — FUTURISTIC GOLD TRADING ANALYTICS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { margin: 0; background: #0d0d0d; color: #fff; font-family: Arial; }
-        #tv_chart { height: 85vh; }
-        #info { 
-            padding: 10px 20px; 
-            background: #1a1a1a; 
-            display: flex; 
-            justify-content: space-between;
-            border-bottom: 2px solid #333;
-        }
-        .bull { color: #00ff88; }
-        .bear { color: #ff3d3d; }
-        .cvd-neg { color: #ff3d3d; }
-        .cvd-pos { color: #00ff88; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
+       .font-orbitron { font-family: 'Orbitron', sans-serif; }
+       .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+       .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+       .live-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+       .transition-all { transition: all 0.3s ease; }
     </style>
 </head>
-<body>
-    <div id="info">
-        <div>XAUUSD H1 Order Blocks</div>
-        <div id="cvd">CVD: Loading...</div>
-        <div id="update">Updated: -</div>
-    </div>
-    <div id="tv_chart"></div>
+<body class="bg-[#0a0a0f] text-white">
+    <div class="flex h-screen">
+        
+        <!-- SIDEBAR -->
+        <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
+            <div class="flex items-center gap-4 mb-10">
+                <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain">
+                <div>
+                    <h1 class="font-orbitron font-black text-2xl glow-gold">FARONE</h1>
+                    <p class="text-sm text-yellow-400 font-semibold tracking-widest">GOLD AI</p>
+                </div>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
+                    <span>Dashboard</span>
+                </a>
+                <a href="/institutional-flow.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
+                    <span>Institutional Flow</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
+                    <span>Liquidity Zones</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
+                    <span>Risk Engine</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
+                    <span>AI Signals</span>
+                </a>
+            </nav>
 
+            <!-- AUTHOR SECTION -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <div class="border-t border-gray-800 pt-4">
+                    <p class="text-xs text-gray-500 mb-2">Author</p>
+                    <p class="text-sm font-bold text-yellow-400">Farly Setiawan</p>
+                    <p class="text-xs text-gray-500 mt-1">Founder @ Aitopia | Specialist Data Engineer</p>
+                    <p class="text-xs text-gray-600 mt-2">Helping 2M Indonesian traders lose less money</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 overflow-auto">
+            <div class="p-8">
+                
+                <!-- HEADER -->
+                <div class="mb-6">
+                    <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">
+                        FUTURISTIC GOLD TRADING ANALYTICS
+                    </h1>
+                    <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
+                    <div class="flex items-center gap-2 mt-3">
+                        <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
+                    </div>
+                </div>
+
+                <!-- DISCLAIMER ENGLISH -->
+                <div class="mb-6 bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-3">
+                    <p class="text-xs text-yellow-400/80">
+                        <strong>DISCLAIMER:</strong> This dashboard is for informational and educational purposes only. 
+                        Trading forex, CFDs, and gold involves substantial risk of loss and is not suitable for every investor. 
+                        Past performance is not indicative of future results. AI signals are not financial advice. 
+                        You should carefully consider whether trading is suitable for you in light of your circumstances, knowledge, and financial resources. 
+                        FARONE.AI does not guarantee profits and is not responsible for any trading losses.
+                    </p>
+                </div>
+
+                <!-- STATS GRID - 6 CARD SEKARANG -->
+                <div class="grid grid-cols-6 gap-4 mb-8">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
+                        <p class="text-xs text-gray-500 mt-2">Live Update</p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
+                        <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">CFTC NET</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
+                        <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">DAILY RISK</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400">1.2%</h2>
+                        <p class="text-xs text-gray-500 mt-2">Inst. Allocation</p>
+                    </div>
+                    
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cme-strike>$----</h2>
+                        <p class="text-xs text-gray-500 mt-2" data-cme-oi>OI: ---,---</p>
+                    </div>
+
+                    <!-- CARD BARU: RETAIL SENTIMENT LIVE -->
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
+                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
+                        </div>
+                        <h2 class="font-orbitron text-xl font-bold text-red-400" id="retail-long">--% Long</h2>
+                        <h2 class="font-orbitron text-xl font-bold text-green-400" id="retail-short">--% Short</h2>
+                        <p class="text-xs text-gray-600 mt-2" id="retail-updated">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- CHART + AI PANEL -->
+                <div class="grid grid-cols-3 gap-6 transition-all" id="main-grid">
+                    
+                    <!-- TRADINGVIEW CHART -->
+                    <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="chart-container">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-orbitron text-lg font-bold text-yellow-400">
+                                Institutional Momentum Engine - Live XAUUSD M15
+                            </h3>
+                            <button onclick="toggleChart()" id="expand-btn" class="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">
+                                Expand 50/50
+                            </button>
+                        </div>
+                        <div class="tradingview-widget-container" style="height:500px;width:100%">
+                          <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
+                        </div>
+                    </div>
+
+                    <!-- AI EXECUTION PANEL -->
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+                                <span class="text-gray-400">Model</span>
+                                <span class="text-gray-400">Status</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">SMC Engine</span>
+                                <span class="font-bold text-yellow-400" data-model="smc">Standby</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">PRZ Scanner</span>
+                                <span class="font-bold text-blue-400" data-model="prz">Scanning</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Liquidity Sweep</span>
+                                <span class="font-bold text-blue-400" data-model="liquidity">Monitoring</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Risk AI</span>
+                                <span class="font-bold text-green-400" data-model="risk">Protected</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">Retail Lots: <span id="retail-lots">-</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FOOTER DISCLAIMER -->
+                <div class="mt-8 text-center text-xs text-gray-600 border-t border-gray-800 pt-4">
+                    <p class="mb-2">
+                        <strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors. 
+                        The high degree of leverage can work against you as well as for you. Before deciding to trade, you should carefully consider your investment objectives, 
+                        level of experience, and risk appetite.
+                    </p>
+                    <p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TRADINGVIEW WIDGET -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        let tvWidget = new TradingView.widget({
+    <script type="text/javascript">
+        new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
-            "interval": "60",
+            "interval": "15",
             "timezone": "Asia/Jakarta",
             "theme": "dark",
             "style": "1",
-            "locale": "id",
-            "toolbar_bg": "#1a1a1a",
+            "locale": "en",
+            "toolbar_bg": "#13131f",
             "enable_publishing": false,
-            "hide_side_toolbar": false,
-            "allow_symbol_change": false,
-            "container_id": "tv_chart",
-            "studies": ["Volume@tv-basicstudies"],
-            "disabled_features": ["use_localstorage_for_settings"],
-            "enabled_features": ["study_templates"],
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "save_image": false,
+            "container_id": "tradingview_chart"
         });
+    </script>
 
-        async function drawOB() {
-            const res = await fetch('./orderblocks.json?'+Date.now());
-            const data = await res.json();
+    <!-- TOGGLE CHART LOGIC -->
+    <script>
+        let isExpanded = false;
+        
+        function toggleChart() {
+            const grid = document.getElementById('main-grid');
+            const chart = document.getElementById('chart-container');
+            const panel = document.getElementById('ai-panel');
+            const btn = document.getElementById('expand-btn');
             
-            document.getElementById('update').innerText = 'Updated: ' + data.updated;
+            if (!isExpanded) {
+                grid.className = 'grid grid-cols-2 gap-6 transition-all';
+                chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                btn.innerText = 'Default View';
+                isExpanded = true;
+            } else {
+                grid.className = 'grid grid-cols-3 gap-6 transition-all';
+                chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                btn.innerText = 'Expand 50/50';
+                isExpanded = false;
+            }
+        }
+    </script>
+
+    <!-- LIVE MT5 + INSTITUTIONAL DATA + RETAIL SENTIMENT -->
+    <script>
+        const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
+        const INST_FLOW_URL = './institutional_flow.json';
+        const RETAIL_URL = './retail_sentiment.json';
+        
+        async function updateDashboard() {
+            // 1. FETCH MT5 LIVE PRICE
+            try {
+                const res = await fetch(API_URL, {
+                    headers: { 'ngrok-skip-browser-warning': 'true' }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (!data.error) {
+                        document.getElementById('status-text').innerText = 'Live from MT5';
+                        document.getElementById('status-text').className = 'text-sm text-green-400';
+                        document.querySelector('[data-price]').innerText = '$' + data.price;
+                        document.querySelector('[data-time]').innerText = data.time;
+                        
+                        const smc = document.querySelector('[data-model="smc"]');
+                        smc.innerText = data.smc_active? 'Active' : 'Standby';
+                        smc.className = data.smc_active? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                        
+                        const prz = document.querySelector('[data-model="prz"]');
+                        prz.innerText = data.prz_ready? 'Ready' : 'Scanning';
+                        prz.className = data.prz_ready? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
+                    }
+                }
+            } catch (e) {
+                document.getElementById('status-text').innerText = 'MT5 Offline';
+                document.getElementById('status-text').className = 'text-sm text-red-400';
+            }
             
-            tvWidget.onChartReady(() => {
-                const chart = tvWidget.activeChart();
-                
-                // Hapus OB lama
-                chart.getAllShapes().forEach(s => {
-                    if(s.name === 'rectangle') chart.removeEntity(s.id);
-                });
-                
-                // Gambar OB baru
-                data.H1.forEach(ob => {
-                    chart.createShape(
-                        { time: new Date(ob.time).getTime()/1000, price: ob.top },
-                        {
-                            shape: "rectangle",
-                            lock: true,
-                            disableSelection: true,
-                            overrides: {
-                                backgroundColor: ob.type === 'bullish' ? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
-                                borderColor: ob.type === 'bullish' ? "#00ff88" : "#ff3d3d",
-                                borderWidth: 2,
-                            }
-                        }
-                    ).then(id => {
-                        chart.getShapeById(id).setPoints([
-                            { time: new Date(ob.time).getTime()/1000, price: ob.top },
-                            { time: Date.now()/1000, price: ob.bottom }
-                        ]);
-                    });
-                });
-            });
+            // 2. FETCH INSTITUTIONAL FLOW JSON
+            try {
+                const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
+                if (res.ok) {
+                    const inst = await res.json();
+                    
+                    // CFTC DATA
+                    document.querySelector('[data-cftc-net]').innerText = inst.cftc.net_noncomm.toLocaleString();
+                    document.querySelector('[data-cftc-date]').innerText = 'As of ' + inst.cftc.date;
+                    document.querySelector('[data-cot-update]').innerText = inst.updated;
+                    
+                    // SMI DATA
+                    document.querySelector('[data-smi]').innerText = inst.smart_money_index;
+                    const biasEl = document.querySelector('[data-bias]');
+                    biasEl.innerText = inst.bias;
+                    biasEl.className = inst.bias === 'BULLISH' 
+                       ? 'font-orbitron text-3xl font-bold text-green-400' 
+                        : inst.bias === 'BEARISH'
+                       ? 'font-orbitron text-3xl font-bold text-red-400'
+                        : 'font-orbitron text-3xl font-bold text-yellow-400';
+                    
+                    // CME OI DATA
+                    if (inst.cme_options_oi && inst.cme_options_oi.max_pain_strikes) {
+                        const topStrike = inst.cme_options_oi.max_pain_strikes[0];
+                        document.querySelector('[data-cme-strike]').innerText = '$' + topStrike.STRIKE;
+                        document.querySelector('[data-cme-oi]').innerText = 'OI: ' + topStrike.total_oi.toLocaleString();
+                    }
+                }
+            } catch (e) {
+                console.log('Inst Flow error:', e);
+            }
+
+            // 3. FETCH RETAIL SENTIMENT LIVE
+            try {
+                const res = await fetch(RETAIL_URL + '?v=' + Date.now());
+                if (res.ok) {
+                    const d = await res.json();
+                    document.getElementById('retail-long').innerText = d.long_pct + '% Long';
+                    document.getElementById('retail-short').innerText = d.short_pct + '% Short';
+                    document.getElementById('retail-updated').innerText = d.updated;
+                    document.getElementById('retail-lots').innerText = d.lots.toLocaleString('en-US');
+                    document.getElementById('retail-source').innerText = d.source.split(' ')[0];
+                    
+                    // Kasih pulse kalo extreme
+                    if(d.long_pct > 70) {
+                        document.getElementById('retail-long').classList.add('animate-pulse');
+                        document.getElementById('retail-source').className = 'text-xs bg-red-900/30 text-red-300 px-2 py-0.5 rounded';
+                        document.getElementById('retail-source').innerText = 'EXTREME';
+                    } else if(d.short_pct > 70) {
+                        document.getElementById('retail-short').classList.add('animate-pulse');
+                        document.getElementById('retail-source').className = 'text-xs bg-green-900/30 text-green-300 px-2 py-0.5 rounded';
+                        document.getElementById('retail-source').innerText = 'EXTREME';
+                    }
+                }
+            } catch (e) {
+                console.log('Retail sentiment error:', e);
+            }
         }
 
-        async function updateCVD() {
-            const res = await fetch('./cvd.json?'+Date.now());
-            const data = await res.json();
-            const cvdEl = document.getElementById('cvd');
-            cvdEl.innerText = `CVD: ${data.cvd} | Price: ${data.price}`;
-            cvdEl.className = data.cvd >= 0 ? 'cvd-pos' : 'cvd-neg';
-        }
-
-        // Jalan pertama kali
-        tvWidget.onChartReady(() => {
-            drawOB();
-            updateCVD();
-        });
-
-        // Auto refresh tiap 1 menit
-        setInterval(() => {
-            drawOB();
-            updateCVD();
-        }, 60000);
+        updateDashboard();
+        setInterval(updateDashboard, 15000);
     </script>
 </body>
 </html>
