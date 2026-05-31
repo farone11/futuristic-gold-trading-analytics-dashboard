@@ -8,12 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-   .font-orbitron { font-family: 'Orbitron', sans-serif; }
-   .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-   .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-   .live-dot { animation: pulse 2s infinite; }
+       .font-orbitron { font-family: 'Orbitron', sans-serif; }
+       .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+       .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+       .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-   .transition-all { transition: all 0.3s ease; }
+       .transition-all { transition: all 0.3s ease; }
+       .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -30,13 +31,13 @@
             </div>
             
             <nav class="space-y-2">
-                <a href="/" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
+                <a href="#" onclick="showPage('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
                     <span>Dashboard</span>
                 </a>
                 <a href="/institutional-flow.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Institutional Flow</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
+                <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Liquidity Zones</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
@@ -50,7 +51,9 @@
 
         <!-- MAIN CONTENT -->
         <div class="flex-1 overflow-auto">
-            <div class="p-8">
+            
+            <!-- PAGE: DASHBOARD -->
+            <div id="page-dashboard" class="dashboard-page p-8">
                 
                 <!-- HEADER -->
                 <div class="mb-6">
@@ -174,8 +177,50 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- FOOTER DISCLAIMER + AUTHOR KANAN -->
+            <!-- PAGE: LIQUIDITY ZONES -->
+            <div id="page-liquidity-zones" class="dashboard-page hidden p-8">
+                <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">Liquidity Zones - XAUUSDc H1</h2>
+                <p class="text-gray-400 mb-6">Buy-Side & Sell-Side Liquidity + Session Levels · Auto Sweep Detection</p>
+                
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-2">BUY-SIDE LIQUIDITY</div>
+                        <div id="bsl-count" class="font-orbitron text-3xl font-bold text-red-400">0</div>
+                        <div class="text-xs text-gray-500 mt-2">Above Highs - Sweep Target</div>
+                    </div>
+                    <div class="bg-[#13131f] border border-green-900/20 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-2">SELL-SIDE LIQUIDITY</div>
+                        <div id="ssl-count" class="font-orbitron text-3xl font-bold text-green-400">0</div>
+                        <div class="text-xs text-gray-500 mt-2">Below Lows - Sweep Target</div>
+                    </div>
+                    <div class="bg-[#13131f] border border-blue-900/20 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-2">SESSION LIQUIDITY</div>
+                        <div id="session-count" class="font-orbitron text-3xl font-bold text-blue-400">0</div>
+                        <div class="text-xs text-gray-500 mt-2">Asia / London / NY</div>
+                    </div>
+                </div>
+
+                <div id="liq-table" class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
+                    <table class="w-full text-sm">
+                        <thead class="text-gray-400 border-b border-gray-800">
+                            <tr>
+                                <th class="text-left pb-3">Type</th>
+                                <th class="text-left pb-3">Price Zone</th>
+                                <th class="text-left pb-3">Status</th>
+                                <th class="text-left pb-3">Age</th>
+                                <th class="text-left pb-3">OB Confluence</th>
+                            </tr>
+                        </thead>
+                        <tbody id="liq-body" class="text-gray-300"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="px-8 pb-8">
                 <div class="mt-8 border-t border-gray-800 pt-4">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                         <div class="flex-1 text-xs text-gray-600">
@@ -195,39 +240,55 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
 
-    <!-- TRADINGVIEW WIDGET + OB/CVD LOGIC -->
+    <!-- TRADINGVIEW WIDGET -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
         const GITHUB_USER = "farone11";
         const REPO = "futuristic-gold-trading-analytics-dashboard";
         const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/main/`;
         
-        let tvWidget = new TradingView.widget({
-            "autosize": true,
-            "symbol": "OANDA:XAUUSD",
-            "interval": "60",
-            "timezone": "Asia/Jakarta",
-            "theme": "dark",
-            "style": "1",
-            "locale": "en",
-            "toolbar_bg": "#13131f",
-            "enable_publishing": false,
-            "hide_top_toolbar": false,
-            "hide_legend": false,
-            "save_image": false,
-            "container_id": "tradingview_chart"
-        });
+        let tvWidget;
+        let allShapes = [];
 
-        tvWidget.onChartReady(() => {
-            console.log('Chart Ready - Drawing OB');
-            drawOB();
-            setInterval(drawOB, 60000);
-        });
+        function initChart() {
+            tvWidget = new TradingView.widget({
+                "autosize": true,
+                "symbol": "OANDA:XAUUSD",
+                "interval": "60",
+                "timezone": "Asia/Jakarta",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#13131f",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_chart"
+            });
+
+            tvWidget.onChartReady(() => {
+                console.log('Chart Ready - Drawing OB + Liquidity');
+                drawOB();
+                drawLiquidity();
+                setInterval(() => {
+                    drawOB();
+                    drawLiquidity();
+                }, 60000);
+            });
+        }
+
+        async function clearAllShapes() {
+            if (!tvWidget) return;
+            const chart = tvWidget.activeChart();
+            allShapes.forEach(id => chart.removeEntity(id));
+            allShapes = [];
+        }
 
         async function drawOB() {
             try {
@@ -235,11 +296,11 @@
                 if (!res.ok) return;
                 const data = await res.json();
                 const chart = tvWidget.activeChart();
-                chart.removeAllShapes();
+                
                 if (data.H1 && data.H1.length > 0) {
                     data.H1.forEach(ob => {
                         const futureTime = Math.floor(Date.now()/1000) + (86400 * 30);
-                        chart.createMultipointShape(
+                        const shapeId = chart.createMultipointShape(
                             [
                                 { time: new Date(ob.time).getTime()/1000, price: ob.top },
                                 { time: futureTime, price: ob.bottom }
@@ -256,16 +317,58 @@
                                 }
                             }
                         );
+                        allShapes.push(shapeId);
                     });
                     console.log('OB Drawn:', data.H1.length);
                 }
             } catch (e) { console.log('OB Error:', e); }
         }
 
+        async function drawLiquidity() {
+            try {
+                const res = await fetch(BASE_URL + 'liquidity.json?v=' + Date.now());
+                if (!res.ok) return;
+                const zones = await res.json();
+                const chart = tvWidget.activeChart();
+                
+                zones.forEach(z => {
+                    if(z.status!== 'active' || z.swept) return;
+                    
+                    const color = z.type === 'BSL'? "rgba(239, 68, 68, 0.12)" : "rgba(34, 197, 94, 0.12)";
+                    const lineColor = z.type === 'BSL'? "#ef4444" : "#22c55e";
+                    const futureTime = Math.floor(Date.now()/1000) + (86400 * 2);
+                    
+                    const shapeId = chart.createMultipointShape(
+                        [
+                            { time: z.time_start, price: z.price_high || z.price },
+                            { time: futureTime, price: z.price_low || z.price - 0.5 }
+                        ],
+                        {
+                            shape: "rectangle",
+                            lock: true,
+                            disableSelection: true,
+                            zOrder: "bottom",
+                            overrides: {
+                                backgroundColor: color,
+                                color: lineColor,
+                                linewidth: 1,
+                                linestyle: 2,
+                                showLabel: true,
+                                text: z.type,
+                                textColor: lineColor,
+                                fontsize: 11
+                            }
+                        }
+                    );
+                    allShapes.push(shapeId);
+                });
+                console.log('Liquidity Drawn:', zones.length);
+            } catch (e) { console.log('Liq Error:', e); }
+        }
+
         function toggleChart() {
             const grid = document.getElementById('main-grid');
             const chart = document.getElementById('chart-container');
-            const panel = document.getElementById('ai-panel');
             const btn = document.getElementById('expand-btn');
             if (grid.classList.contains('grid-cols-3')) {
                 grid.className = 'grid grid-cols-2 gap-6 transition-all';
@@ -277,10 +380,72 @@
                 btn.innerText = 'Expand 50/50';
             }
         }
-    </script>
 
-    <!-- LIVE DATA -->
-    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            
+            document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            document.getElementById('nav-liquidity').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            document.getElementById('nav-' + pageId).className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
+            
+            if(pageId === 'liquidity-zones') loadLiquidity();
+        }
+
+        // LIQUIDITY ZONES LOGIC
+        async function loadLiquidity() {
+            try {
+                const [liqRes, obRes] = await Promise.all([
+                    fetch(BASE_URL + 'liquidity.json?v=' + Date.now()),
+                    fetch(BASE_URL + 'orderblocks.json?v=' + Date.now())
+                ]);
+                
+                if (!liqRes.ok ||!obRes.ok) return;
+                
+                const liqData = await liqRes.json();
+                const obData = await obRes.json();
+                
+                let bsl = 0, ssl = 0, session = 0;
+                const tbody = document.getElementById('liq-body');
+                tbody.innerHTML = '';
+                
+                liqData.forEach(zone => {
+                    if(zone.type === 'BSL') bsl++;
+                    if(zone.type === 'SSL') ssl++;
+                    if(zone.type.includes('ASIA') || zone.type.includes('LONDON') || zone.type.includes('NY')) session++;
+                    
+                    let confluence = '<span class="text-gray-600">None</span>';
+                    if (obData.H1) {
+                        obData.H1.forEach(ob => {
+                            const zHigh = zone.price_high || zone.price;
+                            const zLow = zone.price_low || zone.price - 0.5;
+                            if(zHigh >= ob.bottom && zLow <= ob.top) {
+                                confluence = `<span class="text-yellow-400 font-semibold">OB ${ob.type}</span>`;
+                            }
+                        });
+                    }
+                    
+                    const age = Math.floor((Date.now()/1000 - zone.time_start) / 3600);
+                    const priceZone = zone.price_low? `${zone.price_low.toFixed(2)} - ${zone.price_high.toFixed(2)}` : zone.price.toFixed(2);
+                    
+                    tbody.innerHTML += `
+                        <tr class="border-b border-gray-800 hover:bg-yellow-500/5">
+                            <td class="py-3 ${zone.type === 'BSL'? 'text-red-400 font-bold' : zone.type === 'SSL'? 'text-green-400 font-bold' : 'text-blue-400'}">${zone.type}</td>
+                            <td class="py-3 font-mono">${priceZone}</td>
+                            <td class="py-3">${zone.swept? '<span class="text-gray-500">Swept</span>' : '<span class="text-blue-400">Active</span>'}</td>
+                            <td class="py-3">${age}h</td>
+                            <td class="py-3">${confluence}</td>
+                        </tr>
+                    `;
+                });
+                
+                document.getElementById('bsl-count').innerText = bsl;
+                document.getElementById('ssl-count').innerText = ssl;
+                document.getElementById('session-count').innerText = session;
+            } catch (e) { console.log('Load Liquidity Error:', e); }
+        }
+    
+        // LIVE DATA
         const INST_FLOW_URL = './institutional_flow.json';
         const RETAIL_URL = './retail_sentiment.json';
         
@@ -294,6 +459,9 @@
                     statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
                     document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
                     document.querySelector('[data-time]').innerText = data.time;
+                    
+                    // Liquidity Sweep Detection
+                    checkLiquiditySweep(data.price, data.cvd);
                 }
             } catch (e) { 
                 document.getElementById('status-text').innerText = 'MT5 Offline';
@@ -336,8 +504,48 @@
             } catch (e) { console.log('Retail sentiment error:', e); }
         }
 
+        async function checkLiquiditySweep(price, cvd) {
+            try {
+                const res = await fetch(BASE_URL + 'liquidity.json?v=' + Date.now());
+                if (!res.ok) return;
+                const zones = await res.json();
+                
+                let sweepAlert = false;
+                zones.forEach(z => {
+                    if(z.status!== 'active' || z.swept) return;
+                    const zHigh = z.price_high || z.price;
+                    const zLow = z.price_low || z.price - 0.5;
+                    
+                    if(z.type === 'BSL' && price > zHigh && cvd < -100) {
+                        sweepAlert = 'BSL_SWEEP_BEARISH';
+                    }
+                    if(z.type === 'SSL' && price < zLow && cvd > 100) {
+                        sweepAlert = 'SSL_SWEEP_BULLISH';
+                    }
+                });
+                
+                const liqEl = document.querySelector('[data-model="liquidity"]');
+                const przEl = document.querySelector('[data-model="prz"]');
+                
+                if(sweepAlert) {
+                    liqEl.innerText = 'ALERT';
+                    liqEl.className = 'font-bold text-red-400 animate-pulse';
+                    przEl.innerText = 'PRZ ACTIVE';
+                    przEl.className = 'font-bold text-yellow-400';
+                } else {
+                    liqEl.innerText = 'Monitoring';
+                    liqEl.className = 'font-bold text-blue-400';
+                    przEl.innerText = 'Scanning';
+                    przEl.className = 'font-bold text-blue-400';
+                }
+            } catch (e) { console.log('Sweep check error:', e); }
+        }
+
+        // INIT
+        initChart();
         updateDashboard();
         setInterval(updateDashboard, 15000);
+        setInterval(loadLiquidity, 30000);
     </script>
 </body>
 </html>
