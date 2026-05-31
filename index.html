@@ -8,17 +8,17 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-     .font-orbitron { font-family: 'Orbitron', sans-serif; }
-     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-     .live-dot { animation: pulse 2s infinite; }
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+    .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+    .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+    .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-     .transition-all { transition: all 0.3s ease; }
+    .transition-all { transition: all 0.3s ease; }
       /* MOBILE FIX */
       @media (max-width: 768px) {
-       .sidebar { transform: translateX(-100%); position: fixed; z-index: 50; }
-       .sidebar.open { transform: translateX(0); }
-       .main-content { margin-left: 0!important; }
+      .sidebar { transform: translateX(-100%); position: fixed; z-index: 50; }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0!important; }
       }
     </style>
 </head>
@@ -32,7 +32,7 @@
             </svg>
         </button>
         
-        <!-- SIDEBAR - SEKARANG RESPONSIVE -->
+        <!-- SIDEBAR - RESPONSIVE -->
         <div id="sidebar" class="sidebar w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6 transition-all md:relative md:translate-x-0">
             <div class="flex items-center gap-4 mb-10">
                 <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain">
@@ -148,7 +148,7 @@
                     <div class="lg:col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-4 md:p-6 card-glow transition-all" id="chart-container">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="font-orbitron text-sm md:text-lg font-bold text-yellow-400">
-                                Institutional Momentum Engine - Live XAUUSD M15
+                                Institutional Momentum Engine - Live XAUUSD H1
                             </h3>
                             <button onclick="toggleChart()" id="expand-btn" class="hidden lg:block px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">
                                 Expand 50/50
@@ -222,7 +222,7 @@
         let tvWidget = new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
-            "interval": "60", // GANTI KE H1 BIAR OB KELIATAN
+            "interval": "60",
             "timezone": "Asia/Jakarta",
             "theme": "dark",
             "style": "1",
@@ -235,25 +235,22 @@
             "container_id": "tradingview_chart"
         });
 
-        // FIX OB: PANGGIL SETELAH CHART READY
         tvWidget.onChartReady(() => {
-            console.log('Chart Ready');
+            console.log('Chart Ready - Drawing OB');
             drawOB();
-            setInterval(drawOB, 60000); // Refresh OB tiap 1 menit
+            setInterval(drawOB, 60000);
         });
 
         async function drawOB() {
             try {
                 const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
+                if (!res.ok) return console.log('OB 404');
                 const data = await res.json();
-                console.log('OB Data:', data);
-                
                 const chart = tvWidget.activeChart();
                 chart.removeAllShapes();
                 
                 if (data.H1 && data.H1.length > 0) {
                     data.H1.forEach(ob => {
-                        // FIX: Extend 30 hari ke depan biar kotak keliatan
                         const futureTime = Math.floor(Date.now()/1000) + (86400 * 30);
                         chart.createMultipointShape(
                             [
@@ -269,7 +266,6 @@
                                     backgroundColor: ob.type === 'bullish'? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
                                     color: ob.type === 'bullish'? "#00ff88" : "#ff3d3d",
                                     linewidth: 2,
-                                    linestyle: 0,
                                 }
                             }
                         );
@@ -277,16 +273,6 @@
                     console.log('OB Drawn:', data.H1.length);
                 }
             } catch (e) { console.log('OB Error:', e); }
-        }
-
-        async function updateCVD_MT5() {
-            try {
-                const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
-                const data = await res.json();
-                const statusEl = document.getElementById('status-text');
-                statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
-                statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
-            } catch (e) { console.log('CVD Error:', e); }
         }
 
         function toggleSidebar() {
@@ -297,13 +283,11 @@
     <!-- TOGGLE CHART LOGIC -->
     <script>
         let isExpanded = false;
-        
         function toggleChart() {
             const grid = document.getElementById('main-grid');
             const chart = document.getElementById('chart-container');
             const panel = document.getElementById('ai-panel');
             const btn = document.getElementById('expand-btn');
-            
             if (!isExpanded) {
                 grid.className = 'grid grid-cols-2 gap-6 transition-all';
                 chart.className = 'lg:col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
@@ -327,6 +311,23 @@
         const RETAIL_URL = './retail_sentiment.json';
         
         async function updateDashboard() {
+            // 1. CVD + PRICE DARI GITHUB - FALLBACK KALO NGROK MATI
+            try {
+                const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    const statusEl = document.getElementById('status-text');
+                    statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
+                    statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
+                    document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                    document.querySelector('[data-time]').innerText = data.time;
+                }
+            } catch (e) { 
+                document.getElementById('status-text').innerText = 'MT5 Offline';
+                document.getElementById('status-text').className = 'text-sm text-red-400';
+            }
+            
+            // 2. NGROK LIVE - OVERWRITE KALO HIDUP
             try {
                 const res = await fetch(API_URL, { headers: { 'ngrok-skip-browser-warning': 'true' } });
                 if (res.ok) {
@@ -342,11 +343,9 @@
                         prz.className = data.prz_ready? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
                     }
                 }
-            } catch (e) {
-                document.getElementById('status-text').innerText = 'MT5 Offline';
-                document.getElementById('status-text').className = 'text-sm text-red-400';
-            }
+            } catch (e) { console.log('Ngrok offline'); }
             
+            // 3. INSTITUTIONAL FLOW
             try {
                 const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
                 if (res.ok) {
@@ -356,11 +355,11 @@
                     document.querySelector('[data-cot-update]').innerText = inst.updated;
                     document.querySelector('[data-smi]').innerText = inst.smart_money_index;
                     const biasEl = document.querySelector('[data-bias]');
-                    biasEl.innerText = inst.bias;
+                    biasEl.innerText = inst.bias || 'STANDBY';
                     biasEl.className = inst.bias === 'BULLISH' 
-                    ? 'font-orbitron text-xl md:text-3xl font-bold text-green-400' 
+                   ? 'font-orbitron text-xl md:text-3xl font-bold text-green-400' 
                         : inst.bias === 'BEARISH'
-                    ? 'font-orbitron text-xl md:text-3xl font-bold text-red-400'
+                   ? 'font-orbitron text-xl md:text-3xl font-bold text-red-400'
                         : 'font-orbitron text-xl md:text-3xl font-bold text-yellow-400';
                     if (inst.cme_options_oi && inst.cme_options_oi.max_pain_strikes) {
                         const topStrike = inst.cme_options_oi.max_pain_strikes[0];
@@ -370,6 +369,7 @@
                 }
             } catch (e) { console.log('Inst Flow error:', e); }
 
+            // 4. RETAIL SENTIMENT
             try {
                 const res = await fetch(RETAIL_URL + '?v=' + Date.now());
                 if (res.ok) {
@@ -390,8 +390,6 @@
                     }
                 }
             } catch (e) { console.log('Retail sentiment error:', e); }
-
-            updateCVD_MT5();
         }
 
         updateDashboard();
