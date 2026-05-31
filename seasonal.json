@@ -1,0 +1,16 @@
+{
+  "current_month": "May",
+  "bias_value": 1.7466,
+  "bias": "NEUTRAL",
+  "strong_months": [
+    "Jan",
+    "Jul",
+    "Aug"
+  ],
+  "weak_months": [
+    "Mar",
+    "Jun",
+    "Sep"
+  ],
+  "updated": "2026-05-31"
+}
