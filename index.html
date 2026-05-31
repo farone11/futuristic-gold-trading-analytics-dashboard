@@ -8,13 +8,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-     .font-orbitron { font-family: 'Orbitron', sans-serif; }
-     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-     .live-dot { animation: pulse 2s infinite; }
+   .font-orbitron { font-family: 'Orbitron', sans-serif; }
+   .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+   .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+   .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-     .transition-all { transition: all 0.3s ease; }
-     .hidden { display: none!important; }
+   .transition-all { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -31,13 +30,13 @@
             </div>
             
             <nav class="space-y-2">
-                <a href="#" onclick="showPage('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
                     <span>Dashboard</span>
                 </a>
                 <a href="/institutional-flow.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Institutional Flow</span>
                 </a>
-                <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
                     <span>Liquidity Zones</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
@@ -51,9 +50,7 @@
 
         <!-- MAIN CONTENT -->
         <div class="flex-1 overflow-auto">
-            
-            <!-- PAGE: DASHBOARD -->
-            <div id="page-dashboard" class="dashboard-page p-8">
+            <div class="p-8">
                 
                 <!-- HEADER -->
                 <div class="mb-6">
@@ -62,8 +59,8 @@
                     </h1>
                     <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
                     <div class="flex items-center gap-2 mt-3">
-                        <span class="live-dot w-2 h-2 bg-yellow-500 rounded-full"></span>
-                        <span class="text-sm text-yellow-400" id="status-text">Initializing...</span>
+                        <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
                     </div>
                 </div>
 
@@ -88,7 +85,7 @@
                     
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-bias>STANDBY</h2>
+                        <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
                         <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
                     
@@ -113,7 +110,7 @@
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
-                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Offline</span>
+                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
                         </div>
                         <h2 class="font-orbitron text-xl font-bold text-red-400" id="retail-long">--% Long</h2>
                         <h2 class="font-orbitron text-xl font-bold text-green-400" id="retail-short">--% Short</h2>
@@ -177,51 +174,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- PAGE: LIQUIDITY ZONES -->
-            <div id="page-liquidity-zones" class="dashboard-page hidden p-8">
-                <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">Liquidity Zones - XAUUSDc H1</h2>
-                <p class="text-gray-400 mb-6">Buy-Side & Sell-Side Liquidity + Session Levels · Auto Sweep Detection</p>
-                
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl card-glow">
-                        <div class="text-gray-400 text-xs mb-2">BUY-SIDE LIQUIDITY</div>
-                        <div id="bsl-count" class="font-orbitron text-3xl font-bold text-red-400">0</div>
-                        <div class="text-xs text-gray-500 mt-2">Above Highs - Sweep Target</div>
-                    </div>
-                    <div class="bg-[#13131f] border border-green-900/20 p-5 rounded-xl card-glow">
-                        <div class="text-gray-400 text-xs mb-2">SELL-SIDE LIQUIDITY</div>
-                        <div id="ssl-count" class="font-orbitron text-3xl font-bold text-green-400">0</div>
-                        <div class="text-xs text-gray-500 mt-2">Below Lows - Sweep Target</div>
-                    </div>
-                    <div class="bg-[#13131f] border border-blue-900/20 p-5 rounded-xl card-glow">
-                        <div class="text-gray-400 text-xs mb-2">SESSION LIQUIDITY</div>
-                        <div id="session-count" class="font-orbitron text-3xl font-bold text-blue-400">0</div>
-                        <div class="text-xs text-gray-500 mt-2">Asia / London / NY</div>
-                    </div>
-                </div>
-
-                <div id="liq-table" class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
-                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data. Run mt5_liquidity.py</div>
-                    <table class="w-full text-sm">
-                        <thead class="text-gray-400 border-b border-gray-800">
-                            <tr>
-                                <th class="text-left pb-3">Type</th>
-                                <th class="text-left pb-3">Price Zone</th>
-                                <th class="text-left pb-3">Status</th>
-                                <th class="text-left pb-3">Age</th>
-                                <th class="text-left pb-3">OB Confluence</th>
-                            </tr>
-                        </thead>
-                        <tbody id="liq-body" class="text-gray-300"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- FOOTER -->
-            <div class="px-8 pb-8">
+                <!-- FOOTER DISCLAIMER + AUTHOR KANAN -->
                 <div class="mt-8 border-t border-gray-800 pt-4">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                         <div class="flex-1 text-xs text-gray-600">
@@ -241,109 +195,77 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 
-    <!-- TRADINGVIEW WIDGET -->
+    <!-- TRADINGVIEW WIDGET + OB/CVD LOGIC -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
-        const LIVE_API = 'https://strut-gladly-sliver.ngrok-free.dev/api';
-        const BASE_URL = 'https://raw.githubusercontent.com/farone11/futuristic-gold-trading-analytics-dashboard/main/';
+        const GITHUB_USER = "farone11";
+        const REPO = "futuristic-gold-trading-analytics-dashboard";
+        const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/main/`;
         
-        let tvWidget;
+        let tvWidget = new TradingView.widget({
+            "autosize": true,
+            "symbol": "OANDA:XAUUSD",
+            "interval": "60",
+            "timezone": "Asia/Jakarta",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#13131f",
+            "enable_publishing": false,
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "save_image": false,
+            "container_id": "tradingview_chart"
+        });
 
-        function initChart() {
-            tvWidget = new TradingView.widget({
-                "autosize": true,
-                "symbol": "OANDA:XAUUSD",
-                "interval": "60",
-                "timezone": "Asia/Jakarta",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": "#13131f",
-                "enable_publishing": false,
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "save_image": false,
-                "container_id": "tradingview_chart"
-            });
-
-            tvWidget.onChartReady(function() {
-                console.log('Chart Ready');
-                refreshChartShapes();
-                setInterval(refreshChartShapes, 60000);
-            });
-        }
-
-        async function refreshChartShapes() {
-            if (!tvWidget) return;
-            const chart = tvWidget.activeChart();
-            chart.removeAllShapes();
-            await drawOB();
-            await drawLiquidity();
-        }
+        tvWidget.onChartReady(() => {
+            console.log('Chart Ready - Drawing OB');
+            drawOB();
+            setInterval(drawOB, 60000);
+        });
 
         async function drawOB() {
             try {
-                const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now(), { cache: 'no-store' });
+                const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
                 if (!res.ok) return;
                 const data = await res.json();
                 const chart = tvWidget.activeChart();
-                
+                chart.removeAllShapes();
                 if (data.H1 && data.H1.length > 0) {
-                    data.H1.forEach(function(ob) {
+                    data.H1.forEach(ob => {
                         const futureTime = Math.floor(Date.now()/1000) + (86400 * 30);
                         chart.createMultipointShape(
-                            [{ time: new Date(ob.time).getTime()/1000, price: ob.top },
-                             { time: futureTime, price: ob.bottom }],
+                            [
+                                { time: new Date(ob.time).getTime()/1000, price: ob.top },
+                                { time: futureTime, price: ob.bottom }
+                            ],
                             {
-                                shape: "rectangle", lock: true, disableSelection: true, zOrder: "bottom",
+                                shape: "rectangle",
+                                lock: true,
+                                disableSelection: true,
+                                zOrder: "bottom",
                                 overrides: {
                                     backgroundColor: ob.type === 'bullish'? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
                                     color: ob.type === 'bullish'? "#00ff88" : "#ff3d3d",
-                                    linewidth: 2
+                                    linewidth: 2,
                                 }
                             }
                         );
                     });
+                    console.log('OB Drawn:', data.H1.length);
                 }
             } catch (e) { console.log('OB Error:', e); }
-        }
-
-        async function drawLiquidity() {
-            try {
-                const res = await fetch(BASE_URL + 'liquidity.json?v=' + Date.now(), { cache: 'no-store' });
-                if (!res.ok) return;
-                const zones = await res.json();
-                const chart = tvWidget.activeChart();
-                
-                zones.filter(function(z) { return z.status === 'active' &&!z.swept; }).forEach(function(z) {
-                    const color = z.type === 'BSL'? "rgba(239, 68, 68, 0.12)" : "rgba(34, 197, 94, 0.12)";
-                    const lineColor = z.type === 'BSL'? "#ef4444" : "#22c55e";
-                    const futureTime = Math.floor(Date.now()/1000) + (86400 * 2);
-                    
-                    chart.createMultipointShape(
-                        [{ time: z.time_start, price: z.price_high || z.price },
-                         { time: futureTime, price: z.price_low || z.price - 0.5 }],
-                        {
-                            shape: "rectangle", lock: true, disableSelection: true, zOrder: "bottom",
-                            overrides: {
-                                backgroundColor: color, color: lineColor, linewidth: 1, 
-                                linestyle: 2, showLabel: true, text: z.type + ' ' + (z.touches || 1) + 'x', 
-                                textColor: lineColor, fontsize: 11
-                            }
-                        }
-                    );
-                });
-            } catch (e) { console.log('Liq Draw Error:', e); }
         }
 
         function toggleChart() {
             const grid = document.getElementById('main-grid');
             const chart = document.getElementById('chart-container');
+            const panel = document.getElementById('ai-panel');
             const btn = document.getElementById('expand-btn');
             if (grid.classList.contains('grid-cols-3')) {
                 grid.className = 'grid grid-cols-2 gap-6 transition-all';
@@ -355,122 +277,31 @@
                 btn.innerText = 'Expand 50/50';
             }
         }
+    </script>
 
-        function showPage(pageId) {
-            document.querySelectorAll('.dashboard-page').forEach(function(p) { p.classList.add('hidden'); });
-            const target = document.getElementById('page-' + pageId);
-            if (target) target.classList.remove('hidden');
-            
-            document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
-            document.getElementById('nav-liquidity-zones').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
-            const activeNav = document.getElementById('nav-' + pageId);
-            if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
-            
-            if(pageId === 'liquidity-zones') loadLiquidity();
-        }
-
-        async function loadLiquidity() {
-            const emptyEl = document.getElementById('liq-empty');
-            const tbody = document.getElementById('liq-body');
-            
-            try {
-                const res = await fetch(BASE_URL + 'liquidity.json?v=' + Date.now(), { cache: 'no-store' });
-                if (!res.ok) throw new Error('liquidity.json missing');
-                
-                const liqData = await res.json();
-                let obData = { H1: [] };
-                
-                try {
-                    const obRes = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now(), { cache: 'no-store' });
-                    if (obRes.ok) obData = await obRes.json();
-                } catch (e) {}
-                
-                let bsl = 0, ssl = 0, session = 0;
-                if (!tbody) return;
-                tbody.innerHTML = '';
-                
-                const activeZones = liqData.filter(function(z) { return!z.swept && z.status === 'active'; });
-                
-                if (activeZones.length === 0) {
-                    emptyEl.classList.remove('hidden');
-                    document.getElementById('bsl-count').innerText = '0';
-                    document.getElementById('ssl-count').innerText = '0';
-                    document.getElementById('session-count').innerText = '0';
-                    return;
-                }
-                
-                emptyEl.classList.add('hidden');
-                
-                activeZones.forEach(function(zone) {
-                    if (zone.type === 'BSL') bsl++;
-                    if (zone.type === 'SSL') ssl++;
-                    if (zone.type.includes('_H') || zone.type.includes('_L')) session++;
-                    
-                    let confluence = '<span class="text-gray-600">None</span>';
-                    if (obData.H1 && obData.H1.length > 0) {
-                        obData.H1.forEach(function(ob) {
-                            const zHigh = zone.price_high || zone.price;
-                            const zLow = zone.price_low || zone.price - 0.5;
-                            if (zHigh >= ob.bottom && zLow <= ob.top) {
-                                confluence = '<span class="text-yellow-400 font-semibold">OB ' + ob.type + '</span>';
-                            }
-                        });
-                    }
-                    
-                    const age = Math.floor((Date.now()/1000 - zone.time_start) / 3600);
-                    const priceZone = zone.price_low? zone.price_low.toFixed(2) + ' - ' + zone.price_high.toFixed(2) : zone.price.toFixed(2);
-                    const typeColor = zone.type === 'BSL'? 'text-red-400' : zone.type === 'SSL'? 'text-green-400' : 'text-blue-400';
-                    
-                    tbody.innerHTML += '<tr class="border-b border-gray-800 hover:bg-yellow-500/5">' +
-                        '<td class="py-3 font-bold ' + typeColor + '">' + zone.type + '</td>' +
-                        '<td class="py-3 font-mono">' + priceZone + '</td>' +
-                        '<td class="py-3"><span class="text-blue-400">Active</span></td>' +
-                        '<td class="py-3">' + age + 'h</td>' +
-                        '<td class="py-3">' + confluence + '</td>' +
-                    '</tr>';
-                });
-                
-                document.getElementById('bsl-count').innerText = bsl;
-                document.getElementById('ssl-count').innerText = ssl;
-                document.getElementById('session-count').innerText = session;
-                
-            } catch (e) { 
-                console.log('Load Liquidity Error:', e);
-                if (tbody) tbody.innerHTML = '';
-                if (emptyEl) emptyEl.classList.remove('hidden');
-            }
-        }
-    
-        // LIVE DATA
+    <!-- LIVE DATA -->
+    <script>
+        const INST_FLOW_URL = './institutional_flow.json';
+        const RETAIL_URL = './retail_sentiment.json';
+        
         async function updateDashboard() {
-            const statusEl = document.getElementById('status-text');
-            
-            // 1. LIVE DATA DARI NGROK
             try {
-                const res = await fetch(LIVE_API, { 
-                    cache: 'no-store',
-                    headers: { 'ngrok-skip-browser-warning': 'true' }
-                });
-                if (!res.ok) throw new Error('API 404');
-                
-                const data = await res.json();
-                const isBull = data.cvd >= 0;
-                
-                statusEl.innerText = 'Live MT5 | CVD: ' + data.cvd + ' | ' + data.updated;
-                statusEl.className = isBull? 'text-sm text-green-400' : 'text-sm text-red-400';
-                document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
-                document.querySelector('[data-time]').innerText = data.time;
-                checkLiquiditySweep(data.price, data.cvd);
-                
+                const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    const statusEl = document.getElementById('status-text');
+                    statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
+                    statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
+                    document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                    document.querySelector('[data-time]').innerText = data.time;
+                }
             } catch (e) { 
-                statusEl.innerText = 'MT5 Offline - Weekend';
-                statusEl.className = 'text-sm text-yellow-400';
-                document.querySelector('[data-price]').innerText = '$----.--';
+                document.getElementById('status-text').innerText = 'MT5 Offline';
+                document.getElementById('status-text').className = 'text-sm text-red-400';
             }
             
-            // 2. INSTITUTIONAL FLOW
             try {
-                const res = await fetch(BASE_URL + 'institutional_flow.json?v=' + Date.now(), { cache: 'no-store' });
+                const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
                 if (res.ok) {
                     const inst = await res.json();
                     document.querySelector('[data-cftc-net]').innerText = inst.cftc.net_noncomm.toLocaleString();
@@ -479,15 +310,12 @@
                     document.querySelector('[data-smi]').innerText = inst.smart_money_index;
                     const biasEl = document.querySelector('[data-bias]');
                     biasEl.innerText = inst.bias || 'STANDBY';
-                    biasEl.className = inst.bias === 'BULLISH'? 'font-orbitron text-3xl font-bold text-green-400' : 
-                                       inst.bias === 'BEARISH'? 'font-orbitron text-3xl font-bold text-red-400' : 
-                                       'font-orbitron text-3xl font-bold text-yellow-400';
+                    biasEl.className = inst.bias === 'BULLISH'? 'font-orbitron text-3xl font-bold text-green-400' : inst.bias === 'BEARISH'? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
                 }
-            } catch (e) {}
+            } catch (e) { console.log('Inst Flow error:', e); }
 
-            // 3. RETAIL SENTIMENT
             try {
-                const res = await fetch(BASE_URL + 'retail_sentiment.json?v=' + Date.now(), { cache: 'no-store' });
+                const res = await fetch(RETAIL_URL + '?v=' + Date.now());
                 if (res.ok) {
                     const d = await res.json();
                     document.getElementById('retail-long').innerText = d.long_pct + '% Long';
@@ -495,11 +323,6 @@
                     document.getElementById('retail-updated').innerText = d.updated;
                     document.getElementById('retail-lots').innerText = d.lots.toLocaleString('en-US');
                     document.getElementById('retail-source').innerText = d.source.split(' ')[0];
-                    document.getElementById('retail-source').className = 'text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded';
-                    
-                    document.getElementById('retail-long').classList.remove('animate-pulse');
-                    document.getElementById('retail-short').classList.remove('animate-pulse');
-                    
                     if(d.long_pct > 70) {
                         document.getElementById('retail-long').classList.add('animate-pulse');
                         document.getElementById('retail-source').className = 'text-xs bg-red-900/30 text-red-300 px-2 py-0.5 rounded';
@@ -510,50 +333,11 @@
                         document.getElementById('retail-source').innerText = 'EXTREME';
                     }
                 }
-            } catch (e) {}
+            } catch (e) { console.log('Retail sentiment error:', e); }
         }
 
-        async function checkLiquiditySweep(price, cvd) {
-            try {
-                const res = await fetch(BASE_URL + 'liquidity.json?v=' + Date.now(), { cache: 'no-store' });
-                if (!res.ok) return;
-                const zones = await res.json();
-                
-                let sweepAlert = false;
-                zones.forEach(function(z) {
-                    if(z.status!== 'active' || z.swept) return;
-                    const zHigh = z.price_high || z.price;
-                    const zLow = z.price_low || z.price - 0.5;
-                    
-                    if(z.type === 'BSL' && price > zHigh && cvd < -100) sweepAlert = true;
-                    if(z.type === 'SSL' && price < zLow && cvd > 100) sweepAlert = true;
-                });
-                
-                const liqEl = document.querySelector('[data-model="liquidity"]');
-                const przEl = document.querySelector('[data-model="prz"]');
-                
-                if(sweepAlert) {
-                    liqEl.innerText = 'ALERT';
-                    liqEl.className = 'font-bold text-red-400 animate-pulse';
-                    przEl.innerText = 'PRZ ACTIVE';
-                    przEl.className = 'font-bold text-yellow-400';
-                } else {
-                    liqEl.innerText = 'Monitoring';
-                    liqEl.className = 'font-bold text-blue-400';
-                    przEl.innerText = 'Scanning';
-                    przEl.className = 'font-bold text-blue-400';
-                }
-            } catch (e) {}
-        }
-
-        // INIT
-        document.addEventListener('DOMContentLoaded', function() {
-            initChart();
-            updateDashboard();
-            loadLiquidity();
-            setInterval(updateDashboard, 5000);
-            setInterval(loadLiquidity, 30000);
-        });
+        updateDashboard();
+        setInterval(updateDashboard, 15000);
     </script>
 </body>
 </html>
