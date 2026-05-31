@@ -8,12 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-   .font-orbitron { font-family: 'Orbitron', sans-serif; }
-   .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-   .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-   .live-dot { animation: pulse 2s infinite; }
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+    .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+    .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+    .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-   .transition-all { transition: all 0.3s ease; }
+    .transition-all { transition: all 0.3s ease; }
+    .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -30,13 +31,13 @@
             </div>
             
             <nav class="space-y-2">
-                <a href="/" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
+                <a href="#" onclick="showPage('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
                     <span>Dashboard</span>
                 </a>
                 <a href="/institutional-flow.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Institutional Flow</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
+                <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Liquidity Zones</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
@@ -59,8 +60,8 @@
                     </h1>
                     <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
                     <div class="flex items-center gap-2 mt-3">
-                        <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
-                        <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
+                        <span class="live-dot w-2 h-2 bg-yellow-500 rounded-full"></span>
+                        <span class="text-sm text-yellow-400" id="status-text">Initializing...</span>
                     </div>
                 </div>
 
@@ -85,7 +86,7 @@
                     
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-bias>STANDBY</h2>
                         <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
                     
@@ -110,7 +111,7 @@
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
-                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
+                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Offline</span>
                         </div>
                         <h2 class="font-orbitron text-xl font-bold text-red-400" id="retail-long">--% Long</h2>
                         <h2 class="font-orbitron text-xl font-bold text-green-400" id="retail-short">--% Short</h2>
@@ -206,6 +207,7 @@
         const GITHUB_USER = "farone11";
         const REPO = "futuristic-gold-trading-analytics-dashboard";
         const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/main/`;
+        const LIVE_API = 'https://strut-gladly-sliver.ngrok-free.dev/api';
         
         let tvWidget = new TradingView.widget({
             "autosize": true,
@@ -231,7 +233,7 @@
 
         async function drawOB() {
             try {
-                const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
+                const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now(), { cache: 'no-store' });
                 if (!res.ok) return;
                 const data = await res.json();
                 const chart = tvWidget.activeChart();
@@ -240,15 +242,10 @@
                     data.H1.forEach(ob => {
                         const futureTime = Math.floor(Date.now()/1000) + (86400 * 30);
                         chart.createMultipointShape(
-                            [
-                                { time: new Date(ob.time).getTime()/1000, price: ob.top },
-                                { time: futureTime, price: ob.bottom }
-                            ],
+                            [{ time: new Date(ob.time).getTime()/1000, price: ob.top },
+                             { time: futureTime, price: ob.bottom }],
                             {
-                                shape: "rectangle",
-                                lock: true,
-                                disableSelection: true,
-                                zOrder: "bottom",
+                                shape: "rectangle", lock: true, disableSelection: true, zOrder: "bottom",
                                 overrides: {
                                     backgroundColor: ob.type === 'bullish'? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
                                     color: ob.type === 'bullish'? "#00ff88" : "#ff3d3d",
@@ -279,29 +276,55 @@
         }
     </script>
 
-    <!-- LIVE DATA -->
+    <!-- LIVE DATA - NGROK PRIORITY + GITHUB FALLBACK -->
     <script>
         const INST_FLOW_URL = './institutional_flow.json';
         const RETAIL_URL = './retail_sentiment.json';
         
         async function updateDashboard() {
+            const statusEl = document.getElementById('status-text');
+            
+            // 1. COBA LIVE API DULU
             try {
-                const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
-                if (res.ok) {
-                    const data = await res.json();
-                    const statusEl = document.getElementById('status-text');
-                    statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
-                    statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
-                    document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
-                    document.querySelector('[data-time]').innerText = data.time;
-                }
+                const res = await fetch(LIVE_API, { 
+                    cache: 'no-store',
+                    headers: { 'ngrok-skip-browser-warning': 'true' }
+                });
+                if (!res.ok) throw new Error('Live API down');
+                const data = await res.json();
+                const isBull = data.cvd >= 0;
+                
+                statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
+                statusEl.className = isBull? 'text-sm text-green-400' : 'text-sm text-red-400';
+                document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                document.querySelector('[data-time]').innerText = data.time;
+                return; // SUCCESS, ga perlu fetch cvd.json
+                
             } catch (e) { 
-                document.getElementById('status-text').innerText = 'MT5 Offline';
-                document.getElementById('status-text').className = 'text-sm text-red-400';
+                console.log('Live API failed, fallback to GitHub:', e);
             }
             
+            // 2. FALLBACK KE GITHUB cvd.json
             try {
-                const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
+                const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) throw new Error('cvd.json 404');
+                const data = await res.json();
+                const isBull = data.cvd >= 0;
+                
+                statusEl.innerText = `GitHub Data | CVD: ${data.cvd} | ${data.updated}`;
+                statusEl.className = isBull? 'text-sm text-green-400' : 'text-sm text-red-400';
+                document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                document.querySelector('[data-time]').innerText = data.time;
+                
+            } catch (e) { 
+                statusEl.innerText = 'MT5 Offline - Weekend';
+                statusEl.className = 'text-sm text-yellow-400';
+                document.querySelector('[data-price]').innerText = '$----.--';
+            }
+            
+            // 3. DATA STATIS - SILENT FAIL
+            try {
+                const res = await fetch(BASE_URL + 'institutional_flow.json?v=' + Date.now(), { cache: 'no-store' });
                 if (res.ok) {
                     const inst = await res.json();
                     document.querySelector('[data-cftc-net]').innerText = inst.cftc.net_noncomm.toLocaleString();
@@ -312,10 +335,10 @@
                     biasEl.innerText = inst.bias || 'STANDBY';
                     biasEl.className = inst.bias === 'BULLISH'? 'font-orbitron text-3xl font-bold text-green-400' : inst.bias === 'BEARISH'? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
                 }
-            } catch (e) { console.log('Inst Flow error:', e); }
+            } catch (e) { }
 
             try {
-                const res = await fetch(RETAIL_URL + '?v=' + Date.now());
+                const res = await fetch(BASE_URL + 'retail_sentiment.json?v=' + Date.now(), { cache: 'no-store' });
                 if (res.ok) {
                     const d = await res.json();
                     document.getElementById('retail-long').innerText = d.long_pct + '% Long';
@@ -323,21 +346,12 @@
                     document.getElementById('retail-updated').innerText = d.updated;
                     document.getElementById('retail-lots').innerText = d.lots.toLocaleString('en-US');
                     document.getElementById('retail-source').innerText = d.source.split(' ')[0];
-                    if(d.long_pct > 70) {
-                        document.getElementById('retail-long').classList.add('animate-pulse');
-                        document.getElementById('retail-source').className = 'text-xs bg-red-900/30 text-red-300 px-2 py-0.5 rounded';
-                        document.getElementById('retail-source').innerText = 'EXTREME';
-                    } else if(d.short_pct > 70) {
-                        document.getElementById('retail-short').classList.add('animate-pulse');
-                        document.getElementById('retail-source').className = 'text-xs bg-green-900/30 text-green-300 px-2 py-0.5 rounded';
-                        document.getElementById('retail-source').innerText = 'EXTREME';
-                    }
                 }
-            } catch (e) { console.log('Retail sentiment error:', e); }
+            } catch (e) { }
         }
 
         updateDashboard();
-        setInterval(updateDashboard, 15000);
+        setInterval(updateDashboard, 5000);
     </script>
 </body>
 </html>
