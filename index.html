@@ -8,13 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-    .font-orbitron { font-family: 'Orbitron', sans-serif; }
-    .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-    .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-    .live-dot { animation: pulse 2s infinite; }
+   .font-orbitron { font-family: 'Orbitron', sans-serif; }
+   .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+   .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+   .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .transition-all { transition: all 0.3s ease; }
-    .hidden { display: none!important; }
+   .transition-all { transition: all 0.3s ease; }
+   .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -43,7 +43,7 @@
                 <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
                     <span>Risk Engine</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
+                <a href="#" onclick="showPage('dashboard')" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>AI Signals</span>
                 </a>
             </nav>
@@ -145,41 +145,40 @@
                         </div>
                     </div>
 
-                    <!-- AI EXECUTION PANEL -->
+                    <!-- AI SIGNAL PANEL - UPDATED -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
-                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI SIGNAL</h3>
 
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between pb-4 border-b border-gray-800">
-                                <span class="text-gray-400">Model</span>
-                                <span class="text-gray-400">Status</span>
+                        <div class="text-center mb-6">
+                            <div id="signal-status" class="font-orbitron text-4xl font-black text-yellow-400 mb-2">STANDBY</div>
+                            <div id="signal-reason" class="text-xs text-gray-500">Waiting for confluence...</div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-gray-800">
+                                <span class="text-gray-400 text-sm">Entry</span>
+                                <span id="signal-entry" class="font-orbitron text-xl font-bold text-white">----.--</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pb-2 border-b border-gray-800">
+                                <span class="text-gray-400 text-sm">Stop Loss</span>
+                                <span id="signal-sl" class="font-orbitron text-xl font-bold text-red-400">----.--</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pb-2 border-b border-gray-800">
+                                <span class="text-gray-400 text-sm">Take Profit 1</span>
+                                <span id="signal-tp1" class="font-orbitron text-xl font-bold text-green-400">----.--</span>
                             </div>
 
                             <div class="flex items-center justify-between">
-                                <span class="text-white">SMC Engine</span>
-                                <span class="font-bold text-yellow-400" data-model="smc">Standby</span>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <span class="text-white">PRZ Scanner</span>
-                                <span class="font-bold text-blue-400" data-model="prz">Scanning</span>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <span class="text-white">Liquidity Sweep</span>
-                                <span class="font-bold text-blue-400" data-model="liquidity">Monitoring</span>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <span class="text-white">Risk AI</span>
-                                <span class="font-bold text-green-400" data-model="risk">Protected</span>
+                                <span class="text-gray-400 text-sm">Take Profit 2</span>
+                                <span id="signal-tp2" class="font-orbitron text-xl font-bold text-green-400">----.--</span>
                             </div>
                         </div>
 
                         <div class="mt-6 pt-6 border-t border-gray-800">
-                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
-                            <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
-                            <p class="text-xs text-gray-600 mt-1">Retail Lots: <span id="retail-lots">-</span></p>
+                            <p class="text-xs text-gray-500">Last Update: <span id="signal-updated">--:--:--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">Risk: 1% per trade</p>
                         </div>
                     </div>
                 </div>
@@ -532,6 +531,28 @@
                         'font-orbitron text-2xl font-bold text-yellow-400';
                 }
             } catch (e) { console.log('Seasonal error:', e); }
+
+            // AI SIGNAL
+            try {
+                const res = await fetch(BASE_URL + 'signals.json?v=' + Date.now());
+                if (res.ok) {
+                    const s = await res.json();
+                    document.getElementById('signal-status').innerText = s.status;
+                    document.getElementById('signal-reason').innerText = s.reason;
+                    document.getElementById('signal-entry').innerText = s.entry? s.entry.toFixed(2) : '----.--';
+                    document.getElementById('signal-sl').innerText = s.sl? s.sl.toFixed(2) : '----.--';
+                    document.getElementById('signal-tp1').innerText = s.tp1? s.tp1.toFixed(2) : '----.--';
+                    document.getElementById('signal-tp2').innerText = s.tp2? s.tp2.toFixed(2) : '----.--';
+                    document.getElementById('signal-updated').innerText = s.updated;
+
+                    const statusEl = document.getElementById('signal-status');
+                    statusEl.className = s.status === 'BUY'?
+                        'font-orbitron text-4xl font-black text-green-400 mb-2' :
+                        s.status === 'SELL'?
+                        'font-orbitron text-4xl font-black text-red-400 mb-2' :
+                        'font-orbitron text-4xl font-black text-yellow-400 mb-2';
+                }
+            } catch (e) { console.log('Signal error:', e); }
         }
 
         updateDashboard();
