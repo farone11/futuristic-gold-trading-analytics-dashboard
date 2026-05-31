@@ -1,7 +1,7 @@
 {
-  "current_month": "May",
-  "bias_value": 1.7466,
-  "bias": "NEUTRAL",
+  "current_month": "Jun",
+  "bias_value": -6.2012,
+  "bias": "BEARISH",
   "strong_months": [
     "Jan",
     "Jul",
@@ -12,5 +12,5 @@
     "Jun",
     "Sep"
   ],
-  "updated": "2026-05-31"
+  "updated": "2026-06-01"
 }
