@@ -288,13 +288,9 @@
         </div>
     </div>
 
-    <!-- TRADINGVIEW WIDGET + OB/CVD/LIQUIDITY LOGIC -->
+    <!-- TRADINGVIEW WIDGET -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
-        const GITHUB_USER = "farone11";
-        const REPO = "futuristic-gold-trading-analytics-dashboard";
-        const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/master/`;
-
         let tvWidget = new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
@@ -310,89 +306,6 @@
             "save_image": false,
             "container_id": "tradingview_chart"
         });
-
-        tvWidget.onChartReady(() => {
-            console.log('Chart Ready - Drawing OB + Liquidity');
-            drawAllShapes();
-            setInterval(drawAllShapes, 60000);
-        });
-
-        async function drawAllShapes() {
-            const chart = tvWidget.activeChart();
-            chart.removeAllShapes();
-            await drawOB(chart);
-            await drawLiquidity(chart);
-        }
-
-        async function drawOB(chart) {
-            try {
-                const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
-                if (!res.ok) return;
-                const data = await res.json();
-                if (data.H1 && data.H1.length > 0) {
-                    data.H1.forEach(ob => {
-                        const futureTime = Math.floor(Date.now()/1000) + (86400 * 30);
-                        chart.createMultipointShape(
-                            [
-                                { time: new Date(ob.time).getTime()/1000, price: ob.top },
-                                { time: futureTime, price: ob.bottom }
-                            ],
-                            {
-                                shape: "rectangle",
-                                lock: true,
-                                disableSelection: true,
-                                zOrder: "bottom",
-                                overrides: {
-                                    backgroundColor: ob.type === 'bullish'? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
-                                    color: ob.type === 'bullish'? "#00ff88" : "#ff3d3d",
-                                    linewidth: 2,
-                                }
-                            }
-                        );
-                    });
-                    console.log('OB Drawn:', data.H1.length);
-                }
-            } catch (e) { console.log('OB Error:', e); }
-        }
-
-        async function drawLiquidity(chart) {
-            try {
-                const res = await fetch(BASE_URL + 'liquidity_zones.json?v=' + Date.now());
-                if (!res.ok) return;
-                const data = await res.json();
-                if (data.zones && data.zones.length > 0) {
-                    data.zones.forEach(z => {
-                        const futureTime = Math.floor(Date.now()/1000) + (86400 * 7);
-                        const isBSL = z.type === 'buy_side';
-                        const color = z.swept? "#666666" : isBSL? "#ef4444" : "#22c55e";
-                        const text = z.swept? (isBSL? "BSL SWEPT" : "SSL SWEPT") : (isBSL? "BSL" : "SSL");
-
-                        chart.createMultipointShape(
-                            [
-                                { time: new Date(z.time).getTime()/1000, price: z.price },
-                                { time: futureTime, price: z.price }
-                            ],
-                            {
-                                shape: "trend_line",
-                                lock: true,
-                                disableSelection: true,
-                                zOrder: "top",
-                                overrides: {
-                                    linecolor: color,
-                                    linewidth: z.swept? 1 : 2,
-                                    linestyle: z.swept? 3 : 2,
-                                    showLabel: true,
-                                    text: text,
-                                    textcolor: color,
-                                    fontsize: 11
-                                }
-                            }
-                        );
-                    });
-                    console.log('Liquidity Drawn:', data.zones.length);
-                }
-            } catch (e) { console.log('Liq Draw Error:', e); }
-        }
 
         function toggleChart() {
             const grid = document.getElementById('main-grid');
@@ -419,185 +332,64 @@
             document.getElementById('nav-signals').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             const activeNav = document.getElementById('nav-' + pageId);
             if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
-
-            if(pageId === 'liquidity-zones') loadLiquidity();
-        }
-
-        async function loadLiquidity() {
-            const emptyEl = document.getElementById('liq-empty');
-            const tbody = document.getElementById('liq-body');
-
-            try {
-                const res = await fetch(BASE_URL + 'liquidity_zones.json?v=' + Date.now());
-                if (!res.ok) throw new Error('liquidity_zones.json missing');
-
-                const data = await res.json();
-                let obData = { H1: [] };
-
-                try {
-                    const obRes = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
-                    if (obRes.ok) obData = await obRes.json();
-                } catch (e) {}
-
-                let bsl = 0, ssl = 0, session = 0;
-                if (!tbody) return;
-                tbody.innerHTML = '';
-
-                const activeZones = data.zones.filter(z =>!z.swept);
-
-                if (activeZones.length === 0) {
-                    emptyEl.classList.remove('hidden');
-                    document.getElementById('bsl-count').innerText = '0';
-                    document.getElementById('ssl-count').innerText = '0';
-                    document.getElementById('session-count').innerText = '0';
-                    return;
-                }
-
-                emptyEl.classList.add('hidden');
-
-                data.zones.forEach(zone => {
-                    if (!zone.swept) {
-                        if (zone.type === 'buy_side') bsl++;
-                        if (zone.type === 'sell_side') ssl++;
-                        if (zone.type.includes('session')) session++;
-                    }
-
-                    let confluence = '<span class="text-gray-600">None</span>';
-                    if (obData.H1 && obData.H1.length > 0) {
-                        obData.H1.forEach(ob => {
-                            if (zone.price >= ob.bottom && zone.price <= ob.top) {
-                                confluence = '<span class="text-yellow-400 font-semibold">OB ' + ob.type + '</span>';
-                            }
-                        });
-                    }
-
-                    const age = Math.floor((Date.now()/1000 - new Date(zone.time).getTime()/1000) / 3600);
-                    const typeColor = zone.type === 'buy_side'? 'text-red-400' : zone.type === 'sell_side'? 'text-green-400' : 'text-blue-400';
-                    const statusColor = zone.swept? 'text-gray-500' : 'text-blue-400';
-                    const statusText = zone.swept? 'Swept' : 'Active';
-
-                    tbody.innerHTML += '<tr class="border-b border-gray-800 hover:bg-yellow-500/5">' +
-                        '<td class="py-3 font-bold ' + typeColor + '">' + zone.type + '</td>' +
-                        '<td class="py-3 font-mono">' + zone.price.toFixed(2) + '</td>' +
-                        '<td class="py-3"><span class="' + statusColor + '">' + statusText + '</span></td>' +
-                        '<td class="py-3">' + age + 'h</td>' +
-                        '<td class="py-3">' + confluence + '</td>' +
-                    '</tr>';
-                });
-
-                document.getElementById('bsl-count').innerText = bsl;
-                document.getElementById('ssl-count').innerText = ssl;
-                document.getElementById('session-count').innerText = session;
-
-            } catch (e) {
-                console.log('Load Liquidity Error:', e);
-                if (tbody) tbody.innerHTML = '';
-                if (emptyEl) emptyEl.classList.remove('hidden');
-            }
         }
     </script>
 
-    <!-- LIVE DATA -->
+    <!-- LIVE DATA DARI FLASK PORT 5000 -->
     <script>
-        const INST_FLOW_URL = './institutional_flow.json';
-        const RETAIL_URL = './retail_sentiment.json';
+        // INI YANG GW UBAH BRO - PAKE FLASK PORT 5000
+        const API_URL = 'http://localhost:5000/api';
 
         async function updateDashboard() {
             try {
-                const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
-                if (res.ok) {
-                    const data = await res.json();
-                    const statusEl = document.getElementById('status-text');
-                    statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
-                    statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
-                    document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
-                    document.querySelector('[data-time]').innerText = data.time;
-                }
-            } catch (e) {
-                document.getElementById('status-text').innerText = 'MT5 Offline';
-                document.getElementById('status-text').className = 'text-sm text-red-400';
-            }
-
-            try {
-                const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
-                if (res.ok) {
-                    const inst = await res.json();
-                    document.querySelector('[data-cftc-net]').innerText = inst.cftc.net_noncomm.toLocaleString();
-                    document.querySelector('[data-cftc-date]').innerText = 'As of ' + inst.cftc.date;
-                    document.querySelector('[data-cot-update]').innerText = inst.updated;
-                    document.querySelector('[data-smi]').innerText = inst.smart_money_index;
-                    const biasEl = document.querySelector('[data-bias]');
-                    biasEl.innerText = inst.bias || 'STANDBY';
-                    biasEl.className = inst.bias === 'BULLISH'? 'font-orbitron text-3xl font-bold text-green-400' : inst.bias === 'BEARISH'? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
-                }
-            } catch (e) { console.log('Inst Flow error:', e); }
-
-            try {
-                const res = await fetch(RETAIL_URL + '?v=' + Date.now());
-                if (res.ok) {
-                    const d = await res.json();
-                    document.getElementById('retail-long').innerText = d.long_pct + '% Long';
-                    document.getElementById('retail-short').innerText = d.short_pct + '% Short';
-                    document.getElementById('retail-updated').innerText = d.updated;
-                    document.getElementById('retail-lots').innerText = d.lots.toLocaleString('en-US');
-                    document.getElementById('retail-source').innerText = d.source.split(' ')[0];
-                    if(d.long_pct > 70) {
-                        document.getElementById('retail-long').classList.add('animate-pulse');
-                        document.getElementById('retail-source').className = 'text-xs bg-red-900/30 text-red-300 px-2 py-0.5 rounded';
-                        document.getElementById('retail-source').innerText = 'EXTREME';
-                    } else if(d.short_pct > 70) {
-                        document.getElementById('retail-short').classList.add('animate-pulse');
-                        document.getElementById('retail-source').className = 'text-xs bg-green-900/30 text-green-300 px-2 py-0.5 rounded';
-                        document.getElementById('retail-source').innerText = 'EXTREME';
-                    }
-                }
-            } catch (e) { console.log('Retail sentiment error:', e); }
-
-            // SEASONAL BIAS
-            try {
-                const res = await fetch(BASE_URL + 'seasonal.json?v=' + Date.now());
-                if (res.ok) {
-                    const s = await res.json();
-                    document.getElementById('seasonal-month').innerText = s.current_month;
-                    document.getElementById('seasonal-value').innerText = (s.bias_value > 0? '+' : '') + s.bias_value.toFixed(2);
-                    const statusEl = document.getElementById('seasonal-status');
-                    statusEl.innerText = s.bias;
-                    statusEl.className = s.bias === 'BULLISH'?
-                        'font-orbitron text-2xl font-bold text-green-400' :
-                        s.bias === 'BEARISH'?
-                        'font-orbitron text-2xl font-bold text-red-400' :
-                        'font-orbitron text-2xl font-bold text-yellow-400';
-                }
-            } catch (e) { console.log('Seasonal error:', e); }
-
-            // AI SIGNAL
-            try {
-                const res = await fetch(BASE_URL + 'signals.json?v=' + Date.now());
-                if (res.ok) {
-                    const s = await res.json();
-                    document.getElementById('signal-status').innerText = s.status;
-                    document.getElementById('signal-reason').innerText = s.reason;
-                    document.getElementById('signal-entry').innerText = s.entry? s.entry.toFixed(2) : '----.--';
-                    document.getElementById('signal-sl').innerText = s.sl? s.sl.toFixed(2) : '----.--';
-                    document.getElementById('signal-tp1').innerText = s.tp1? s.tp1.toFixed(2) : '----.--';
-                    document.getElementById('signal-tp2').innerText = s.tp2? s.tp2.toFixed(2) : '----.--';
-                    document.getElementById('signal-updated').innerText = s.updated;
-
-                    const statusEl = document.getElementById('signal-status');
-                    statusEl.className = s.status === 'BUY'?
-                        'font-orbitron text-4xl font-black text-green-400 mb-2' :
-                        s.status === 'SELL'?
-                        'font-orbitron text-4xl font-black text-red-400 mb-2' :
-                        'font-orbitron text-4xl font-black text-yellow-400 mb-2';
-
-                    // Update AI Signals page juga
-                    document.getElementById('sig-page-status').innerText = s.status;
-                    document.getElementById('sig-page-entry').innerText = s.entry? s.entry.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-sl').innerText = s.sl? s.sl.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-tp1').innerText = s.tp1? s.tp1.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-tp2').innerText = s.tp2? s.tp2.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-reason').innerText = s.reason;
-                    document.getElementById('sig-page-updated').innerText = s.updated;
-
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                
+                // Update Status
+                const statusEl = document.getElementById('status-text');
+                statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.time}`;
+                statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
+                
+                // Update Price
+                document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                
+                // Update Smart Money Bias
+                document.querySelector('[data-bias]').innerText = data.bias;
+                document.querySelector('[data-bias]').className = data.bias === 'BULLISH' ? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
+                
+                // Update AI Execution Panel
+                document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
+                document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                
+                document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY' : 'Scanning';
+                document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
+                
+                // Update Time
+                document.querySelector('[data-time]').innerText = data.time;
+                
+                // Update AI Signals page kalo ada data signal
+                if(data.signal_status){
+                    document.getElementById('sig-page-status').innerText = data.signal_status;
+                    document.getElementById('sig-page-entry').innerText = data.entry ? data.entry.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-sl').innerText = data.sl ? data.sl.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp1').innerText = data.tp1 ? data.tp1.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp2').innerText = data.tp2 ? data.tp2.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-reason').innerText = data.reason || 'No confluence';
+                    document.getElementById('sig-page-updated').innerText = data.updated || data.time;
+                    
                     const sigStatusEl = document.getElementById('sig-page-status');
-                    sigStatus
+                    sigStatusEl.className = data.signal_status === 'BUY' ? 'font-orbitron text-3xl font-bold text-green-400' : data.signal_status === 'SELL' ? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
+                }
+                
+            } catch (e) {
+                document.getElementById('status-text').innerText = 'MT5 Offline - Pastin python main.py jalan';
+                document.getElementById('status-text').className = 'text-sm text-red-400';
+                console.log('Error:', e);
+            }
+        }
+
+        setInterval(updateDashboard, 2000);
+        updateDashboard();
+    </script>
+</body>
+</html>
