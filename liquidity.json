@@ -1,0 +1,202 @@
+[
+  {
+    "type": "BSL",
+    "price_high": 4458.91,
+    "price_low": 4458.41,
+    "time_start": 1779912000,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4458.91,
+    "price_low": 4458.41,
+    "time_start": 1779912000,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4390.6,
+    "price_low": 4390.1,
+    "time_start": 1779948000,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4390.6,
+    "price_low": 4390.1,
+    "time_start": 1779948000,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4511.15,
+    "price_low": 4510.65,
+    "time_start": 1779984000,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4514.78,
+    "price_low": 4514.28,
+    "time_start": 1779987600,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4500.72,
+    "price_low": 4500.22,
+    "time_start": 1779998400,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4500.72,
+    "price_low": 4500.22,
+    "time_start": 1779998400,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4511.15,
+    "price_low": 4510.65,
+    "time_start": 1779984000,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4514.78,
+    "price_low": 4514.28,
+    "time_start": 1779987600,
+    "time_end": 1780099200,
+    "status": "swept",
+    "swept": true,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4540.78,
+    "price_low": 4540.28,
+    "time_start": 1780052400,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "BSL",
+    "price_high": 4540.78,
+    "price_low": 4540.28,
+    "time_start": 1780052400,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4498.27,
+    "price_high": 4498.77,
+    "time_start": 1779991200,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4494.64,
+    "price_high": 4495.14,
+    "time_start": 1779998400,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4492.03,
+    "price_high": 4492.53,
+    "time_start": 1780012800,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4492.03,
+    "price_high": 4492.53,
+    "time_start": 1780012800,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4498.27,
+    "price_high": 4498.77,
+    "time_start": 1779991200,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4494.64,
+    "price_high": 4495.14,
+    "time_start": 1779998400,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4509.86,
+    "price_high": 4510.36,
+    "time_start": 1780034400,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  },
+  {
+    "type": "SSL",
+    "price_low": 4509.86,
+    "price_high": 4510.36,
+    "time_start": 1780034400,
+    "time_end": 1780099200,
+    "status": "active",
+    "swept": false,
+    "touches": 2
+  }
+]

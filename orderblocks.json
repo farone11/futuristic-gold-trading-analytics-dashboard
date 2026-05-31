@@ -1,0 +1,41 @@
+{
+  "H1": [
+    {
+      "type": "bearish",
+      "time": "2026-05-28 16:00",
+      "top": 4398.924,
+      "bottom": 4386.352,
+      "strength": 5
+    },
+    {
+      "type": "bullish",
+      "time": "2026-05-28 20:00",
+      "top": 4439.136,
+      "bottom": 4418.012,
+      "strength": 5
+    },
+    {
+      "type": "bullish",
+      "time": "2026-05-29 10:00",
+      "top": 4502.12,
+      "bottom": 4494.64,
+      "strength": 5
+    },
+    {
+      "type": "bearish",
+      "time": "2026-05-29 14:00",
+      "top": 4526.196,
+      "bottom": 4510.753,
+      "strength": 5
+    },
+    {
+      "type": "bullish",
+      "time": "2026-05-29 15:00",
+      "top": 4524.715,
+      "bottom": 4509.903,
+      "strength": 5
+    }
+  ],
+  "updated": "2026-05-31 18:36 WIB",
+  "symbol": "XAUUSDc"
+}
