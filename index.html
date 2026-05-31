@@ -8,13 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-       .font-orbitron { font-family: 'Orbitron', sans-serif; }
-       .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-       .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-       .live-dot { animation: pulse 2s infinite; }
+      .font-orbitron { font-family: 'Orbitron', sans-serif; }
+      .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+      .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+      .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-       .transition-all { transition: all 0.3s ease; }
-       .hidden { display: none!important; }
+      .transition-all { transition: all 0.3s ease; }
+      .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -37,7 +37,7 @@
                 <a href="/institutional-flow.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Institutional Flow</span>
                 </a>
-                <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
+                <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Liquidity Zones</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
@@ -253,7 +253,6 @@
         const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/main/`;
         
         let tvWidget;
-        let allShapes = [];
 
         function initChart() {
             tvWidget = new TradingView.widget({
@@ -274,20 +273,17 @@
 
             tvWidget.onChartReady(() => {
                 console.log('Chart Ready - Drawing OB + Liquidity');
-                drawOB();
-                drawLiquidity();
-                setInterval(() => {
-                    drawOB();
-                    drawLiquidity();
-                }, 60000);
+                refreshChartShapes();
+                setInterval(refreshChartShapes, 60000);
             });
         }
 
-        async function clearAllShapes() {
+        async function refreshChartShapes() {
             if (!tvWidget) return;
             const chart = tvWidget.activeChart();
-            allShapes.forEach(id => chart.removeEntity(id));
-            allShapes = [];
+            chart.removeAllShapes(); // clear dulu biar ga numpuk
+            await drawOB();
+            await drawLiquidity();
         }
 
         async function drawOB() {
@@ -300,7 +296,7 @@
                 if (data.H1 && data.H1.length > 0) {
                     data.H1.forEach(ob => {
                         const futureTime = Math.floor(Date.now()/1000) + (86400 * 30);
-                        const shapeId = chart.createMultipointShape(
+                        chart.createMultipointShape(
                             [
                                 { time: new Date(ob.time).getTime()/1000, price: ob.top },
                                 { time: futureTime, price: ob.bottom }
@@ -317,7 +313,6 @@
                                 }
                             }
                         );
-                        allShapes.push(shapeId);
                     });
                     console.log('OB Drawn:', data.H1.length);
                 }
@@ -338,7 +333,7 @@
                     const lineColor = z.type === 'BSL'? "#ef4444" : "#22c55e";
                     const futureTime = Math.floor(Date.now()/1000) + (86400 * 2);
                     
-                    const shapeId = chart.createMultipointShape(
+                    chart.createMultipointShape(
                         [
                             { time: z.time_start, price: z.price_high || z.price },
                             { time: futureTime, price: z.price_low || z.price - 0.5 }
@@ -354,15 +349,14 @@
                                 linewidth: 1,
                                 linestyle: 2,
                                 showLabel: true,
-                                text: z.type,
+                                text: `${z.type} ${z.touches || 1}x`,
                                 textColor: lineColor,
                                 fontsize: 11
                             }
                         }
                     );
-                    allShapes.push(shapeId);
                 });
-                console.log('Liquidity Drawn:', zones.length);
+                console.log('Liquidity Drawn:', zones.filter(z => z.status === 'active' &&!z.swept).length);
             } catch (e) { console.log('Liq Error:', e); }
         }
 
@@ -383,11 +377,13 @@
 
         function showPage(pageId) {
             document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-' + pageId).classList.remove('hidden');
+            const target = document.getElementById('page-' + pageId);
+            if (target) target.classList.remove('hidden');
             
             document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
-            document.getElementById('nav-liquidity').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
-            document.getElementById('nav-' + pageId).className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
+            document.getElementById('nav-liquidity-zones').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            const activeNav = document.getElementById('nav-' + pageId);
+            if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
             
             if(pageId === 'liquidity-zones') loadLiquidity();
         }
@@ -400,26 +396,30 @@
                     fetch(BASE_URL + 'orderblocks.json?v=' + Date.now())
                 ]);
                 
-                if (!liqRes.ok ||!obRes.ok) return;
+                if (!liqRes.ok) {
+                    console.log('liquidity.json not found');
+                    return;
+                }
                 
                 const liqData = await liqRes.json();
-                const obData = await obRes.json();
+                const obData = obRes.ok? await obRes.json() : { H1: [] };
                 
                 let bsl = 0, ssl = 0, session = 0;
                 const tbody = document.getElementById('liq-body');
+                if (!tbody) return;
                 tbody.innerHTML = '';
                 
-                liqData.forEach(zone => {
-                    if(zone.type === 'BSL') bsl++;
-                    if(zone.type === 'SSL') ssl++;
-                    if(zone.type.includes('ASIA') || zone.type.includes('LONDON') || zone.type.includes('NY')) session++;
+                liqData.filter(z =>!z.swept && z.status === 'active').forEach(zone => {
+                    if (zone.type === 'BSL') bsl++;
+                    if (zone.type === 'SSL') ssl++;
+                    if (zone.type.includes('_H') || zone.type.includes('_L')) session++;
                     
                     let confluence = '<span class="text-gray-600">None</span>';
-                    if (obData.H1) {
+                    if (obData.H1 && obData.H1.length > 0) {
                         obData.H1.forEach(ob => {
                             const zHigh = zone.price_high || zone.price;
                             const zLow = zone.price_low || zone.price - 0.5;
-                            if(zHigh >= ob.bottom && zLow <= ob.top) {
+                            if (zHigh >= ob.bottom && zLow <= ob.top) {
                                 confluence = `<span class="text-yellow-400 font-semibold">OB ${ob.type}</span>`;
                             }
                         });
@@ -427,12 +427,13 @@
                     
                     const age = Math.floor((Date.now()/1000 - zone.time_start) / 3600);
                     const priceZone = zone.price_low? `${zone.price_low.toFixed(2)} - ${zone.price_high.toFixed(2)}` : zone.price.toFixed(2);
+                    const typeColor = zone.type === 'BSL'? 'text-red-400' : zone.type === 'SSL'? 'text-green-400' : 'text-blue-400';
                     
                     tbody.innerHTML += `
                         <tr class="border-b border-gray-800 hover:bg-yellow-500/5">
-                            <td class="py-3 ${zone.type === 'BSL'? 'text-red-400 font-bold' : zone.type === 'SSL'? 'text-green-400 font-bold' : 'text-blue-400'}">${zone.type}</td>
+                            <td class="py-3 font-bold ${typeColor}">${zone.type}</td>
                             <td class="py-3 font-mono">${priceZone}</td>
-                            <td class="py-3">${zone.swept? '<span class="text-gray-500">Swept</span>' : '<span class="text-blue-400">Active</span>'}</td>
+                            <td class="py-3"><span class="text-blue-400">Active</span></td>
                             <td class="py-3">${age}h</td>
                             <td class="py-3">${confluence}</td>
                         </tr>
@@ -442,7 +443,10 @@
                 document.getElementById('bsl-count').innerText = bsl;
                 document.getElementById('ssl-count').innerText = ssl;
                 document.getElementById('session-count').innerText = session;
-            } catch (e) { console.log('Load Liquidity Error:', e); }
+                
+            } catch (e) { 
+                console.log('Load Liquidity Error:', e); 
+            }
         }
     
         // LIVE DATA
@@ -459,8 +463,6 @@
                     statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
                     document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
                     document.querySelector('[data-time]').innerText = data.time;
-                    
-                    // Liquidity Sweep Detection
                     checkLiquiditySweep(data.price, data.cvd);
                 }
             } catch (e) { 
@@ -542,10 +544,13 @@
         }
 
         // INIT
-        initChart();
-        updateDashboard();
-        setInterval(updateDashboard, 15000);
-        setInterval(loadLiquidity, 30000);
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            updateDashboard();
+            loadLiquidity(); // <-- PENTING: load langsung pas buka page
+            setInterval(updateDashboard, 15000);
+            setInterval(loadLiquidity, 30000);
+        });
     </script>
 </body>
 </html>
