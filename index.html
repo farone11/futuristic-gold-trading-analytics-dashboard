@@ -8,19 +8,32 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-      .font-orbitron { font-family: 'Orbitron', sans-serif; }
-      .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-      .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-      .live-dot { animation: pulse 2s infinite; }
+     .font-orbitron { font-family: 'Orbitron', sans-serif; }
+     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+     .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-      .transition-all { transition: all 0.3s ease; }
+     .transition-all { transition: all 0.3s ease; }
+      /* MOBILE FIX */
+      @media (max-width: 768px) {
+       .sidebar { transform: translateX(-100%); position: fixed; z-index: 50; }
+       .sidebar.open { transform: translateX(0); }
+       .main-content { margin-left: 0!important; }
+      }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
     <div class="flex h-screen">
         
-        <!-- SIDEBAR -->
-        <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
+        <!-- MOBILE HAMBURGER -->
+        <button onclick="toggleSidebar()" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-yellow-500/20 rounded-lg">
+            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+        
+        <!-- SIDEBAR - SEKARANG RESPONSIVE -->
+        <div id="sidebar" class="sidebar w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6 transition-all md:relative md:translate-x-0">
             <div class="flex items-center gap-4 mb-10">
                 <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain">
                 <div>
@@ -59,15 +72,15 @@
         </div>
 
         <!-- MAIN CONTENT -->
-        <div class="flex-1 overflow-auto">
-            <div class="p-8">
+        <div class="main-content flex-1 overflow-auto md:ml-0">
+            <div class="p-4 md:p-8">
                 
                 <!-- HEADER -->
-                <div class="mb-6">
-                    <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">
+                <div class="mb-6 mt-12 md:mt-0">
+                    <h1 class="font-orbitron text-2xl md:text-4xl font-black mb-2 glow-gold">
                         FUTURISTIC GOLD TRADING ANALYTICS
                     </h1>
-                    <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
+                    <p class="text-gray-400 text-sm md:text-base">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
                     <div class="flex items-center gap-2 mt-3">
                         <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
                         <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
@@ -85,70 +98,69 @@
                     </p>
                 </div>
 
-                <!-- STATS GRID - 6 CARD SEKARANG -->
-                <div class="grid grid-cols-6 gap-4 mb-8">
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                <!-- STATS GRID - RESPONSIVE 2 COL DI HP -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 mb-8">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-3 md:p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
+                        <h2 class="font-orbitron text-xl md:text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
                         <p class="text-xs text-gray-500 mt-2">Live Update</p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-3 md:p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
+                        <h2 class="font-orbitron text-xl md:text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
                         <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-3 md:p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CFTC NET</p>
-                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
+                        <h2 class="font-orbitron text-lg md:text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
                         <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-3 md:p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">DAILY RISK</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400">1.2%</h2>
+                        <h2 class="font-orbitron text-xl md:text-3xl font-bold text-yellow-400">1.2%</h2>
                         <p class="text-xs text-gray-500 mt-2">Inst. Allocation</p>
                     </div>
                     
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-3 md:p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
-                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cme-strike>$----</h2>
+                        <h2 class="font-orbitron text-lg md:text-2xl font-bold text-yellow-400" data-cme-strike>$----</h2>
                         <p class="text-xs text-gray-500 mt-2" data-cme-oi>OI: ---,---</p>
                     </div>
 
-                    <!-- CARD BARU: RETAIL SENTIMENT LIVE -->
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-3 md:p-5 card-glow">
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
                             <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
                         </div>
-                        <h2 class="font-orbitron text-xl font-bold text-red-400" id="retail-long">--% Long</h2>
-                        <h2 class="font-orbitron text-xl font-bold text-green-400" id="retail-short">--% Short</h2>
+                        <h2 class="font-orbitron text-lg md:text-xl font-bold text-red-400" id="retail-long">--% Long</h2>
+                        <h2 class="font-orbitron text-lg md:text-xl font-bold text-green-400" id="retail-short">--% Short</h2>
                         <p class="text-xs text-gray-600 mt-2" id="retail-updated">Loading...</p>
                     </div>
                 </div>
 
-                <!-- CHART + AI PANEL -->
-                <div class="grid grid-cols-3 gap-6 transition-all" id="main-grid">
+                <!-- CHART + AI PANEL - STACK DI HP -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 transition-all" id="main-grid">
                     
                     <!-- TRADINGVIEW CHART -->
-                    <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="chart-container">
+                    <div class="lg:col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-4 md:p-6 card-glow transition-all" id="chart-container">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-orbitron text-lg font-bold text-yellow-400">
+                            <h3 class="font-orbitron text-sm md:text-lg font-bold text-yellow-400">
                                 Institutional Momentum Engine - Live XAUUSD M15
                             </h3>
-                            <button onclick="toggleChart()" id="expand-btn" class="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">
+                            <button onclick="toggleChart()" id="expand-btn" class="hidden lg:block px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">
                                 Expand 50/50
                             </button>
                         </div>
-                        <div class="tradingview-widget-container" style="height:500px;width:100%">
+                        <div class="tradingview-widget-container" style="height:400px; md:height:500px; width:100%">
                           <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
                         </div>
                     </div>
 
                     <!-- AI EXECUTION PANEL -->
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-4 md:p-6 card-glow transition-all" id="ai-panel">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
                         
                         <div class="space-y-4">
@@ -210,7 +222,7 @@
         let tvWidget = new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
-            "interval": "15",
+            "interval": "60", // GANTI KE H1 BIAR OB KELIATAN
             "timezone": "Asia/Jakarta",
             "theme": "dark",
             "style": "1",
@@ -223,41 +235,50 @@
             "container_id": "tradingview_chart"
         });
 
-        // TAMBAHAN: DRAW OB DARI MT5
+        // FIX OB: PANGGIL SETELAH CHART READY
+        tvWidget.onChartReady(() => {
+            console.log('Chart Ready');
+            drawOB();
+            setInterval(drawOB, 60000); // Refresh OB tiap 1 menit
+        });
+
         async function drawOB() {
             try {
                 const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
                 const data = await res.json();
+                console.log('OB Data:', data);
                 
-                tvWidget.onChartReady(() => {
-                    const chart = tvWidget.activeChart();
-                    chart.removeAllShapes();
-                    
-                    if (data.H1 && data.H1.length > 0) {
-                        data.H1.forEach(ob => {
-                            chart.createMultipointShape(
-                                [
-                                    { time: new Date(ob.time).getTime()/1000, price: ob.top },
-                                    { time: Date.now()/1000, price: ob.bottom }
-                                ],
-                                {
-                                    shape: "rectangle",
-                                    lock: true,
-                                    disableSelection: true,
-                                    overrides: {
-                                        backgroundColor: ob.type === 'bullish'? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
-                                        color: ob.type === 'bullish'? "#00ff88" : "#ff3d3d",
-                                        linewidth: 2,
-                                    }
+                const chart = tvWidget.activeChart();
+                chart.removeAllShapes();
+                
+                if (data.H1 && data.H1.length > 0) {
+                    data.H1.forEach(ob => {
+                        // FIX: Extend 30 hari ke depan biar kotak keliatan
+                        const futureTime = Math.floor(Date.now()/1000) + (86400 * 30);
+                        chart.createMultipointShape(
+                            [
+                                { time: new Date(ob.time).getTime()/1000, price: ob.top },
+                                { time: futureTime, price: ob.bottom }
+                            ],
+                            {
+                                shape: "rectangle",
+                                lock: true,
+                                disableSelection: true,
+                                zOrder: "bottom",
+                                overrides: {
+                                    backgroundColor: ob.type === 'bullish'? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
+                                    color: ob.type === 'bullish'? "#00ff88" : "#ff3d3d",
+                                    linewidth: 2,
+                                    linestyle: 0,
                                 }
-                            );
-                        });
-                    }
-                });
+                            }
+                        );
+                    });
+                    console.log('OB Drawn:', data.H1.length);
+                }
             } catch (e) { console.log('OB Error:', e); }
         }
 
-        // TAMBAHAN: UPDATE CVD DARI MT5
         async function updateCVD_MT5() {
             try {
                 const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
@@ -266,6 +287,10 @@
                 statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
                 statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
             } catch (e) { console.log('CVD Error:', e); }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
         }
     </script>
 
@@ -281,14 +306,14 @@
             
             if (!isExpanded) {
                 grid.className = 'grid grid-cols-2 gap-6 transition-all';
-                chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
-                panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                chart.className = 'lg:col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                panel.className = 'lg:col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
                 btn.innerText = 'Default View';
                 isExpanded = true;
             } else {
-                grid.className = 'grid grid-cols-3 gap-6 transition-all';
-                chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
-                panel.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                grid.className = 'grid grid-cols-1 lg:grid-cols-3 gap-6 transition-all';
+                chart.className = 'lg:col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                panel.className = 'lg:col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
                 btn.innerText = 'Expand 50/50';
                 isExpanded = false;
             }
@@ -302,21 +327,16 @@
         const RETAIL_URL = './retail_sentiment.json';
         
         async function updateDashboard() {
-            // 1. FETCH MT5 LIVE PRICE
             try {
-                const res = await fetch(API_URL, {
-                    headers: { 'ngrok-skip-browser-warning': 'true' }
-                });
+                const res = await fetch(API_URL, { headers: { 'ngrok-skip-browser-warning': 'true' } });
                 if (res.ok) {
                     const data = await res.json();
                     if (!data.error) {
                         document.querySelector('[data-price]').innerText = '$' + data.price;
                         document.querySelector('[data-time]').innerText = data.time;
-                        
                         const smc = document.querySelector('[data-model="smc"]');
                         smc.innerText = data.smc_active? 'Active' : 'Standby';
                         smc.className = data.smc_active? 'font-bold text-green-400' : 'font-bold text-yellow-400';
-                        
                         const prz = document.querySelector('[data-model="prz"]');
                         prz.innerText = data.prz_ready? 'Ready' : 'Scanning';
                         prz.className = data.prz_ready? 'font-bold text-yellow-400' : 'font-bold text-blue-400';
@@ -327,28 +347,21 @@
                 document.getElementById('status-text').className = 'text-sm text-red-400';
             }
             
-            // 2. FETCH INSTITUTIONAL FLOW JSON
             try {
                 const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
                 if (res.ok) {
                     const inst = await res.json();
-                    
-                    // CFTC DATA
                     document.querySelector('[data-cftc-net]').innerText = inst.cftc.net_noncomm.toLocaleString();
                     document.querySelector('[data-cftc-date]').innerText = 'As of ' + inst.cftc.date;
                     document.querySelector('[data-cot-update]').innerText = inst.updated;
-                    
-                    // SMI DATA
                     document.querySelector('[data-smi]').innerText = inst.smart_money_index;
                     const biasEl = document.querySelector('[data-bias]');
                     biasEl.innerText = inst.bias;
                     biasEl.className = inst.bias === 'BULLISH' 
-                     ? 'font-orbitron text-3xl font-bold text-green-400' 
+                    ? 'font-orbitron text-xl md:text-3xl font-bold text-green-400' 
                         : inst.bias === 'BEARISH'
-                     ? 'font-orbitron text-3xl font-bold text-red-400'
-                        : 'font-orbitron text-3xl font-bold text-yellow-400';
-                    
-                    // CME OI DATA
+                    ? 'font-orbitron text-xl md:text-3xl font-bold text-red-400'
+                        : 'font-orbitron text-xl md:text-3xl font-bold text-yellow-400';
                     if (inst.cme_options_oi && inst.cme_options_oi.max_pain_strikes) {
                         const topStrike = inst.cme_options_oi.max_pain_strikes[0];
                         document.querySelector('[data-cme-strike]').innerText = '$' + topStrike.STRIKE;
@@ -357,7 +370,6 @@
                 }
             } catch (e) { console.log('Inst Flow error:', e); }
 
-            // 3. FETCH RETAIL SENTIMENT LIVE
             try {
                 const res = await fetch(RETAIL_URL + '?v=' + Date.now());
                 if (res.ok) {
@@ -367,7 +379,6 @@
                     document.getElementById('retail-updated').innerText = d.updated;
                     document.getElementById('retail-lots').innerText = d.lots.toLocaleString('en-US');
                     document.getElementById('retail-source').innerText = d.source.split(' ')[0];
-                    
                     if(d.long_pct > 70) {
                         document.getElementById('retail-long').classList.add('animate-pulse');
                         document.getElementById('retail-source').className = 'text-xs bg-red-900/30 text-red-300 px-2 py-0.5 rounded';
@@ -380,8 +391,6 @@
                 }
             } catch (e) { console.log('Retail sentiment error:', e); }
 
-            // 4. TAMBAHAN: PANGGIL OB + CVD MT5
-            drawOB();
             updateCVD_MT5();
         }
 
