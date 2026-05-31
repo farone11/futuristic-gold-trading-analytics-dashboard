@@ -8,13 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-   .font-orbitron { font-family: 'Orbitron', sans-serif; }
-   .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-   .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-   .live-dot { animation: pulse 2s infinite; }
+  .font-orbitron { font-family: 'Orbitron', sans-serif; }
+  .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+  .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+  .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-   .transition-all { transition: all 0.3s ease; }
-   .hidden { display: none!important; }
+  .transition-all { transition: all 0.3s ease; }
+  .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -43,7 +43,7 @@
                 <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
                     <span>Risk Engine</span>
                 </a>
-                <a href="#" onclick="showPage('dashboard')" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
+                <a href="#" onclick="showPage('signals')" id="nav-signals" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>AI Signals</span>
                 </a>
             </nav>
@@ -145,7 +145,7 @@
                         </div>
                     </div>
 
-                    <!-- AI SIGNAL PANEL - UPDATED -->
+                    <!-- AI SIGNAL PANEL -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI SIGNAL</h3>
 
@@ -222,6 +222,42 @@
                         </thead>
                         <tbody id="liq-body" class="text-gray-300"></tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- PAGE: AI SIGNALS -->
+            <div id="page-signals" class="dashboard-page hidden p-8">
+                <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
+                <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine</p>
+
+                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">Current Signal</h3>
+                    <div class="grid grid-cols-5 gap-4 text-center mb-6">
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">STATUS</p>
+                            <div id="sig-page-status" class="font-orbitron text-3xl font-bold text-yellow-400">STANDBY</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">ENTRY</p>
+                            <div id="sig-page-entry" class="font-orbitron text-3xl font-bold text-white">----.--</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">STOP LOSS</p>
+                            <div id="sig-page-sl" class="font-orbitron text-3xl font-bold text-red-400">----.--</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">TAKE PROFIT 1</p>
+                            <div id="sig-page-tp1" class="font-orbitron text-3xl font-bold text-green-400">----.--</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">TAKE PROFIT 2</p>
+                            <div id="sig-page-tp2" class="font-orbitron text-3xl font-bold text-green-400">----.--</div>
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t border-gray-800 text-center">
+                        <p class="text-sm text-gray-400 mb-2" id="sig-page-reason">No confluence</p>
+                        <p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p>
+                    </div>
                 </div>
             </div>
 
@@ -379,6 +415,7 @@
 
             document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             document.getElementById('nav-liquidity-zones').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            document.getElementById('nav-signals').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             const activeNav = document.getElementById('nav-' + pageId);
             if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
 
@@ -551,12 +588,11 @@
                         s.status === 'SELL'?
                         'font-orbitron text-4xl font-black text-red-400 mb-2' :
                         'font-orbitron text-4xl font-black text-yellow-400 mb-2';
-                }
-            } catch (e) { console.log('Signal error:', e); }
-        }
 
-        updateDashboard();
-        setInterval(updateDashboard, 15000);
-    </script>
-</body>
-</html>
+                    // Update AI Signals page
+                    document.getElementById('sig-page-status').innerText = s.status;
+                    document.getElementById('sig-page-entry').innerText = s.entry? s.entry.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-sl').innerText = s.sl? s.sl.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp1').innerText = s.tp1? s.tp1.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp2').innerText = s.tp2? s.tp2.toFixed(2) : '----.--';
+                    document.getElementById('
