@@ -8,13 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-     .font-orbitron { font-family: 'Orbitron', sans-serif; }
-     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-     .live-dot { animation: pulse 2s infinite; }
+      .font-orbitron { font-family: 'Orbitron', sans-serif; }
+      .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+      .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+      .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-     .transition-all { transition: all 0.3s ease; }
-     .hidden { display: none!important; }
+      .transition-all { transition: all 0.3s ease; }
+      .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -246,7 +246,7 @@
         </div>
     </div>
 
-    <!-- TRADINGVIEW WIDGET + OB/CVD LOGIC -->
+    <!-- TRADINGVIEW WIDGET + OB/CVD/LIQUIDITY LOGIC -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
         const GITHUB_USER = "farone11";
@@ -319,9 +319,12 @@
                 if (!res.ok) return;
                 const data = await res.json();
                 if (data.zones && data.zones.length > 0) {
-                    data.zones.filter(z => z.status!== 'swept').forEach(z => {
+                    data.zones.forEach(z => {
                         const futureTime = Math.floor(Date.now()/1000) + (86400 * 7);
-                        const color = z.type === 'buy_side'? "#ef4444" : "#22c55e";
+                        const isBSL = z.type === 'buy_side';
+                        const color = z.swept? "#666666" : isBSL? "#ef4444" : "#22c55e";
+                        const text = z.swept? (isBSL? "BSL SWEPT" : "SSL SWEPT") : (isBSL? "BSL" : "SSL");
+                        
                         chart.createMultipointShape(
                             [
                                 { time: new Date(z.time).getTime()/1000, price: z.price },
@@ -334,10 +337,10 @@
                                 zOrder: "top",
                                 overrides: {
                                     linecolor: color,
-                                    linewidth: 2,
-                                    linestyle: 2,
+                                    linewidth: z.swept? 1 : 2,
+                                    linestyle: z.swept? 3 : 2,
                                     showLabel: true,
-                                    text: z.type === 'buy_side'? "BSL" : "SSL",
+                                    text: text,
                                     textcolor: color,
                                     fontsize: 11
                                 }
@@ -397,7 +400,7 @@
                 if (!tbody) return;
                 tbody.innerHTML = '';
                 
-                const activeZones = data.zones.filter(z => z.status!== 'swept');
+                const activeZones = data.zones.filter(z =>!z.swept);
                 
                 if (activeZones.length === 0) {
                     emptyEl.classList.remove('hidden');
@@ -409,10 +412,12 @@
                 
                 emptyEl.classList.add('hidden');
                 
-                activeZones.forEach(zone => {
-                    if (zone.type === 'buy_side') bsl++;
-                    if (zone.type === 'sell_side') ssl++;
-                    if (zone.type.includes('session')) session++;
+                data.zones.forEach(zone => {
+                    if (!zone.swept) {
+                        if (zone.type === 'buy_side') bsl++;
+                        if (zone.type === 'sell_side') ssl++;
+                        if (zone.type.includes('session')) session++;
+                    }
                     
                     let confluence = '<span class="text-gray-600">None</span>';
                     if (obData.H1 && obData.H1.length > 0) {
@@ -425,11 +430,13 @@
                     
                     const age = Math.floor((Date.now()/1000 - new Date(zone.time).getTime()/1000) / 3600);
                     const typeColor = zone.type === 'buy_side'? 'text-red-400' : zone.type === 'sell_side'? 'text-green-400' : 'text-blue-400';
+                    const statusColor = zone.swept? 'text-gray-500' : 'text-blue-400';
+                    const statusText = zone.swept? 'Swept' : 'Active';
                     
                     tbody.innerHTML += '<tr class="border-b border-gray-800 hover:bg-yellow-500/5">' +
                         '<td class="py-3 font-bold ' + typeColor + '">' + zone.type + '</td>' +
                         '<td class="py-3 font-mono">' + zone.price.toFixed(2) + '</td>' +
-                        '<td class="py-3"><span class="text-blue-400">Active</span></td>' +
+                        '<td class="py-3"><span class="' + statusColor + '">' + statusText + '</span></td>' +
                         '<td class="py-3">' + age + 'h</td>' +
                         '<td class="py-3">' + confluence + '</td>' +
                     '</tr>';
