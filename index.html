@@ -8,12 +8,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-       .font-orbitron { font-family: 'Orbitron', sans-serif; }
-       .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-       .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-       .live-dot { animation: pulse 2s infinite; }
+      .font-orbitron { font-family: 'Orbitron', sans-serif; }
+      .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+      .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+      .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-       .transition-all { transition: all 0.3s ease; }
+      .transition-all { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -200,10 +200,14 @@
         </div>
     </div>
 
-    <!-- TRADINGVIEW WIDGET -->
+    <!-- TRADINGVIEW WIDGET + OB/CVD LOGIC -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
-        new TradingView.widget({
+        const GITHUB_USER = "farone11";
+        const REPO = "futuristic-gold-trading-analytics-dashboard";
+        const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/master/`;
+        
+        let tvWidget = new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
             "interval": "15",
@@ -218,6 +222,51 @@
             "save_image": false,
             "container_id": "tradingview_chart"
         });
+
+        // TAMBAHAN: DRAW OB DARI MT5
+        async function drawOB() {
+            try {
+                const res = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
+                const data = await res.json();
+                
+                tvWidget.onChartReady(() => {
+                    const chart = tvWidget.activeChart();
+                    chart.removeAllShapes();
+                    
+                    if (data.H1 && data.H1.length > 0) {
+                        data.H1.forEach(ob => {
+                            chart.createMultipointShape(
+                                [
+                                    { time: new Date(ob.time).getTime()/1000, price: ob.top },
+                                    { time: Date.now()/1000, price: ob.bottom }
+                                ],
+                                {
+                                    shape: "rectangle",
+                                    lock: true,
+                                    disableSelection: true,
+                                    overrides: {
+                                        backgroundColor: ob.type === 'bullish'? "rgba(0,255,136,0.15)" : "rgba(255,61,61,0.15)",
+                                        color: ob.type === 'bullish'? "#00ff88" : "#ff3d3d",
+                                        linewidth: 2,
+                                    }
+                                }
+                            );
+                        });
+                    }
+                });
+            } catch (e) { console.log('OB Error:', e); }
+        }
+
+        // TAMBAHAN: UPDATE CVD DARI MT5
+        async function updateCVD_MT5() {
+            try {
+                const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
+                const data = await res.json();
+                const statusEl = document.getElementById('status-text');
+                statusEl.innerText = `Live MT5 | CVD: ${data.cvd} | ${data.updated}`;
+                statusEl.className = data.cvd >= 0? 'text-sm text-green-400' : 'text-sm text-red-400';
+            } catch (e) { console.log('CVD Error:', e); }
+        }
     </script>
 
     <!-- TOGGLE CHART LOGIC -->
@@ -261,8 +310,6 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (!data.error) {
-                        document.getElementById('status-text').innerText = 'Live from MT5';
-                        document.getElementById('status-text').className = 'text-sm text-green-400';
                         document.querySelector('[data-price]').innerText = '$' + data.price;
                         document.querySelector('[data-time]').innerText = data.time;
                         
@@ -296,9 +343,9 @@
                     const biasEl = document.querySelector('[data-bias]');
                     biasEl.innerText = inst.bias;
                     biasEl.className = inst.bias === 'BULLISH' 
-                       ? 'font-orbitron text-3xl font-bold text-green-400' 
+                     ? 'font-orbitron text-3xl font-bold text-green-400' 
                         : inst.bias === 'BEARISH'
-                       ? 'font-orbitron text-3xl font-bold text-red-400'
+                     ? 'font-orbitron text-3xl font-bold text-red-400'
                         : 'font-orbitron text-3xl font-bold text-yellow-400';
                     
                     // CME OI DATA
@@ -308,9 +355,7 @@
                         document.querySelector('[data-cme-oi]').innerText = 'OI: ' + topStrike.total_oi.toLocaleString();
                     }
                 }
-            } catch (e) {
-                console.log('Inst Flow error:', e);
-            }
+            } catch (e) { console.log('Inst Flow error:', e); }
 
             // 3. FETCH RETAIL SENTIMENT LIVE
             try {
@@ -323,7 +368,6 @@
                     document.getElementById('retail-lots').innerText = d.lots.toLocaleString('en-US');
                     document.getElementById('retail-source').innerText = d.source.split(' ')[0];
                     
-                    // Kasih pulse kalo extreme
                     if(d.long_pct > 70) {
                         document.getElementById('retail-long').classList.add('animate-pulse');
                         document.getElementById('retail-source').className = 'text-xs bg-red-900/30 text-red-300 px-2 py-0.5 rounded';
@@ -334,9 +378,11 @@
                         document.getElementById('retail-source').innerText = 'EXTREME';
                     }
                 }
-            } catch (e) {
-                console.log('Retail sentiment error:', e);
-            }
+            } catch (e) { console.log('Retail sentiment error:', e); }
+
+            // 4. TAMBAHAN: PANGGIL OB + CVD MT5
+            drawOB();
+            updateCVD_MT5();
         }
 
         updateDashboard();
