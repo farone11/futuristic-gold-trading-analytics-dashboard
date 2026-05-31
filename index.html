@@ -8,18 +8,18 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-     .font-orbitron { font-family: 'Orbitron', sans-serif; }
-     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-     .live-dot { animation: pulse 2s infinite; }
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+    .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+    .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+    .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-     .transition-all { transition: all 0.3s ease; }
-     .hidden { display: none!important; }
+    .transition-all { transition: all 0.3s ease; }
+    .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
     <div class="flex h-screen">
-        
+
         <!-- SIDEBAR -->
         <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
             <div class="flex items-center gap-4 mb-10">
@@ -29,7 +29,7 @@
                     <p class="text-sm text-yellow-400 font-semibold tracking-widest">GOLD AI</p>
                 </div>
             </div>
-            
+
             <nav class="space-y-2">
                 <a href="#" onclick="showPage('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400">
                     <span>Dashboard</span>
@@ -51,10 +51,10 @@
 
         <!-- MAIN CONTENT -->
         <div class="flex-1 overflow-auto">
-            
+
             <!-- PAGE: DASHBOARD -->
             <div id="page-dashboard" class="dashboard-page p-8">
-                
+
                 <!-- HEADER -->
                 <div class="mb-6">
                     <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">
@@ -70,40 +70,46 @@
                 <!-- DISCLAIMER ENGLISH -->
                 <div class="mb-6 bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-3">
                     <p class="text-xs text-yellow-400/80">
-                        <strong>DISCLAIMER:</strong> This dashboard is for informational and educational purposes only. 
-                        Trading forex, CFDs, and gold involves substantial risk of loss and is not suitable for every investor. 
-                        Past performance is not indicative of future results. AI signals are not financial advice. 
-                        You should carefully consider whether trading is suitable for you in light of your circumstances, knowledge, and financial resources. 
+                        <strong>DISCLAIMER:</strong> This dashboard is for informational and educational purposes only.
+                        Trading forex, CFDs, and gold involves substantial risk of loss and is not suitable for every investor.
+                        Past performance is not indicative of future results. AI signals are not financial advice.
+                        You should carefully consider whether trading is suitable for you in light of your circumstances, knowledge, and financial resources.
                         FARONE.AI does not guarantee profits and is not responsible for any trading losses.
                     </p>
                 </div>
 
-                <!-- STATS GRID - 6 CARD -->
-                <div class="grid grid-cols-6 gap-4 mb-8">
+                <!-- STATS GRID - 7 CARD -->
+                <div class="grid grid-cols-7 gap-4 mb-8">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p>
                         <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
                         <p class="text-xs text-gray-500 mt-2">Live Update</p>
                     </div>
-                    
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
                         <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
                         <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
-                    
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CFTC NET</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
                         <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
                     </div>
-                    
+
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
+                        <p class="text-gray-400 text-xs mb-2">SEASONAL BIAS</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" id="seasonal-status">NEUTRAL</h2>
+                        <p class="text-xs text-gray-500 mt-2"><span id="seasonal-month">May</span>: <span id="seasonal-value">+1.75</span> avg</p>
+                    </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">DAILY RISK</p>
                         <h2 class="font-orbitron text-3xl font-bold text-yellow-400">1.2%</h2>
                         <p class="text-xs text-gray-500 mt-2">Inst. Allocation</p>
                     </div>
-                    
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400">$4525</h2>
@@ -123,7 +129,7 @@
 
                 <!-- CHART + AI PANEL -->
                 <div class="grid grid-cols-3 gap-6 transition-all" id="main-grid">
-                    
+
                     <!-- TRADINGVIEW CHART -->
                     <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="chart-container">
                         <div class="flex items-center justify-between mb-4">
@@ -142,34 +148,34 @@
                     <!-- AI EXECUTION PANEL -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
-                        
+
                         <div class="space-y-4">
                             <div class="flex items-center justify-between pb-4 border-b border-gray-800">
                                 <span class="text-gray-400">Model</span>
                                 <span class="text-gray-400">Status</span>
                             </div>
-                            
+
                             <div class="flex items-center justify-between">
                                 <span class="text-white">SMC Engine</span>
                                 <span class="font-bold text-yellow-400" data-model="smc">Standby</span>
                             </div>
-                            
+
                             <div class="flex items-center justify-between">
                                 <span class="text-white">PRZ Scanner</span>
                                 <span class="font-bold text-blue-400" data-model="prz">Scanning</span>
                             </div>
-                            
+
                             <div class="flex items-center justify-between">
                                 <span class="text-white">Liquidity Sweep</span>
                                 <span class="font-bold text-blue-400" data-model="liquidity">Monitoring</span>
                             </div>
-                            
+
                             <div class="flex items-center justify-between">
                                 <span class="text-white">Risk AI</span>
                                 <span class="font-bold text-green-400" data-model="risk">Protected</span>
                             </div>
                         </div>
-                        
+
                         <div class="mt-6 pt-6 border-t border-gray-800">
                             <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
                             <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
@@ -183,7 +189,7 @@
             <div id="page-liquidity-zones" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">Liquidity Zones - XAUUSDc H1</h2>
                 <p class="text-gray-400 mb-6">Buy-Side & Sell-Side Liquidity + Session Levels · Auto Sweep Detection</p>
-                
+
                 <div class="grid grid-cols-3 gap-4 mb-6">
                     <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl card-glow">
                         <div class="text-gray-400 text-xs mb-2">BUY-SIDE LIQUIDITY</div>
@@ -226,13 +232,13 @@
                     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                         <div class="flex-1 text-xs text-gray-600">
                             <p class="mb-2">
-                                <strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors. 
-                                The high degree of leverage can work against you as well as for you. Before deciding to trade, you should carefully consider your investment objectives, 
+                                <strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.
+                                The high degree of leverage can work against you as well as for you. Before deciding to trade, you should carefully consider your investment objectives,
                                 level of experience, and risk appetite.
                             </p>
                             <p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p>
                         </div>
-                        
+
                         <div class="md:text-right md:min-w-">
                             <p class="text-xs text-gray-500 mb-1">Authors</p>
                             <p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p>
@@ -252,7 +258,7 @@
         const GITHUB_USER = "farone11";
         const REPO = "futuristic-gold-trading-analytics-dashboard";
         const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/master/`;
-        
+
         let tvWidget = new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
@@ -324,7 +330,7 @@
                         const isBSL = z.type === 'buy_side';
                         const color = z.swept? "#666666" : isBSL? "#ef4444" : "#22c55e";
                         const text = z.swept? (isBSL? "BSL SWEPT" : "SSL SWEPT") : (isBSL? "BSL" : "SSL");
-                        
+
                         chart.createMultipointShape(
                             [
                                 { time: new Date(z.time).getTime()/1000, price: z.price },
@@ -371,37 +377,37 @@
             document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden'));
             const target = document.getElementById('page-' + pageId);
             if (target) target.classList.remove('hidden');
-            
+
             document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             document.getElementById('nav-liquidity-zones').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             const activeNav = document.getElementById('nav-' + pageId);
             if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
-            
+
             if(pageId === 'liquidity-zones') loadLiquidity();
         }
 
         async function loadLiquidity() {
             const emptyEl = document.getElementById('liq-empty');
             const tbody = document.getElementById('liq-body');
-            
+
             try {
                 const res = await fetch(BASE_URL + 'liquidity_zones.json?v=' + Date.now());
                 if (!res.ok) throw new Error('liquidity_zones.json missing');
-                
+
                 const data = await res.json();
                 let obData = { H1: [] };
-                
+
                 try {
                     const obRes = await fetch(BASE_URL + 'orderblocks.json?v=' + Date.now());
                     if (obRes.ok) obData = await obRes.json();
                 } catch (e) {}
-                
+
                 let bsl = 0, ssl = 0, session = 0;
                 if (!tbody) return;
                 tbody.innerHTML = '';
-                
+
                 const activeZones = data.zones.filter(z =>!z.swept);
-                
+
                 if (activeZones.length === 0) {
                     emptyEl.classList.remove('hidden');
                     document.getElementById('bsl-count').innerText = '0';
@@ -409,16 +415,16 @@
                     document.getElementById('session-count').innerText = '0';
                     return;
                 }
-                
+
                 emptyEl.classList.add('hidden');
-                
+
                 data.zones.forEach(zone => {
                     if (!zone.swept) {
                         if (zone.type === 'buy_side') bsl++;
                         if (zone.type === 'sell_side') ssl++;
                         if (zone.type.includes('session')) session++;
                     }
-                    
+
                     let confluence = '<span class="text-gray-600">None</span>';
                     if (obData.H1 && obData.H1.length > 0) {
                         obData.H1.forEach(ob => {
@@ -427,12 +433,12 @@
                             }
                         });
                     }
-                    
+
                     const age = Math.floor((Date.now()/1000 - new Date(zone.time).getTime()/1000) / 3600);
                     const typeColor = zone.type === 'buy_side'? 'text-red-400' : zone.type === 'sell_side'? 'text-green-400' : 'text-blue-400';
                     const statusColor = zone.swept? 'text-gray-500' : 'text-blue-400';
                     const statusText = zone.swept? 'Swept' : 'Active';
-                    
+
                     tbody.innerHTML += '<tr class="border-b border-gray-800 hover:bg-yellow-500/5">' +
                         '<td class="py-3 font-bold ' + typeColor + '">' + zone.type + '</td>' +
                         '<td class="py-3 font-mono">' + zone.price.toFixed(2) + '</td>' +
@@ -441,12 +447,12 @@
                         '<td class="py-3">' + confluence + '</td>' +
                     '</tr>';
                 });
-                
+
                 document.getElementById('bsl-count').innerText = bsl;
                 document.getElementById('ssl-count').innerText = ssl;
                 document.getElementById('session-count').innerText = session;
-                
-            } catch (e) { 
+
+            } catch (e) {
                 console.log('Load Liquidity Error:', e);
                 if (tbody) tbody.innerHTML = '';
                 if (emptyEl) emptyEl.classList.remove('hidden');
@@ -458,7 +464,7 @@
     <script>
         const INST_FLOW_URL = './institutional_flow.json';
         const RETAIL_URL = './retail_sentiment.json';
-        
+
         async function updateDashboard() {
             try {
                 const res = await fetch(BASE_URL + 'cvd.json?v=' + Date.now());
@@ -470,11 +476,11 @@
                     document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
                     document.querySelector('[data-time]').innerText = data.time;
                 }
-            } catch (e) { 
+            } catch (e) {
                 document.getElementById('status-text').innerText = 'MT5 Offline';
                 document.getElementById('status-text').className = 'text-sm text-red-400';
             }
-            
+
             try {
                 const res = await fetch(INST_FLOW_URL + '?v=' + Date.now());
                 if (res.ok) {
@@ -509,6 +515,23 @@
                     }
                 }
             } catch (e) { console.log('Retail sentiment error:', e); }
+
+            // SEASONAL BIAS
+            try {
+                const res = await fetch(BASE_URL + 'seasonal.json?v=' + Date.now());
+                if (res.ok) {
+                    const s = await res.json();
+                    document.getElementById('seasonal-month').innerText = s.current_month;
+                    document.getElementById('seasonal-value').innerText = (s.bias_value > 0? '+' : '') + s.bias_value.toFixed(2);
+                    const statusEl = document.getElementById('seasonal-status');
+                    statusEl.innerText = s.bias;
+                    statusEl.className = s.bias === 'BULLISH'?
+                        'font-orbitron text-2xl font-bold text-green-400' :
+                        s.bias === 'BEARISH'?
+                        'font-orbitron text-2xl font-bold text-red-400' :
+                        'font-orbitron text-2xl font-bold text-yellow-400';
+                }
+            } catch (e) { console.log('Seasonal error:', e); }
         }
 
         updateDashboard();
