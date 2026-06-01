@@ -1,0 +1,26 @@
+name: MarketBulls Daily Update
+on:
+  schedule:
+    - cron: '0 1 * * *' # Jam 8 pagi WIB
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml
+      - name: Run Scraper
+        run: python scrape_marketbulls.py
+      - name: Commit data
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add market_data.json
+          git commit -m "Update MarketBulls data" || exit 0
+          git push
