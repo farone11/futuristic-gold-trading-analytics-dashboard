@@ -5,8 +5,8 @@
       "price": 4482.193,
       "time": "2026-05-27 01:00",
       "strength": 5,
-      "status": "swept",
-      "swept": true
+      "status": "active",
+      "swept": false
     },
     {
       "type": "sell_side",
@@ -41,7 +41,7 @@
       "swept": false
     }
   ],
-  "updated": "2026-06-02 03:00 WIB",
+  "updated": "2026-06-02 04:00 WIB",
   "symbol": "XAUUSDc",
-  "current_price": 4481.11
+  "current_price": 4484.43
 }
