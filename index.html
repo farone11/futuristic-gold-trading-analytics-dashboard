@@ -8,13 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-  .font-orbitron { font-family: 'Orbitron', sans-serif; }
-  .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-  .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-  .live-dot { animation: pulse 2s infinite; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+        .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-  .transition-all { transition: all 0.3s ease; }
-  .hidden { display: none!important; }
+        .transition-all { transition: all 0.3s ease; }
+        .hidden { display: none!important; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -100,8 +100,8 @@
 
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SEASONAL BIAS</p>
-                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" id="seasonal-status">NEUTRAL</h2>
-                        <p class="text-xs text-gray-500 mt-2"><span id="seasonal-month">May</span>: <span id="seasonal-value">+1.75</span> avg</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-seasonal>NEUTRAL</h2>
+                        <p class="text-xs text-gray-500 mt-2"><span data-seasonal-month>May</span>: <span data-seasonal-value>+1.75</span> avg</p>
                     </div>
 
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
@@ -112,8 +112,8 @@
 
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
-                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400">$4525</h2>
-                        <p class="text-xs text-gray-500 mt-2">Coming Soon</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-maxpain>$4525</h2>
+                        <p class="text-xs text-gray-500 mt-2">MarketBulls</p>
                     </div>
 
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
@@ -121,8 +121,8 @@
                             <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
                             <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
                         </div>
-                        <h2 class="font-orbitron text-xl font-bold text-red-400" id="retail-long">--% Long</h2>
-                        <h2 class="font-orbitron text-xl font-bold text-green-400" id="retail-short">--% Short</h2>
+                        <h2 class="font-orbitron text-xl font-bold text-red-400" data-retail-long>--% Long</h2>
+                        <h2 class="font-orbitron text-xl font-bold text-green-400" data-retail-short>--% Short</h2>
                         <p class="text-xs text-gray-600 mt-2" id="retail-updated">Loading...</p>
                     </div>
                 </div>
@@ -145,7 +145,7 @@
                         </div>
                     </div>
 
-                    <!-- AI EXECUTION PANEL - BALIK KE ASLI -->
+                    <!-- AI EXECUTION PANEL -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
 
@@ -335,9 +335,10 @@
         }
     </script>
 
-    <!-- LIVE DATA DARI FLASK PORT 8000 -->
+    <!-- LIVE DATA DARI FLASK + MARKETBULLS -->
     <script>
-        // INI YANG GW UBAH BRO - PAKE FLASK PORT 8000
+        // GANTI PAKE NGROK KALO MAU LIVE DI pages.dev
+        // const API_URL = 'https://xxxx-xx-xxx-xx.ngrok-free.app/api';
         const API_URL = 'http://localhost:5000/api';
 
         async function updateDashboard() {
@@ -345,29 +346,62 @@
                 const res = await fetch(API_URL);
                 const data = await res.json();
                 
-                // Update Status
-                const statusEl = document.getElementById('status-text');
-                statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.time}`;
-                statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
+                if(data.error) {
+                    document.getElementById('status-text').innerText = 'MT5 Error: ' + data.error;
+                    document.getElementById('status-text').className = 'text-sm text-red-400';
+                    // TETEP UPDATE DATA MARKETBULLS WALAU MT5 ERROR
+                } else {
+                    // Update Status
+                    const statusEl = document.getElementById('status-text');
+                    statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.time}`;
+                    statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
+                }
                 
                 // Update Price
-                document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                if(data.price) document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
                 
                 // Update Smart Money Bias
-                document.querySelector('[data-bias]').innerText = data.bias;
-                document.querySelector('[data-bias]').className = data.bias === 'BULLISH' ? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
+                if(data.bias){
+                    document.querySelector('[data-bias]').innerText = data.bias;
+                    document.querySelector('[data-bias]').className = data.bias === 'BULLISH' ? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
+                }
+                if(data.smi) document.querySelector('[data-smi]').innerText = data.smi;
+                
+                // Update CFTC NET - FIXED
+                if(data.cftc_net !== undefined){
+                    document.querySelector('[data-cftc-net]').innerText = data.cftc_net.toLocaleString();
+                }
+                if(data.cftc_date) document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
+                
+                // Update Seasonal
+                if(data.seasonal_bias) document.querySelector('[data-seasonal]').innerText = data.seasonal_bias;
+                if(data.seasonal_month) document.querySelector('[data-seasonal-month]').innerText = data.seasonal_month;
+                if(data.seasonal_value) document.querySelector('[data-seasonal-value]').innerText = data.seasonal_value;
+                
+                // Update CME MAX PAIN - FIXED
+                if(data.cme_max_pain) document.querySelector('[data-maxpain]').innerText = '$' + data.cme_max_pain;
+                
+                // Update Retail Sentiment - FIXED
+                if(data.retail_long !== undefined) document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
+                if(data.retail_short !== undefined) document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short';
+                document.getElementById('retail-updated').innerText = data.time || 'Live';
                 
                 // Update AI Execution Panel
-                document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
-                document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                if(data.smc_active !== undefined){
+                    document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
+                    document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                }
                 
-                document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY' : 'Scanning';
-                document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
+                if(data.prz_ready !== undefined){
+                    document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY' : 'Scanning';
+                    document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
+                }
                 
                 // Update Time
-                document.querySelector('[data-time]').innerText = data.time;
+                if(data.time) document.querySelector('[data-time]').innerText = data.time;
+                if(data.cftc_date) document.querySelector('[data-cot-update]').innerText = data.cftc_date;
                 
-                // Update AI Signals page kalo ada data signal
+                // Update AI Signals page
                 if(data.signal_status){
                     document.getElementById('sig-page-status').innerText = data.signal_status;
                     document.getElementById('sig-page-entry').innerText = data.entry ? data.entry.toFixed(2) : '----.--';
@@ -382,7 +416,7 @@
                 }
                 
             } catch (e) {
-                document.getElementById('status-text').innerText = 'MT5 Offline - Pastin python main.py jalan';
+                document.getElementById('status-text').innerText = 'Server mati - Pastin python main.py jalan';
                 document.getElementById('status-text').className = 'text-sm text-red-400';
                 console.log('Error:', e);
             }
