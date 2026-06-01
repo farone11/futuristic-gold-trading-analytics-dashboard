@@ -341,7 +341,12 @@
 
         async function updateDashboard() {
             try {
-                const res = await fetch(API_URL);
+                const res = await fetch(API_URL, {
+                    headers: {
+                        'ngrok-skip-browser-warning': 'true',
+                        'Accept': 'application/json'
+                    }
+                });
                 const data = await res.json();
                 
                 if(data.error) {
