@@ -349,60 +349,81 @@
                 });
                 const data = await res.json();
                 
+                // ── STATUS BAR ──
+                const statusEl = document.getElementById('status-text');
                 if(data.error) {
-                    document.getElementById('status-text').innerText = 'MT5 Error: ' + data.error;
-                    document.getElementById('status-text').className = 'text-sm text-red-400';
-                    // TETEP UPDATE DATA MARKETBULLS WALAU MT5 ERROR
+                    statusEl.innerText = 'MT5 Error: ' + data.error;
+                    statusEl.className = 'text-sm text-red-400';
                 } else {
-                    // Update Status
-                    const statusEl = document.getElementById('status-text');
-                    statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.time}`;
+                    const timeLabel = data.updated || data.time || '';
+                    statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${timeLabel}`;
                     statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
                 }
-                
-                // Update Price
-                if(data.price) document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
-                
-                // Update Smart Money Bias
+
+                // ── PRICE: API kirim "close" bukan "price" ──
+                const price = data.close || data.price;
+                if(price) document.querySelector('[data-price]').innerText = '$' + parseFloat(price).toFixed(2);
+
+                // ── SMART MONEY BIAS ──
                 if(data.bias){
                     document.querySelector('[data-bias]').innerText = data.bias;
-                    document.querySelector('[data-bias]').className = data.bias === 'BULLISH' ? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
+                    document.querySelector('[data-bias]').className = data.bias === 'BULLISH'
+                        ? 'font-orbitron text-3xl font-bold text-green-400'
+                        : 'font-orbitron text-3xl font-bold text-red-400';
                 }
-                if(data.smi) document.querySelector('[data-smi]').innerText = data.smi;
-                
-                // Update CFTC NET - FIXED
+                // SMI: pakai ema50 jika smi tidak ada
+                const smiVal = data.smi ? data.smi : (data.ema50 ? data.ema50 : '--');
+                document.querySelector('[data-smi]').innerText = smiVal;
+
+                // ── CFTC NET: tampil N/A jika tidak ada di API ──
                 if(data.cftc_net !== undefined){
-                    document.querySelector('[data-cftc-net]').innerText = data.cftc_net.toLocaleString();
+                    document.querySelector('[data-cftc-net]').innerText = parseFloat(data.cftc_net).toLocaleString();
+                    document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
+                } else {
+                    document.querySelector('[data-cftc-net]').innerText = 'N/A';
+                    document.querySelector('[data-cftc-date]').innerText = 'Not in server.py';
                 }
-                if(data.cftc_date) document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
-                
-                // Update Seasonal
+
+                // ── SEASONAL ──
                 if(data.seasonal_bias) document.querySelector('[data-seasonal]').innerText = data.seasonal_bias;
                 if(data.seasonal_month) document.querySelector('[data-seasonal-month]').innerText = data.seasonal_month;
                 if(data.seasonal_value) document.querySelector('[data-seasonal-value]').innerText = data.seasonal_value;
-                
-                // Update CME MAX PAIN - FIXED
+
+                // ── CME MAX PAIN ──
                 if(data.cme_max_pain) document.querySelector('[data-maxpain]').innerText = '$' + data.cme_max_pain;
-                
-                // Update Retail Sentiment - FIXED
-                if(data.retail_long !== undefined) document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
-                if(data.retail_short !== undefined) document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short';
-                document.getElementById('retail-updated').innerText = data.time || 'Live';
-                
-                // Update AI Execution Panel
+
+                // ── RETAIL SENTIMENT: tampil N/A jika tidak ada ──
+                if(data.retail_long !== undefined){
+                    document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
+                    document.querySelector('[data-retail-long]').className = 'font-orbitron text-xl font-bold text-red-400';
+                } else {
+                    document.querySelector('[data-retail-long]').innerText = 'N/A';
+                    document.querySelector('[data-retail-long]').className = 'font-orbitron text-xl font-bold text-gray-500';
+                }
+                if(data.retail_short !== undefined){
+                    document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short';
+                    document.querySelector('[data-retail-short]').className = 'font-orbitron text-xl font-bold text-green-400';
+                } else {
+                    document.querySelector('[data-retail-short]').innerText = 'N/A';
+                    document.querySelector('[data-retail-short]').className = 'font-orbitron text-xl font-bold text-gray-500';
+                }
+                document.getElementById('retail-updated').innerText = data.updated || data.time || 'Live';
+
+                // ── AI EXECUTION PANEL ──
                 if(data.smc_active !== undefined){
                     document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
                     document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                 }
-                
-                if(data.prz_ready !== undefined){
-                    document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY' : 'Scanning';
-                    document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
+                // Gunakan bullish_engulfing untuk PRZ status
+                if(data.bullish_engulfing !== undefined){
+                    document.querySelector('[data-model="prz"]').innerText = data.bullish_engulfing ? 'ENGULF ✓' : 'Scanning';
+                    document.querySelector('[data-model="prz"]').className = data.bullish_engulfing ? 'font-bold text-green-400' : 'font-bold text-blue-400';
                 }
-                
-                // Update Time
-                if(data.time) document.querySelector('[data-time]').innerText = data.time;
-                if(data.cftc_date) document.querySelector('[data-cot-update]').innerText = data.cftc_date;
+
+                // ── TIME ──
+                const timeStr = data.updated || data.time || '--:--:--';
+                document.querySelector('[data-time]').innerText = timeStr;
+                document.querySelector('[data-cot-update]').innerText = data.cftc_date || 'N/A';
                 
                 // Update AI Signals page
                 if(data.signal_status){
