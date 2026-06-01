@@ -1,33 +1,25 @@
 {
   "zones": [
     {
-      "type": "buy_side",
-      "price": 4465.135,
-      "time": "2026-05-28 05:00",
-      "strength": 5,
-      "status": "active",
-      "swept": false
-    },
-    {
-      "type": "sell_side",
-      "price": 4453.413,
-      "time": "2026-05-20 10:00",
-      "strength": 5,
-      "status": "active",
-      "swept": false
-    },
-    {
       "type": "sell_side",
       "price": 4466.963,
       "time": "2026-05-20 21:00",
       "strength": 5,
-      "status": "swept",
-      "swept": true
+      "status": "active",
+      "swept": false
     },
     {
       "type": "sell_side",
       "price": 4482.193,
       "time": "2026-05-27 01:00",
+      "strength": 5,
+      "status": "swept",
+      "swept": true
+    },
+    {
+      "type": "buy_side",
+      "price": 4465.135,
+      "time": "2026-05-28 05:00",
       "strength": 5,
       "status": "swept",
       "swept": true
@@ -39,9 +31,17 @@
       "strength": 5,
       "status": "swept",
       "swept": true
+    },
+    {
+      "type": "sell_side",
+      "price": 4488.97,
+      "time": "2026-05-29 06:00",
+      "strength": 5,
+      "status": "swept",
+      "swept": true
     }
   ],
-  "updated": "2026-06-01 22:00 WIB",
+  "updated": "2026-06-01 23:00 WIB",
   "symbol": "XAUUSDc",
-  "current_price": 4459.84
+  "current_price": 4474.29
 }
