@@ -1,43 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>XAUUSD Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-</head>
-<body class="bg-gray-950 text-white p-8">
-  <h1 class="text-4xl font-bold text-yellow-400 mb-8">XAUUSD Analytics Dashboard</h1>
-  
-  <div class="grid grid-cols-3 gap-6 mb-8">
-    <div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
-      <div class="text-gray-400">Harga Sekarang</div>
-      <div class="text-3xl font-bold text-green-400">$2,847.32</div>
-    </div>
-    <div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
-      <div class="text-gray-400">Prediksi AI 4H</div>
-      <div class="text-3xl font-bold text-green-400">$2,861.10 ▲ 1.2%</div>
-    </div>
-    <div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
-      <div class="text-gray-400">Akurasi Model</div>
-      <div class="text-3xl font-bold text-yellow-400">87.3%</div>
-    </div>
-  </div>
+<meta charset="UTF-8">
+<title>XAUUSD Analytics Dashboard</title>
 
-  <div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
-    <div id="chart"></div>
-  </div>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+</head>
+
+<body class="bg-gray-950 text-white p-8">
+
+<h1 class="text-4xl font-bold text-yellow-400 mb-8">
+XAUUSD Analytics Dashboard
+</h1>
+
+<div class="grid grid-cols-4 gap-6 mb-8">
+
+<div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
+<div class="text-gray-400">Harga Sekarang</div>
+<div id="price" class="text-3xl font-bold text-green-400">
+Loading...
+</div>
+</div>
+
+<div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
+<div class="text-gray-400">Bias</div>
+<div id="bias" class="text-3xl font-bold text-yellow-400">
+Loading...
+</div>
+</div>
+
+<div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
+<div class="text-gray-400">EMA50</div>
+<div id="ema" class="text-3xl font-bold text-blue-400">
+Loading...
+</div>
+</div>
+
+<div class="bg-gray-900 p-6 rounded-xl border border-yellow-500/20">
+<div class="text-gray-400">Bullish Engulfing</div>
+<div id="engulf" class="text-3xl font-bold text-purple-400">
+Loading...
+</div>
+</div>
+
+</div>
+
+<div class="bg-gray-900 rounded-xl p-6 border border-yellow-500/20">
+
+<div id="chart"></div>
+
+</div>
 
 <script>
-  var options = {
-    chart: { type: 'line', height: 400, foreColor: '#9CA3AF' },
-    series: [{ name: 'XAUUSD', data: [2810, 2825, 2830, 2847, 2855] }],
-    xaxis: { categories: ['Senin','Selasa','Rabu','Kamis','Jumat'] },
-    colors: ['#FBBF24'],
-    theme: { mode: 'dark' }
-  }
-  var chart = new ApexCharts(document.querySelector("#chart"), options);
-  chart.render();
+
+const API_URL =
+"https://strut-gladly-sliver.ngrok-free.dev/api"
+
+let priceHistory = []
+
+var options = {
+
+chart: {
+
+type: "line",
+
+height: 400,
+
+foreColor:"#9CA3AF"
+
+},
+
+series:[{
+
+name:"XAUUSD",
+
+data:[]
+
+}],
+
+xaxis:{
+
+categories:[]
+
+},
+
+colors:["#FBBF24"],
+
+theme:{
+
+mode:"dark"
+
+}
+
+}
+
+var chart = new ApexCharts(
+
+document.querySelector("#chart"),
+
+options
+
+)
+
+chart.render()
+
+async function updateData(){
+
+try{
+
+const response = await fetch(
+
+API_URL
+
+)
+
+const data = await response.json()
+
+document.getElementById(
+
+"price"
+
+).innerText =
+
+"$" + data.close
+
+document.getElementById(
+
+"bias"
+
+).innerText =
+
+data.bias
+
+document.getElementById(
+
+"ema"
+
+).innerText =
+
+data.ema50
+
+document.getElementById(
+
+"engulf"
+
+).innerText =
+
+data.bullish_engulfing
+? "YES"
+: "NO"
+
+priceHistory.push(
+
+data.close
+
+)
+
+if(priceHistory.length > 20){
+
+priceHistory.shift()
+
+}
+
+chart.updateSeries([{
+
+data: priceHistory
+
+}])
+
+chart.updateOptions({
+
+xaxis:{
+
+categories:
+
+priceHistory.map(
+
+(_,i)=>i+1
+
+)
+
+}
+
+})
+
+}catch(err){
+
+console.log(err)
+
+}
+
+}
+
+updateData()
+
+setInterval(
+
+updateData,
+
+60000
+
+)
+
 </script>
+
 </body>
 </html>
