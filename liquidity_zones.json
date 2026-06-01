@@ -2,6 +2,14 @@
   "zones": [
     {
       "type": "sell_side",
+      "price": 4482.193,
+      "time": "2026-05-27 01:00",
+      "strength": 5,
+      "status": "swept",
+      "swept": true
+    },
+    {
+      "type": "sell_side",
       "price": 4488.395,
       "time": "2026-05-21 20:00",
       "strength": 5,
@@ -26,22 +34,14 @@
     },
     {
       "type": "sell_side",
-      "price": 4482.193,
-      "time": "2026-05-27 01:00",
+      "price": 4466.963,
+      "time": "2026-05-20 21:00",
       "strength": 5,
       "status": "active",
       "swept": false
-    },
-    {
-      "type": "sell_side",
-      "price": 4507.212,
-      "time": "2026-05-22 12:00",
-      "strength": 5,
-      "status": "swept",
-      "swept": true
     }
   ],
-  "updated": "2026-06-02 02:00 WIB",
+  "updated": "2026-06-02 03:00 WIB",
   "symbol": "XAUUSDc",
-  "current_price": 4487.53
+  "current_price": 4481.11
 }
