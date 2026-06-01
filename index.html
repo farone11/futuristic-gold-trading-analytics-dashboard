@@ -15,64 +15,15 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         .transition-all { transition: all 0.3s ease; }
         .hidden { display: none!important; }
-
-        /* Ngrok Config Panel */
-        #ngrok-bar {
-            background: #0f0f1a;
-            border-bottom: 1px solid rgba(234,179,8,0.2);
-            padding: 8px 32px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        #ngrok-bar input {
-            background: #13131f;
-            border: 1px solid rgba(234,179,8,0.3);
-            color: #facc15;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            width: 380px;
-            outline: none;
-        }
-        #ngrok-bar input:focus { border-color: rgba(234,179,8,0.7); }
-        #ngrok-bar button {
-            background: rgba(234,179,8,0.15);
-            border: 1px solid rgba(234,179,8,0.4);
-            color: #facc15;
-            padding: 4px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        #ngrok-bar button:hover { background: rgba(234,179,8,0.25); }
-        #api-status-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: #6b7280;
-            flex-shrink: 0;
-        }
-        #api-status-dot.connected { background: #22c55e; animation: pulse 2s infinite; }
-        #api-status-dot.error { background: #ef4444; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
-
-    <!-- ===== NGROK CONFIG BAR ===== -->
-    <div id="ngrok-bar">
-        <div id="api-status-dot"></div>
-        <span style="font-size:11px;color:#6b7280;white-space:nowrap;">API URL:</span>
-        <input type="text" id="ngrok-input" placeholder="https://xxxx-xx-xxx-xx.ngrok-free.app  (kosongkan = localhost:5000)" />
-        <button onclick="applyNgrokUrl()">Apply</button>
-        <span id="ngrok-status-text" style="font-size:11px;color:#6b7280;">Belum connect</span>
-    </div>
-
     <div class="flex h-screen">
 
         <!-- SIDEBAR -->
-        <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6 flex-shrink-0">
+        <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
             <div class="flex items-center gap-4 mb-10">
-                <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain" onerror="this.style.display='none'">
+                <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain">
                 <div>
                     <h1 class="font-orbitron font-black text-2xl glow-gold">FARONE</h1>
                     <p class="text-sm text-yellow-400 font-semibold tracking-widest">GOLD AI</p>
@@ -89,21 +40,13 @@
                 <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Liquidity Zones</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 cursor-not-allowed opacity-50">
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
                     <span>Risk Engine</span>
                 </a>
                 <a href="#" onclick="showPage('signals')" id="nav-signals" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>AI Signals</span>
                 </a>
             </nav>
-
-            <!-- Debug info sidebar -->
-            <div class="mt-8 pt-4 border-t border-gray-800">
-                <p class="text-xs text-gray-600 mb-1">EMA50: <span id="dbg-ema50">--</span></p>
-                <p class="text-xs text-gray-600 mb-1">Range H1: <span id="dbg-range">--</span></p>
-                <p class="text-xs text-gray-600 mb-1">Engulfing: <span id="dbg-engulf">--</span></p>
-                <p class="text-xs text-gray-600">Volume: <span id="dbg-vol">--</span></p>
-            </div>
         </div>
 
         <!-- MAIN CONTENT -->
@@ -120,72 +63,67 @@
                     <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
                     <div class="flex items-center gap-2 mt-3">
                         <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
-                        <span class="text-sm text-green-400" id="status-text">Waiting for connection...</span>
+                        <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
                     </div>
                 </div>
 
-                <!-- DISCLAIMER -->
+                <!-- DISCLAIMER ENGLISH -->
                 <div class="mb-6 bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-3">
                     <p class="text-xs text-yellow-400/80">
                         <strong>DISCLAIMER:</strong> This dashboard is for informational and educational purposes only.
                         Trading forex, CFDs, and gold involves substantial risk of loss and is not suitable for every investor.
                         Past performance is not indicative of future results. AI signals are not financial advice.
+                        You should carefully consider whether trading is suitable for you in light of your circumstances, knowledge, and financial resources.
                         FARONE.AI does not guarantee profits and is not responsible for any trading losses.
                     </p>
                 </div>
 
                 <!-- STATS GRID - 7 CARD -->
                 <div class="grid grid-cols-7 gap-4 mb-8">
-                    <!-- PRICE — dari field "close" -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" id="card-price">$----.--</h2>
-                        <p class="text-xs text-gray-500 mt-2">H1 Close · MT5 Live</p>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
+                        <p class="text-xs text-gray-500 mt-2">Live Update</p>
                     </div>
 
-                    <!-- BIAS — dari field "bias" -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" id="card-bias">STANDBY</h2>
-                        <p class="text-xs text-gray-500 mt-2">vs EMA50: <span id="card-ema50">--</span></p>
+                        <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
+                        <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
 
-                    <!-- CFTC — statis, MT5 tidak provide ini -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CFTC NET</p>
-                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" id="card-cftc-net">N/A</h2>
-                        <p class="text-xs text-gray-500 mt-2 italic">Requires COT feed</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
+                        <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
                     </div>
 
-                    <!-- SEASONAL — statis -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SEASONAL BIAS</p>
-                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" id="card-seasonal">NEUTRAL</h2>
-                        <p class="text-xs text-gray-500 mt-2"><span id="card-seasonal-month">--</span>: <span id="card-seasonal-value">+0.00</span> avg</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-seasonal>NEUTRAL</h2>
+                        <p class="text-xs text-gray-500 mt-2"><span data-seasonal-month>May</span>: <span data-seasonal-value>+1.75</span> avg</p>
                     </div>
 
-                    <!-- DAILY RISK — statis -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">DAILY RISK</p>
                         <h2 class="font-orbitron text-3xl font-bold text-yellow-400">1.2%</h2>
                         <p class="text-xs text-gray-500 mt-2">Inst. Allocation</p>
                     </div>
 
-                    <!-- H1 RANGE — dari field "range" -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
-                        <p class="text-gray-400 text-xs mb-2">H1 RANGE</p>
-                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" id="card-range">--</h2>
-                        <p class="text-xs text-gray-500 mt-2">High - Low candle</p>
+                        <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
+                        <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-maxpain>$4525</h2>
+                        <p class="text-xs text-gray-500 mt-2">MarketBulls</p>
                     </div>
 
-                    <!-- BULLISH ENGULFING — dari field "bullish_engulfing" -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <div class="flex justify-between items-start mb-2">
-                            <p class="text-gray-400 text-xs">ENGULFING PATTERN</p>
-                            <span class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">H1</span>
+                            <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
+                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
                         </div>
-                        <h2 class="font-orbitron text-xl font-bold" id="card-engulf-label">--</h2>
-                        <p class="text-xs text-gray-600 mt-2" id="card-updated">Loading...</p>
+                        <h2 class="font-orbitron text-xl font-bold text-red-400" data-retail-long>--% Long</h2>
+                        <h2 class="font-orbitron text-xl font-bold text-green-400" data-retail-short>--% Short</h2>
+                        <p class="text-xs text-gray-600 mt-2" id="retail-updated">Loading...</p>
                     </div>
                 </div>
 
@@ -219,49 +157,29 @@
 
                             <div class="flex items-center justify-between">
                                 <span class="text-white">SMC Engine</span>
-                                <span class="font-bold text-yellow-400" id="model-smc">Standby</span>
+                                <span class="font-bold text-yellow-400" data-model="smc">Standby</span>
                             </div>
 
                             <div class="flex items-center justify-between">
                                 <span class="text-white">PRZ Scanner</span>
-                                <span class="font-bold text-blue-400" id="model-prz">Scanning</span>
+                                <span class="font-bold text-blue-400" data-model="prz">Scanning</span>
                             </div>
 
                             <div class="flex items-center justify-between">
                                 <span class="text-white">Liquidity Sweep</span>
-                                <span class="font-bold text-blue-400" id="model-liquidity">Monitoring</span>
+                                <span class="font-bold text-blue-400" data-model="liquidity">Monitoring</span>
                             </div>
 
                             <div class="flex items-center justify-between">
                                 <span class="text-white">Risk AI</span>
-                                <span class="font-bold text-green-400" id="model-risk">Protected</span>
-                            </div>
-
-                            <!-- OHLCV mini panel -->
-                            <div class="pt-4 border-t border-gray-800 space-y-1">
-                                <div class="flex justify-between text-xs">
-                                    <span class="text-gray-500">Open</span>
-                                    <span class="text-gray-300" id="ohlc-open">--</span>
-                                </div>
-                                <div class="flex justify-between text-xs">
-                                    <span class="text-gray-500">High</span>
-                                    <span class="text-green-400" id="ohlc-high">--</span>
-                                </div>
-                                <div class="flex justify-between text-xs">
-                                    <span class="text-gray-500">Low</span>
-                                    <span class="text-red-400" id="ohlc-low">--</span>
-                                </div>
-                                <div class="flex justify-between text-xs">
-                                    <span class="text-gray-500">Close</span>
-                                    <span class="text-yellow-400" id="ohlc-close">--</span>
-                                </div>
+                                <span class="font-bold text-green-400" data-model="risk">Protected</span>
                             </div>
                         </div>
 
-                        <div class="mt-4 pt-4 border-t border-gray-800">
-                            <p class="text-xs text-gray-500">Last Update: <span id="panel-time">--:--:--</span></p>
-                            <p class="text-xs text-gray-600 mt-1">Symbol: <span id="panel-symbol">--</span></p>
-                            <p class="text-xs text-gray-600 mt-1">Timeframe: <span id="panel-tf">--</span></p>
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">Retail Lots: <span id="retail-lots">-</span></p>
                         </div>
                     </div>
                 </div>
@@ -292,7 +210,7 @@
 
                 <div id="liq-table" class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
-                    <div id="liq-empty" class="text-center text-gray-500 py-8">No liquidity data. Run mt5_liquidity.py</div>
+                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data. Run mt5_liquidity.py</div>
                     <table class="w-full text-sm">
                         <thead class="text-gray-400 border-b border-gray-800">
                             <tr>
@@ -311,7 +229,7 @@
             <!-- PAGE: AI SIGNALS -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
-                <p class="text-gray-400 mb-6">Signals berdasarkan data MT5 live: EMA50 bias + Bullish Engulfing pattern</p>
+                <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine: Maxwell AI + OB + Liquidity + COT + Seasonal</p>
 
                 <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">Current Signal</h3>
@@ -321,20 +239,20 @@
                             <div id="sig-page-status" class="font-orbitron text-3xl font-bold text-yellow-400">STANDBY</div>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs mb-2">CLOSE</p>
+                            <p class="text-gray-400 text-xs mb-2">ENTRY</p>
                             <div id="sig-page-entry" class="font-orbitron text-3xl font-bold text-white">----.--</div>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs mb-2">EMA 50</p>
-                            <div id="sig-page-sl" class="font-orbitron text-3xl font-bold text-blue-400">----.--</div>
+                            <p class="text-gray-400 text-xs mb-2">STOP LOSS</p>
+                            <div id="sig-page-sl" class="font-orbitron text-3xl font-bold text-red-400">----.--</div>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs mb-2">HIGH</p>
+                            <p class="text-gray-400 text-xs mb-2">TAKE PROFIT 1</p>
                             <div id="sig-page-tp1" class="font-orbitron text-3xl font-bold text-green-400">----.--</div>
                         </div>
                         <div>
-                            <p class="text-gray-400 text-xs mb-2">LOW</p>
-                            <div id="sig-page-tp2" class="font-orbitron text-3xl font-bold text-red-400">----.--</div>
+                            <p class="text-gray-400 text-xs mb-2">TAKE PROFIT 2</p>
+                            <div id="sig-page-tp2" class="font-orbitron text-3xl font-bold text-green-400">----.--</div>
                         </div>
                     </div>
                     <div class="pt-6 border-t border-gray-800 text-center">
@@ -351,11 +269,13 @@
                         <div class="flex-1 text-xs text-gray-600">
                             <p class="mb-2">
                                 <strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.
-                                Before deciding to trade, you should carefully consider your investment objectives, level of experience, and risk appetite.
+                                The high degree of leverage can work against you as well as for you. Before deciding to trade, you should carefully consider your investment objectives,
+                                level of experience, and risk appetite.
                             </p>
                             <p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p>
                         </div>
-                        <div class="md:text-right">
+
+                        <div class="md:text-right md:min-w-">
                             <p class="text-xs text-gray-500 mb-1">Authors</p>
                             <p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p>
                             <p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p>
@@ -407,236 +327,100 @@
             const target = document.getElementById('page-' + pageId);
             if (target) target.classList.remove('hidden');
 
-            ['dashboard', 'liquidity-zones', 'signals'].forEach(id => {
-                const el = document.getElementById('nav-' + id);
-                if (el) el.className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
-            });
+            document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            document.getElementById('nav-liquidity-zones').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            document.getElementById('nav-signals').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             const activeNav = document.getElementById('nav-' + pageId);
             if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
         }
     </script>
 
-    <!-- =============================================
-         LIVE DATA — CONNECT TO FLASK/MT5 API
-         
-         Field mapping dari server.py:
-           data.close       → harga penutupan H1
-           data.open        → open H1
-           data.high        → high H1
-           data.low         → low H1
-           data.volume      → tick volume
-           data.ema50       → EMA 50
-           data.bias        → "BULLISH" / "BEARISH"
-           data.bullish_engulfing → true/false
-           data.range       → high - low
-           data.updated     → timestamp string
-           data.symbol      → nama symbol
-           data.timeframe   → "H1"
-    ============================================= -->
+    <!-- LIVE DATA DARI FLASK + MARKETBULLS -->
     <script>
-        // ==========================================
-        // API URL MANAGEMENT
-        // ==========================================
-
-        // Cek localStorage apakah sudah pernah disimpan URL ngrok
-        let API_BASE = localStorage.getItem('farone_api_url') || 'http://localhost:5000';
-        
-        // Tampilkan di input box
-        const ngrokInput = document.getElementById('ngrok-input');
-        if (API_BASE !== 'http://localhost:5000') {
-            ngrokInput.value = API_BASE;
-        }
-
-        function getApiUrl() {
-            return API_BASE.replace(/\/$/, '') + '/api';
-        }
-
-        function applyNgrokUrl() {
-            const val = ngrokInput.value.trim();
-            if (!val) {
-                API_BASE = 'http://localhost:5000';
-            } else {
-                // Hapus /api di akhir kalau ada
-                API_BASE = val.replace(/\/api$/, '').replace(/\/$/, '');
-            }
-            localStorage.setItem('farone_api_url', API_BASE);
-            document.getElementById('ngrok-status-text').innerText = 'Testing connection...';
-            updateDashboard();
-        }
-
-        // Enter key pada input
-        ngrokInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') applyNgrokUrl();
-        });
-
-        // ==========================================
-        // SEASONAL DATA (statis per bulan)
-        // ==========================================
-        const SEASONAL_DATA = {
-            1:  { bias: 'BULLISH',  value: '+2.31' },
-            2:  { bias: 'BULLISH',  value: '+1.87' },
-            3:  { bias: 'NEUTRAL',  value: '+0.42' },
-            4:  { bias: 'BULLISH',  value: '+1.15' },
-            5:  { bias: 'BULLISH',  value: '+1.75' },
-            6:  { bias: 'BEARISH',  value: '-0.88' },
-            7:  { bias: 'NEUTRAL',  value: '+0.21' },
-            8:  { bias: 'BULLISH',  value: '+2.10' },
-            9:  { bias: 'BULLISH',  value: '+1.93' },
-            10: { bias: 'NEUTRAL',  value: '-0.15' },
-            11: { bias: 'BEARISH',  value: '-1.22' },
-            12: { bias: 'BULLISH',  value: '+1.55' }
-        };
-        const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-        function updateSeasonalCard() {
-            const month = new Date().getMonth() + 1;
-            const s = SEASONAL_DATA[month];
-            document.getElementById('card-seasonal').innerText = s.bias;
-            document.getElementById('card-seasonal').className = 'font-orbitron text-2xl font-bold ' +
-                (s.bias === 'BULLISH' ? 'text-green-400' : s.bias === 'BEARISH' ? 'text-red-400' : 'text-yellow-400');
-            document.getElementById('card-seasonal-month').innerText = MONTH_NAMES[month - 1];
-            document.getElementById('card-seasonal-value').innerText = s.value;
-        }
-        updateSeasonalCard();
-
-        // ==========================================
-        // MAIN UPDATE FUNCTION
-        // ==========================================
+        const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
 
         async function updateDashboard() {
-            const dot = document.getElementById('api-status-dot');
-            const statusText = document.getElementById('status-text');
-            const ngrokStatusText = document.getElementById('ngrok-status-text');
-
             try {
-                const res = await fetch(getApiUrl(), {
-                    headers: { 'ngrok-skip-browser-warning': 'true' }   // bypass ngrok interstitial page
-                });
-
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-
+                const res = await fetch(API_URL);
                 const data = await res.json();
-
-                // — Connection OK —
-                dot.className = 'connected';
-                ngrokStatusText.innerText = '✓ Connected · ' + API_BASE.replace('http://','').replace('https://','').split('/')[0];
-
-                // Status bar
-                if (data.status === 'loading') {
-                    statusText.innerText = 'MT5 connected · Building snapshot...';
-                    statusText.className = 'text-sm text-yellow-400';
-                    return; // tunggu data siap
+                
+                if(data.error) {
+                    document.getElementById('status-text').innerText = 'MT5 Error: ' + data.error;
+                    document.getElementById('status-text').className = 'text-sm text-red-400';
+                    // TETEP UPDATE DATA MARKETBULLS WALAU MT5 ERROR
+                } else {
+                    // Update Status
+                    const statusEl = document.getElementById('status-text');
+                    statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.time}`;
+                    statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
                 }
-
-                statusText.innerText = `Live MT5 · ${data.symbol || 'XAUUSD'} ${data.timeframe || 'H1'} · Bias: ${data.bias || '--'} · ${data.updated || ''}`;
-                statusText.className = (data.bias === 'BULLISH') ? 'text-sm text-green-400' : 'text-sm text-red-400';
-
-                // ====== PRICE CARD ======
-                // field dari server.py: "close"
-                if (data.close !== undefined) {
-                    document.getElementById('card-price').innerText = '$' + parseFloat(data.close).toFixed(2);
+                
+                // Update Price
+                if(data.price) document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                
+                // Update Smart Money Bias
+                if(data.bias){
+                    document.querySelector('[data-bias]').innerText = data.bias;
+                    document.querySelector('[data-bias]').className = data.bias === 'BULLISH' ? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
                 }
-
-                // ====== BIAS CARD ======
-                if (data.bias) {
-                    const biasEl = document.getElementById('card-bias');
-                    biasEl.innerText = data.bias;
-                    biasEl.className = 'font-orbitron text-3xl font-bold ' +
-                        (data.bias === 'BULLISH' ? 'text-green-400' : 'text-red-400');
+                if(data.smi) document.querySelector('[data-smi]').innerText = data.smi;
+                
+                // Update CFTC NET - FIXED
+                if(data.cftc_net !== undefined){
+                    document.querySelector('[data-cftc-net]').innerText = data.cftc_net.toLocaleString();
                 }
-                if (data.ema50 !== undefined) {
-                    document.getElementById('card-ema50').innerText = parseFloat(data.ema50).toFixed(2);
+                if(data.cftc_date) document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
+                
+                // Update Seasonal
+                if(data.seasonal_bias) document.querySelector('[data-seasonal]').innerText = data.seasonal_bias;
+                if(data.seasonal_month) document.querySelector('[data-seasonal-month]').innerText = data.seasonal_month;
+                if(data.seasonal_value) document.querySelector('[data-seasonal-value]').innerText = data.seasonal_value;
+                
+                // Update CME MAX PAIN - FIXED
+                if(data.cme_max_pain) document.querySelector('[data-maxpain]').innerText = '$' + data.cme_max_pain;
+                
+                // Update Retail Sentiment - FIXED
+                if(data.retail_long !== undefined) document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
+                if(data.retail_short !== undefined) document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short';
+                document.getElementById('retail-updated').innerText = data.time || 'Live';
+                
+                // Update AI Execution Panel
+                if(data.smc_active !== undefined){
+                    document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
+                    document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                 }
-
-                // ====== RANGE CARD ======
-                if (data.range !== undefined) {
-                    document.getElementById('card-range').innerText = parseFloat(data.range).toFixed(2);
+                
+                if(data.prz_ready !== undefined){
+                    document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY' : 'Scanning';
+                    document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
                 }
-
-                // ====== ENGULFING CARD ======
-                if (data.bullish_engulfing !== undefined) {
-                    const engulfEl = document.getElementById('card-engulf-label');
-                    if (data.bullish_engulfing) {
-                        engulfEl.innerText = '🟢 BULLISH';
-                        engulfEl.className = 'font-orbitron text-xl font-bold text-green-400';
-                    } else {
-                        engulfEl.innerText = '⬜ NONE';
-                        engulfEl.className = 'font-orbitron text-xl font-bold text-gray-500';
-                    }
+                
+                // Update Time
+                if(data.time) document.querySelector('[data-time]').innerText = data.time;
+                if(data.cftc_date) document.querySelector('[data-cot-update]').innerText = data.cftc_date;
+                
+                // Update AI Signals page
+                if(data.signal_status){
+                    document.getElementById('sig-page-status').innerText = data.signal_status;
+                    document.getElementById('sig-page-entry').innerText = data.entry ? data.entry.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-sl').innerText = data.sl ? data.sl.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp1').innerText = data.tp1 ? data.tp1.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp2').innerText = data.tp2 ? data.tp2.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-reason').innerText = data.reason || 'No confluence';
+                    document.getElementById('sig-page-updated').innerText = data.updated || data.time;
+                    
+                    const sigStatusEl = document.getElementById('sig-page-status');
+                    sigStatusEl.className = data.signal_status === 'BUY' ? 'font-orbitron text-3xl font-bold text-green-400' : data.signal_status === 'SELL' ? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
                 }
-
-                // ====== UPDATED TIME ======
-                if (data.updated) {
-                    document.getElementById('card-updated').innerText = data.updated;
-                    document.getElementById('panel-time').innerText = data.updated;
-                }
-
-                // ====== OHLCV MINI PANEL ======
-                if (data.open  !== undefined) document.getElementById('ohlc-open').innerText  = parseFloat(data.open).toFixed(2);
-                if (data.high  !== undefined) document.getElementById('ohlc-high').innerText  = parseFloat(data.high).toFixed(2);
-                if (data.low   !== undefined) document.getElementById('ohlc-low').innerText   = parseFloat(data.low).toFixed(2);
-                if (data.close !== undefined) document.getElementById('ohlc-close').innerText = parseFloat(data.close).toFixed(2);
-
-                // ====== AI PANEL INFO ======
-                if (data.symbol)    document.getElementById('panel-symbol').innerText = data.symbol;
-                if (data.timeframe) document.getElementById('panel-tf').innerText = data.timeframe;
-
-                // SMC Engine aktif jika bias ada
-                if (data.bias) {
-                    document.getElementById('model-smc').innerText = 'AKTIF';
-                    document.getElementById('model-smc').className = 'font-bold text-green-400';
-                }
-
-                // ====== SIDEBAR DEBUG ======
-                if (data.ema50   !== undefined) document.getElementById('dbg-ema50').innerText   = parseFloat(data.ema50).toFixed(2);
-                if (data.range   !== undefined) document.getElementById('dbg-range').innerText   = parseFloat(data.range).toFixed(2);
-                if (data.volume  !== undefined) document.getElementById('dbg-vol').innerText     = data.volume;
-                document.getElementById('dbg-engulf').innerText = data.bullish_engulfing ? 'YES ✓' : 'No';
-
-                // ====== AI SIGNALS PAGE ======
-                // Generate signal dari data MT5 yang tersedia
-                let signalStatus = 'STANDBY';
-                let signalReason = 'No confluence';
-
-                if (data.bias === 'BULLISH' && data.bullish_engulfing) {
-                    signalStatus = 'BUY';
-                    signalReason = '✓ Bias BULLISH (Close > EMA50) + Bullish Engulfing terkonfirmasi';
-                } else if (data.bias === 'BULLISH') {
-                    signalStatus = 'WATCH';
-                    signalReason = 'Bias BULLISH · Tunggu konfirmasi candle pattern';
-                } else if (data.bias === 'BEARISH') {
-                    signalStatus = 'CAUTION';
-                    signalReason = 'Bias BEARISH (Close < EMA50) · Hindari BUY';
-                }
-
-                document.getElementById('sig-page-status').innerText = signalStatus;
-                document.getElementById('sig-page-status').className = 'font-orbitron text-3xl font-bold ' +
-                    (signalStatus === 'BUY'     ? 'text-green-400' :
-                     signalStatus === 'CAUTION' ? 'text-red-400'   : 'text-yellow-400');
-
-                if (data.close !== undefined) document.getElementById('sig-page-entry').innerText = parseFloat(data.close).toFixed(2);
-                if (data.ema50 !== undefined) document.getElementById('sig-page-sl').innerText   = parseFloat(data.ema50).toFixed(2);
-                if (data.high  !== undefined) document.getElementById('sig-page-tp1').innerText  = parseFloat(data.high).toFixed(2);
-                if (data.low   !== undefined) document.getElementById('sig-page-tp2').innerText  = parseFloat(data.low).toFixed(2);
-
-                document.getElementById('sig-page-reason').innerText  = signalReason;
-                document.getElementById('sig-page-updated').innerText = data.updated || '--:--:--';
-
+                
             } catch (e) {
-                // — Connection ERROR —
-                dot.className = 'error';
-                const isLocalhost = API_BASE.includes('localhost');
-                statusText.innerText = isLocalhost
-                    ? 'Server offline · Jalankan: python server.py'
-                    : 'Tidak bisa connect · Cek URL ngrok di atas';
-                statusText.className = 'text-sm text-red-400';
-                ngrokStatusText.innerText = '✗ Error: ' + e.message;
-                console.warn('API Error:', e.message, '→', getApiUrl());
+                document.getElementById('status-text').innerText = 'Server mati - Pastin python main.py jalan';
+                document.getElementById('status-text').className = 'text-sm text-red-400';
+                console.log('Error:', e);
             }
         }
 
-        // Update setiap 5 detik (lebih masuk akal dari 2 detik)
-        setInterval(updateDashboard, 5000);
+        setInterval(updateDashboard, 2000);
         updateDashboard();
     </script>
 </body>
