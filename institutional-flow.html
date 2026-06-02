@@ -21,33 +21,31 @@
 </head>
 <body class="bg-[#0a0a0f] text-white">
     <div class="flex min-h-screen">
-        <!-- SIDEBAR -->
-        <div class="w-64 bg-[#0a0a0f] border-r border-yellow-900/20 p-4 fixed h-full">
-            <div class="mb-8">
-                <button class="mb-4 p-2 hover:bg-yellow-900/10 rounded-lg">
-                    <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center">
-                        <span class="font-orbitron font-black text-xl">F</span>
-                    </div>
-                    <div>
-                        <div class="font-orbitron font-bold text-white">FARONE</div>
-                        <div class="text-xs text-yellow-400">GOLD AI</div>
-                    </div>
-                </div>
+       <!-- SIDEBAR -->
+<div class="w-64 bg-[#0a0a0f] border-r border-yellow-900/20 p-4 fixed h-full">
+    <div class="mb-8">
+        <button class="mb-4 p-2 hover:bg-yellow-900/10 rounded-lg">
+            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+        <div class="flex items-center gap-3">
+            <img src="/logo.png" alt="FARONE" class="w-12 h-12 rounded-lg object-cover shadow-lg shadow-yellow-500/20">
+            <div>
+                <div class="font-orbitron font-bold text-white">FARONE</div>
+                <div class="text-xs text-yellow-400">GOLD AI</div>
             </div>
-            
-            <nav class="space-y-2">
-                <a href="/" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">Dashboard</a>
-                <a href="/institutional-flow" class="block px-4 py-3 rounded-lg sidebar-active text-yellow-400 font-semibold">Institutional Flow</a>
-                <a href="/liquidity-zones" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">Liquidity Zones</a>
-                <a href="/risk-engine" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">Risk Engine</a>
-                <a href="/ai-signals" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">AI Signals</a>
-            </nav>
         </div>
+    </div>
+    
+    <nav class="space-y-2">
+        <a href="/" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">Dashboard</a>
+        <a href="/institutional-flow" class="block px-4 py-3 rounded-lg sidebar-active text-yellow-400 font-semibold">Institutional Flow</a>
+        <a href="/liquidity-zones" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">Liquidity Zones</a>
+        <a href="/risk-engine" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">Risk Engine</a>
+        <a href="/ai-signals" class="block px-4 py-3 rounded-lg hover:bg-yellow-900/10 text-gray-300 hover:text-white">AI Signals</a>
+    </nav>
+</div>
 
         <!-- MAIN CONTENT -->
         <div class="ml-64 flex-1 p-8">
