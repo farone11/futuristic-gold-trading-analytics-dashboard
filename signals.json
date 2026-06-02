@@ -1,9 +1,9 @@
 {
-  "status": "STANDBY",
-  "entry": 0,
-  "sl": 0,
-  "tp1": 0,
-  "tp2": 0,
-  "reason": "No confluence",
-  "updated": "2026-06-02 18:00 WIB"
+  "status": "SELL",
+  "entry": 4524.65,
+  "sl": 4538.82,
+  "tp1": 4513.55,
+  "tp2": 4493.55,
+  "reason": "COT Extreme Long + Seasonal Bearish + OB Bearish",
+  "updated": "2026-06-02 19:00 WIB"
 }
