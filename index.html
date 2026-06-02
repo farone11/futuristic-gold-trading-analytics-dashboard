@@ -20,7 +20,7 @@
 <body class="bg-[#0a0a0f] text-white">
     <div class="flex h-screen">
 
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR - LOGO TETEP -->
         <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
             <div class="flex items-center gap-4 mb-10">
                 <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain">
@@ -226,12 +226,13 @@
                 </div>
             </div>
 
-            <!-- PAGE: AI SIGNALS -->
+            <!-- PAGE: AI SIGNALS - UPGRADE SUB ZONA -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
                 <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine: Maxwell AI + OB + Liquidity + COT + Seasonal</p>
 
-                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                <!-- CURRENT SIGNAL -->
+                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow mb-6">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">Current Signal</h3>
                     <div class="grid grid-cols-5 gap-4 text-center mb-6">
                         <div>
@@ -260,9 +261,66 @@
                         <p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p>
                     </div>
                 </div>
+
+                <!-- SUB ZONA: 5-LAYER CONFLUENCE -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">5-Layer Confluence</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Maxwell AI</span>
+                                <span id="cf-maxwell" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Order Block H1</span>
+                                <span id="cf-ob" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Liquidity Sweep</span>
+                                <span id="cf-liq" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">COT Institutional</span>
+                                <span id="cf-cot" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Seasonal Bias</span>
+                                <span id="cf-season" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-800">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-400">Confluence Score</span>
+                                <span id="cf-score" class="text-lg font-bold text-white">0/5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Setup Details</h3>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <div class="text-gray-400">RR Ratio</div>
+                                <div id="setup-rr" class="text-white font-bold text-lg">-</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Timeframe</div>
+                                <div id="setup-tf" class="text-white font-bold text-lg">M15</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Session</div>
+                                <div id="setup-session" class="text-white font-bold text-lg">-</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Win Rate</div>
+                                <div id="setup-wr" class="text-white font-bold text-lg">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- FOOTER -->
+            <!-- FOOTER - TETEP -->
             <div class="px-8 pb-8">
                 <div class="mt-8 border-t border-gray-800 pt-4">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
@@ -335,9 +393,22 @@
         }
     </script>
 
-    <!-- LIVE DATA DARI TAILSCALE FUNNEL -->
+    <!-- LIVE DATA DARI TAILSCALE FUNNEL - UPDATE signal_meta -->
     <script>
         const API_URL = 'https://desktop-u6fj6m8.tail379038.ts.net/api';
+
+        function updateConfluenceBadge(id, active) {
+            const el = document.getElementById(id);
+            if(el) {
+                if(active) {
+                    el.textContent = 'ACTIVE';
+                    el.className = 'px-3 py-1 rounded text-xs bg-green-600 text-white';
+                } else {
+                    el.textContent = 'WAIT';
+                    el.className = 'px-3 py-1 rounded text-xs bg-gray-700';
+                }
+            }
+        }
 
         async function updateDashboard() {
             try {
@@ -373,9 +444,6 @@
                 if(data.cftc_net !== undefined){
                     document.querySelector('[data-cftc-net]').innerText = parseFloat(data.cftc_net).toLocaleString();
                     document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
-                } else {
-                    document.querySelector('[data-cftc-net]').innerText = 'N/A';
-                    document.querySelector('[data-cftc-date]').innerText = 'Not in server.py';
                 }
 
                 // ── SEASONAL ──
@@ -390,16 +458,10 @@
                 if(data.retail_long !== undefined){
                     document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
                     document.querySelector('[data-retail-long]').className = 'font-orbitron text-xl font-bold text-red-400';
-                } else {
-                    document.querySelector('[data-retail-long]').innerText = 'N/A';
-                    document.querySelector('[data-retail-long]').className = 'font-orbitron text-xl font-bold text-gray-500';
                 }
                 if(data.retail_short !== undefined){
                     document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short';
                     document.querySelector('[data-retail-short]').className = 'font-orbitron text-xl font-bold text-green-400';
-                } else {
-                    document.querySelector('[data-retail-short]').innerText = 'N/A';
-                    document.querySelector('[data-retail-short]').className = 'font-orbitron text-xl font-bold text-gray-500';
                 }
                 document.getElementById('retail-updated').innerText = data.updated || data.time || 'Live';
 
@@ -408,9 +470,9 @@
                     document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
                     document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                 }
-                if(data.bullish_engulfing !== undefined){
-                    document.querySelector('[data-model="prz"]').innerText = data.bullish_engulfing ? 'ENGULF ✓' : 'Scanning';
-                    document.querySelector('[data-model="prz"]').className = data.bullish_engulfing ? 'font-bold text-green-400' : 'font-bold text-blue-400';
+                if(data.prz_ready !== undefined){
+                    document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY ✓' : 'Scanning';
+                    document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
                 }
 
                 // ── TIME ──
@@ -418,22 +480,47 @@
                 document.querySelector('[data-time]').innerText = timeStr;
                 document.querySelector('[data-cot-update]').innerText = data.cftc_date || 'N/A';
                 
-                // Update AI Signals page
-                if(data.signal_status){
-                    document.getElementById('sig-page-status').innerText = data.signal_status;
-                    document.getElementById('sig-page-entry').innerText = data.entry ? data.entry.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-sl').innerText = data.sl ? data.sl.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-tp1').innerText = data.tp1 ? data.tp1.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-tp2').innerText = data.tp2 ? data.tp2.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-reason').innerText = data.reason || 'No confluence';
-                    document.getElementById('sig-page-updated').innerText = data.updated || data.time;
-                    
+                // ── AI SIGNALS PAGE - PAKAI signal_meta ──
+                const meta = data.signal_meta || {};
+                
+                if(meta.status){
                     const sigStatusEl = document.getElementById('sig-page-status');
-                    sigStatusEl.className = data.signal_status === 'BUY' ? 'font-orbitron text-3xl font-bold text-green-400' : data.signal_status === 'SELL' ? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
+                    sigStatusEl.innerText = meta.status;
+                    sigStatusEl.className = meta.status === 'BUY' ? 'font-orbitron text-3xl font-bold text-green-400' : 
+                                           meta.status === 'SELL' ? 'font-orbitron text-3xl font-bold text-red-400' : 
+                                           'font-orbitron text-3xl font-bold text-yellow-400';
+                    
+                    document.getElementById('sig-page-entry').innerText = meta.entry ? meta.entry.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-sl').innerText = meta.sl ? meta.sl.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp1').innerText = meta.tp1 ? meta.tp1.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp2').innerText = meta.tp2 ? meta.tp2.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-reason').innerText = meta.reason || 'No confluence';
+                    document.getElementById('sig-page-updated').innerText = data.updated || data.time;
                 }
                 
+                // ── SUB ZONA: 5-LAYER CONFLUENCE ──
+                if(meta.confluence){
+                    updateConfluenceBadge('cf-maxwell', meta.confluence.maxwell_ai);
+                    updateConfluenceBadge('cf-ob', meta.confluence.order_block);
+                    updateConfluenceBadge('cf-liq', meta.confluence.liquidity);
+                    updateConfluenceBadge('cf-cot', meta.confluence.cot);
+                    updateConfluenceBadge('cf-season', meta.confluence.seasonal);
+                }
+                
+                // ── CONFLUENCE SCORE ──
+                const scoreEl = document.getElementById('cf-score');
+                if(scoreEl && meta.confluence_score !== undefined){
+                    scoreEl.innerText = `${meta.confluence_score}/5`;
+                    scoreEl.className = meta.confluence_score >= 4 ? 'text-lg font-bold text-green-400' : 'text-lg font-bold text-yellow-400';
+                }
+                
+                // ── ACTIVE SETUP DETAILS ──
+                if(meta.rr_ratio !== undefined) document.getElementById('setup-rr').innerText = meta.rr_ratio + 'R';
+                if(meta.timeframe) document.getElementById('setup-tf').innerText = meta.timeframe;
+                if(meta.session) document.getElementById('setup-session').innerText = meta.session;
+                
             } catch (e) {
-                document.getElementById('status-text').innerText = 'Server mati - Pastin python server.py jalan + tailscale funnel 5000';
+                document.getElementById('status-text').innerText = 'Server mati - Pastin python main.py jalan + tailscale funnel 5000';
                 document.getElementById('status-text').className = 'text-sm text-red-400';
                 console.log('Error:', e);
             }
