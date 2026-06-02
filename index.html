@@ -2,9 +2,10 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <title>FARONE GOLD AI — FUTURISTIC</title>
+    <link rel="icon" href="/logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FARONE GOLD AI — FUTURISTIC GOLD TRADING ANALYTICS</title>
-    <link rel="icon" href="/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -22,7 +23,7 @@
      .progress-bg { background: #1a1a2e; }
     </style>
 </head>
-<body class="bg-[#0a0f] text-white">
+<body class="bg-[#0a0a0f] text-white">
     <button id="sidebarToggle" class="fixed top-5 left-5 z-[999] bg-[#1a1a2e] border border-yellow-500/50 text-yellow-400 text-2xl w-12 h-12 rounded-lg hover:bg-yellow-500 hover:text-black transition-all shadow-lg">☰</button>
 
     <div class="flex h-screen">
@@ -33,6 +34,7 @@
                     <h1 class="font-orbitron font-black text-2xl glow-gold">FARONE</h1>
                     <p class="text-sm text-yellow-400 font-semibold tracking-widest">GOLD AI</p>
                 </div>
+            </div>
             <nav class="space-y-2">
                 <a href="#" onclick="showPage('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400"><span>Dashboard</span></a>
                 <a href="#" onclick="showPage('institutional-flow')" id="nav-institutional-flow" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>Institutional Flow</span></a>
@@ -87,7 +89,7 @@
                 </div>
             </div>
 
-            <!-- INSTITUTIONAL FLOW -->
+            <!-- INSTITUTIONAL FLOW - BARU DITAMBAH -->
             <div id="page-institutional-flow" class="dashboard-page hidden p-8">
                 <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">Institutional Flow Analysis</h1>
                 <div class="flex items-center gap-2 mb-8">
@@ -130,6 +132,19 @@
                         <p class="text-xs text-gray-600 text-center" id="flow-smi-updated">Updated: --:--:--</p>
                     </div>
                 </div>
+                <div class="mt-12 border-t border-gray-800 pt-6">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                        <div class="flex-1 text-xs text-gray-600">
+                            <p class="mb-2"><strong>Risk Warning:</strong> Trading forex, CFDs, and gold involves substantial risk of loss. COT data delayed 3 days by CFTC. SMI is proprietary calculation, not financial advice.</p>
+                            <p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com</p>
+                        </div>
+                        <div class="md:text-right">
+                            <p class="text-xs text-gray-500 mb-1">Authors</p>
+                            <p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p>
+                            <p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- LIQUIDITY ZONES -->
@@ -143,7 +158,7 @@
                 </div>
                 <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
-                    <div id="liq-empty" class="text-center text-gray-500 py-8">No liquidity data</div>
+                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data</div>
                     <table class="w-full text-sm"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Type</th><th class="text-left pb-3">Price Zone</th><th class="text-left pb-3">Status</th><th class="text-left pb-3">Age</th><th class="text-left pb-3">OB Confluence</th></tr></thead><tbody id="liq-body" class="text-gray-300"></tbody></table>
                 </div>
             </div>
@@ -163,7 +178,7 @@
             <!-- AI SIGNALS -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
-                <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine: Maxwell AI + OB + Liquidity + COT + Seasonal</p>
+                <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine</p>
                 <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow mb-6">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">Current Signal</h3>
                     <div class="grid grid-cols-5 gap-4 text-center mb-6">
@@ -173,7 +188,6 @@
                         <div><p class="text-gray-400 text-xs mb-2">TAKE PROFIT 1</p><div id="sig-page-tp1" class="font-orbitron text-3xl font-bold text-green-400">----.--</div></div>
                         <div><p class="text-gray-400 text-xs mb-2">TAKE PROFIT 2</p><div id="sig-page-tp2" class="font-orbitron text-3xl font-bold text-green-400">----.--</div></div>
                     </div>
-                    <div class="pt-6 border-t border-gray-800 text-center"><p class="text-sm text-gray-400 mb-2" id="sig-page-reason">No confluence</p><p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p></div>
                 </div>
             </div>
 
@@ -187,61 +201,45 @@
 
         const sidebar = document.getElementById('sidebar'); const toggleBtn = document.getElementById('sidebarToggle'); const mainContent = document.getElementById('mainContent');
         toggleBtn.addEventListener('click', () => { sidebar.classList.toggle('collapsed'); mainContent.classList.toggle('ml-64'); mainContent.classList.toggle('ml-0'); toggleBtn.innerHTML = sidebar.classList.contains('collapsed')? '☰' : '✕'; });
-        if (window.innerWidth < 768) { sidebar.classList.add('collapsed'); mainContent.classList.remove('ml-64'); mainContent.classList.add('ml-0'); }
 
         function toggleChart() { const grid = document.getElementById('main-grid'); const chart = document.getElementById('chart-container'); const btn = document.getElementById('expand-btn'); if (grid.classList.contains('grid-cols-3')) { grid.className = 'grid grid-cols-2 gap-6 transition-all'; chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all'; btn.innerText = 'Default View'; } else { grid.className = 'grid grid-cols-3 gap-6 transition-all'; chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all'; btn.innerText = 'Expand 50/50'; } }
 
         function showPage(pageId) { document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden')); document.getElementById('page-' + pageId).classList.remove('hidden'); document.querySelectorAll('nav a').forEach(a => { a.className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all'; }); document.getElementById('nav-' + pageId).className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400'; }
 
         const API_URL = 'https://desktop-u6fj6m8.tail379038.ts.net/api';
-        const API_INST = 'https://desktop-u6fj6m8.tail379038.ts.net/api/institutional';
 
-        async function updateAll() {
+        async function updateDashboard() {
             try {
-                const [mainRes, instRes] = await Promise.allSettled([fetch(API_URL), fetch(API_INST)]);
-                const main = mainRes.status==='fulfilled'? await mainRes.value.json() : {};
-                const inst = instRes.status==='fulfilled'? await instRes.value.json() : {};
-
-                // DASHBOARD 7 CARDS
-                const price = main.close || main.price || 4487.95;
-                document.querySelector('[data-price]').innerText = '$' + Number(price).toFixed(2);
-
-                const bias = main.bias || inst.smi?.bias || 'BEARISH';
-                document.querySelector('[data-bias]').innerText = bias;
-                document.querySelector('[data-bias]').className = bias==='BULLISH'? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
-
-                document.querySelector('[data-smi]').innerText = inst.smi?.value || main.smi || '--';
-
-                document.querySelector('[data-cftc-net]').innerText = (main.cftc_net || inst.cftc?.net || 0).toLocaleString();
-                document.querySelector('[data-cftc-date]').innerText = 'As of ' + (main.cftc_date || inst.cftc?.date || '--/--');
-
-                document.querySelector('[data-retail-long]').innerText = (main.retail_long || inst.retail?.long || 0) + '% Long';
-                document.querySelector('[data-retail-short]').innerText = (main.retail_short || inst.retail?.short || 0) + '% Short';
-
-                document.getElementById('status-text').innerText = `Live MT5 | Bias: ${bias} | ${main.updated || main.time || ''}`;
-                document.getElementById('retail-updated').innerText = 'Live MT5';
-                document.querySelector('[data-time]').innerText = main.updated || '--:--';
-
-                // INSTITUTIONAL FLOW PAGE
-                if(inst.cftc){
-                    document.getElementById('flow-status').innerText = 'Live from MT5 + Tailscale';
-                    document.getElementById('flow-cftc-date').innerText = 'As of ' + inst.cftc.date;
-                    document.getElementById('flow-cftc-net').innerText = inst.cftc.net.toLocaleString();
-                    document.getElementById('flow-cftc-long').innerText = inst.cftc.long.toLocaleString();
-                    document.getElementById('flow-cftc-short').innerText = inst.cftc.short.toLocaleString();
-                    document.getElementById('flow-retail-long').innerText = inst.retail.long + '%';
-                    document.getElementById('flow-retail-short').innerText = inst.retail.short + '%';
-                    document.getElementById('flow-smi-value').innerText = inst.smi.value;
-                    document.getElementById('flow-smi-bias').innerText = inst.smi.bias;
-                    document.getElementById('flow-smi-updated').innerText = 'Updated: ' + inst.smi.updated;
-                }
-            } catch (e) {
-                document.getElementById('status-text').innerText = 'Server mati';
-            }
+                const res = await fetch(API_URL); const data = await res.json();
+                const statusEl = document.getElementById('status-text');
+                if(data.error) { statusEl.innerText = 'MT5 Error: ' + data.error; statusEl.className = 'text-sm text-red-400'; }
+                else { statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.updated || ''}`; statusEl.className = data.bias === 'BULLISH'? 'text-sm text-green-400' : 'text-sm text-red-400'; }
+                if(data.close) document.querySelector('[data-price]').innerText = '$' + parseFloat(data.close).toFixed(2);
+                if(data.bias){ document.querySelector('[data-bias]').innerText = data.bias; }
+            } catch (e) { document.getElementById('status-text').innerText = 'Server mati'; }
         }
+        setInterval(updateDashboard, 2000); updateDashboard();
 
-        setInterval(updateAll, 3000);
-        updateAll();
+        async function updateInstitutionalFlow() {
+            try {
+                const res = await fetch('https://desktop-u6fj6m8.tail379038.ts.net/api/institutional');
+                const data = await res.json();
+                if(data.error) return;
+                document.getElementById('flow-status').innerText = 'Live from MT5 + Tailscale';
+                document.getElementById('flow-cftc-date').innerText = 'As of ' + data.cftc.date;
+                document.getElementById('flow-cftc-net').innerText = data.cftc.net.toLocaleString();
+                document.getElementById('flow-cftc-long').innerText = data.cftc.long.toLocaleString();
+                document.getElementById('flow-cftc-short').innerText = data.cftc.short.toLocaleString();
+                document.getElementById('flow-retail-long').innerText = data.retail.long + '%';
+                document.getElementById('flow-retail-short').innerText = data.retail.short + '%';
+                document.getElementById('flow-retail-source').innerText = data.retail.source;
+                document.getElementById('flow-smi-value').innerText = data.smi.value;
+                document.getElementById('flow-smi-bias').innerText = data.smi.bias;
+                document.getElementById('flow-smi-updated').innerText = 'Updated: ' + data.smi.updated;
+            } catch (e) {}
+        }
+        setInterval(updateInstitutionalFlow, 5000); updateInstitutionalFlow();
+
         showPage('dashboard');
     </script>
 </body>
