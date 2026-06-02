@@ -8,18 +8,18 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-      .font-orbitron { font-family: 'Orbitron', sans-serif; }
-      .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-      .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-      .live-dot { animation: pulse 2s infinite; }
+     .font-orbitron { font-family: 'Orbitron', sans-serif; }
+     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+     .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-      .transition-all { transition: all 0.3s ease; }
-      .hidden { display: none!important; }
+     .transition-all { transition: all 0.3s ease; }
+     .hidden { display: none!important; }
 
         /* SIDEBAR TOGGLE */
-      .sidebar { transition: transform 0.3s ease; }
-      .sidebar.collapsed { transform: translateX(-100%); }
-      .main-content { transition: margin-left 0.3s ease; }
+     .sidebar { transition: transform 0.3s ease; }
+     .sidebar.collapsed { transform: translateX(-100%); }
+     .main-content { transition: margin-left 0.3s ease; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -158,7 +158,7 @@
                             </div>
                         </div>
                         <div class="mt-6 pt-6 border-t border-gray-800">
-                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
+                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--</span></p>
                             <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
                             <p class="text-xs text-gray-600 mt-1">Retail Lots: <span id="retail-lots">-</span></p>
                         </div>
@@ -186,6 +186,7 @@
                         <div id="session-count" class="font-orbitron text-3xl font-bold text-blue-400">0</div>
                         <div class="text-xs text-gray-500 mt-2">Asia / London / NY</div>
                     </div>
+                </div>
                 <div id="liq-table" class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
                     <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data</div>
@@ -204,7 +205,7 @@
                 </div>
             </div>
 
-            <!-- PAGE: AI SIGNALS - INI YANG ILANG TADI -->
+            <!-- PAGE: AI SIGNALS - FIXED -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
                 <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine: Maxwell AI + OB + Liquidity + COT + Seasonal</p>
@@ -234,12 +235,11 @@
                         </div>
                     </div>
                     <div class="pt-6 border-t border-gray-800 text-center">
-                        <p class="text-sm text-gray-400 mb-2" id="sig-page-reason">Waiting - Score 2/5</p>
+                        <p class="text-sm text-gray-400 mb-2" id="sig-page-reason">No confluence</p>
                         <p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p>
                     </div>
                 </div>
 
-                <!-- INI BAGIAN YANG ILANG TADI -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">5-Layer Confluence</h3>
@@ -264,6 +264,7 @@
                                 <span class="text-gray-300">Seasonal Bias</span>
                                 <span id="cf-season" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
                             </div>
+                        </div>
                         <div class="mt-4 pt-4 border-t border-gray-800">
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-400">Confluence Score</span>
