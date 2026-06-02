@@ -335,18 +335,13 @@
         }
     </script>
 
-    <!-- LIVE DATA DARI FLASK + MARKETBULLS -->
+    <!-- LIVE DATA DARI TAILSCALE FUNNEL -->
     <script>
-        const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
+        const API_URL = 'https://desktop-u6fj6m8.tail379038.ts.net/api';
 
         async function updateDashboard() {
             try {
-                const res = await fetch(API_URL, {
-                    headers: {
-                        'ngrok-skip-browser-warning': 'true',
-                        'Accept': 'application/json'
-                    }
-                });
+                const res = await fetch(API_URL);
                 const data = await res.json();
                 
                 // ── STATUS BAR ──
@@ -360,7 +355,7 @@
                     statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
                 }
 
-                // ── PRICE: API kirim "close" bukan "price" ──
+                // ── PRICE ──
                 const price = data.close || data.price;
                 if(price) document.querySelector('[data-price]').innerText = '$' + parseFloat(price).toFixed(2);
 
@@ -371,11 +366,10 @@
                         ? 'font-orbitron text-3xl font-bold text-green-400'
                         : 'font-orbitron text-3xl font-bold text-red-400';
                 }
-                // SMI: pakai ema50 jika smi tidak ada
                 const smiVal = data.smi ? data.smi : (data.ema50 ? data.ema50 : '--');
                 document.querySelector('[data-smi]').innerText = smiVal;
 
-                // ── CFTC NET: tampil N/A jika tidak ada di API ──
+                // ── CFTC NET ──
                 if(data.cftc_net !== undefined){
                     document.querySelector('[data-cftc-net]').innerText = parseFloat(data.cftc_net).toLocaleString();
                     document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
@@ -392,7 +386,7 @@
                 // ── CME MAX PAIN ──
                 if(data.cme_max_pain) document.querySelector('[data-maxpain]').innerText = '$' + data.cme_max_pain;
 
-                // ── RETAIL SENTIMENT: tampil N/A jika tidak ada ──
+                // ── RETAIL SENTIMENT ──
                 if(data.retail_long !== undefined){
                     document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
                     document.querySelector('[data-retail-long]').className = 'font-orbitron text-xl font-bold text-red-400';
@@ -414,7 +408,6 @@
                     document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
                     document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
                 }
-                // Gunakan bullish_engulfing untuk PRZ status
                 if(data.bullish_engulfing !== undefined){
                     document.querySelector('[data-model="prz"]').innerText = data.bullish_engulfing ? 'ENGULF ✓' : 'Scanning';
                     document.querySelector('[data-model="prz"]').className = data.bullish_engulfing ? 'font-bold text-green-400' : 'font-bold text-blue-400';
@@ -440,7 +433,7 @@
                 }
                 
             } catch (e) {
-                document.getElementById('status-text').innerText = 'Server mati - Pastin python main.py jalan';
+                document.getElementById('status-text').innerText = 'Server mati - Pastin python server.py jalan + tailscale funnel 5000';
                 document.getElementById('status-text').className = 'text-sm text-red-400';
                 console.log('Error:', e);
             }
