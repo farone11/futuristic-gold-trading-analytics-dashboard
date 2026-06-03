@@ -9,17 +9,17 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-     .font-orbitron { font-family: 'Orbitron', sans-serif; }
-     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-     .live-dot { animation: pulse 2s infinite; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+        .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-     .transition-all { transition: all 0.3s ease; }
-     .hidden { display: none!important; }
-     .sidebar { transition: transform 0.3s ease; }
-     .sidebar.collapsed { transform: translateX(-100%); }
-     .main-content { transition: margin-left 0.3s ease; }
-     .progress-bg { background: #1a1a2e; }
+        .transition-all { transition: all 0.3s ease; }
+        .hidden { display: none!important; }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar.collapsed { transform: translateX(-100%); }
+        .main-content { transition: margin-left 0.3s ease; }
+        .progress-bg { background: #1a1a2e; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -35,11 +35,11 @@
                 </div>
             </div>
             <nav class="space-y-2">
-                <a href="#" onclick="showPage('dashboard');return false" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400"><span>Dashboard</span></a>
-                <a href="#" onclick="showPage('institutional-flow');return false" id="nav-institutional-flow" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>Institutional Flow</span></a>
-                <a href="#" onclick="showPage('liquidity-zones');return false" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>Liquidity Zones</span></a>
-                <a href="#" onclick="showPage('risk-engine');return false" id="nav-risk-engine" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>Risk Engine</span></a>
-                <a href="#" onclick="showPage('signals');return false" id="nav-signals" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>AI Signals</span></a>
+                <a href="#" onclick="showPage('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400"><span>Dashboard</span></a>
+                <a href="#" onclick="showPage('institutional-flow')" id="nav-institutional-flow" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>Institutional Flow</span></a>
+                <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>Liquidity Zones</span></a>
+                <a href="#" onclick="showPage('risk-engine')" id="nav-risk-engine" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>Risk Engine</span></a>
+                <a href="#" onclick="showPage('signals')" id="nav-signals" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>AI Signals</span></a>
             </nav>
         </div>
 
@@ -51,7 +51,7 @@
                     <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
                     <div class="flex items-center gap-2 mt-3">
                         <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
-                        <span class="text-sm" id="status-text">Connecting to MT5...</span>
+                        <span class="text-sm text-green-400" id="status-text">Connecting to MT5...</span>
                     </div>
                 </div>
                 <div class="mb-6 bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-3">
@@ -59,7 +59,7 @@
                 </div>
                 <div class="grid grid-cols-7 gap-4 mb-8">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow"><p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p><h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2><p class="text-xs text-gray-500 mt-2">Live Update</p></div>
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow"><p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p><h2 class="font-orbitron text-3xl font-bold" data-bias>STANDBY</h2><p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p></div>
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow"><p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p><h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2><p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p></div>
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow"><p class="text-gray-400 text-xs mb-2">CFTC NET</p><h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2><p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--</p></div>
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow"><p class="text-gray-400 text-xs mb-2">SEASONAL BIAS</p><h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-seasonal>NEUTRAL</h2><p class="text-xs text-gray-500 mt-2"><span data-seasonal-month>May</span>: <span data-seasonal-value>+1.75</span> avg</p></div>
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow"><p class="text-gray-400 text-xs mb-2">DAILY RISK</p><h2 class="font-orbitron text-3xl font-bold text-yellow-400" id="daily-risk-card">1.2%</h2><p class="text-xs text-gray-500 mt-2">Inst. Allocation</p></div>
@@ -88,13 +88,14 @@
                 </div>
             </div>
 
-            <!-- INSTITUTIONAL FLOW -->
+            <!-- INSTITUTIONAL FLOW - MERGED -->
             <div id="page-institutional-flow" class="dashboard-page hidden p-8">
                 <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">Institutional Flow Analysis</h1>
                 <div class="flex items-center gap-2 mb-8">
                     <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
                     <span class="text-sm text-green-400" id="flow-status">Connecting to API...</span>
                 </div>
+
                 <div class="grid grid-cols-3 gap-6 mb-8">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">CFTC COT Report</h3>
@@ -108,14 +109,22 @@
                             <div><span class="text-red-400">Short: </span><span id="cftc-short">---,---</span></div>
                         </div>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Retail Sentiment SWFX</h3>
                         <p class="text-gray-400 text-sm mb-4" id="retail-source">Live MT5</p>
                         <div class="flex justify-between items-center mb-6">
-                            <div><div class="font-orbitron text-5xl font-black text-green-400" id="retail-long">--%</div><div class="text-gray-400 text-sm mt-2">Long</div></div>
-                            <div class="text-right"><div class="font-orbitron text-5xl font-black text-red-400" id="retail-short">--%</div><div class="text-gray-400 text-sm mt-2">Short</div></div>
+                            <div>
+                                <div class="font-orbitron text-5xl font-black text-green-400" id="retail-long">--%</div>
+                                <div class="text-gray-400 text-sm mt-2">Long</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-orbitron text-5xl font-black text-red-400" id="retail-short">--%</div>
+                                <div class="text-gray-400 text-sm mt-2">Short</div>
+                            </div>
                         </div>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Smart Money Index</h3>
                         <div class="text-center mb-4">
@@ -138,7 +147,7 @@
                 </div>
                 <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
-                    <div id="liq-empty" class="text-center text-gray-500 py-8">No liquidity data</div>
+                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data</div>
                     <table class="w-full text-sm"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Type</th><th class="text-left pb-3">Price Zone</th><th class="text-left pb-3">Status</th><th class="text-left pb-3">Age</th><th class="text-left pb-3">OB Confluence</th></tr></thead><tbody id="liq-body" class="text-gray-300"></tbody></table>
                 </div>
             </div>
@@ -147,30 +156,56 @@
             <div id="page-risk-engine" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">RISK ENGINE - INSTITUTIONAL GRADE</h2>
                 <p class="text-gray-400 mb-6">Position Sizing · Drawdown Control · Kelly Criterion · Real-time Risk Metrics</p>
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl card-glow"><div class="text-gray-400 text-xs mb-2">ACCOUNT RISK</div><div id="risk-account" class="font-orbitron text-3xl font-bold text-red-400">0.0%</div><div class="text-xs text-gray-500 mt-2">Max 2% per trade</div></div>
+                    <div class="bg-[#13131f] border border-yellow-900/20 p-5 rounded-xl card-glow"><div class="text-gray-400 text-xs mb-2">DAILY DRAWDOWN</div><div id="risk-dd" class="font-orbitron text-3xl font-bold text-yellow-400">0.0%</div><div class="text-xs text-gray-500 mt-2">Max 5% daily</div></div>
+                    <div class="bg-[#13131f] border border-green-900/20 p-5 rounded-xl card-glow"><div class="text-gray-400 text-xs mb-2">KELLY OPTIMAL</div><div id="risk-kelly" class="font-orbitron text-3xl font-bold text-green-400">0.0%</div><div class="text-xs text-gray-500 mt-2">Position Size %</div></div>
+                    <div class="bg-[#13131f] border border-blue-900/20 p-5 rounded-xl card-glow"><div class="text-gray-400 text-xs mb-2">R:R RATIO</div><div id="risk-rr" class="font-orbitron text-3xl font-bold text-blue-400">0.0</div><div class="text-xs text-gray-500 mt-2">Average</div></div>
+                </div>
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Risk Meter - Auto Refresh</h3>
+                        <div class="space-y-6">
+                            <div><div class="flex justify-between text-sm mb-2"><span class="text-gray-400">Daily Loss Limit</span><span id="meter-daily" class="text-white">0% / 5%</span></div><div class="progress-bg h-3 rounded-full overflow-hidden"><div id="bar-daily" class="h-full bg-green-500 transition-all" style="width:0%"></div></div></div>
+                            <div><div class="flex justify-between text-sm mb-2"><span class="text-gray-400">Weekly Drawdown</span><span id="meter-weekly" class="text-white">0% / 10%</span></div><div class="progress-bg h-3 rounded-full overflow-hidden"><div id="bar-weekly" class="h-full bg-green-500 transition-all" style="width:0%"></div></div></div>
+                            <div><div class="flex justify-between text-sm mb-2"><span class="text-gray-400">Max Exposure</span><span id="meter-exposure" class="text-white">0% / 15%</span></div><div class="progress-bg h-3 rounded-full overflow-hidden"><div id="bar-exposure" class="h-full bg-green-500 transition-all" style="width:0%"></div></div></div>
+                        </div>
+                    </div>
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Account Summary</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between"><span class="text-gray-400">Balance:</span><span id="acc-balance" class="text-white font-bold">$0.00</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Equity:</span><span id="acc-equity" class="text-white font-bold">$0.00</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Daily P&L:</span><span id="acc-daily" class="font-bold">$0.00</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Open Positions:</span><span id="acc-pos" class="text-white font-bold">0</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Risk Positions</h3>
+                    <div id="risk-positions-empty" class="text-center text-gray-500 py-8">No active positions</div>
+                    <table class="w-full text-sm hidden" id="risk-table"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Symbol</th><th class="text-left pb-3">Type</th><th class="text-left pb-3">Lots</th><th class="text-left pb-3">Entry</th><th class="text-left pb-3">SL</th><th class="text-left pb-3">TP</th><th class="text-left pb-3">Risk $</th><th class="text-left pb-3">R:R</th></tr></thead><tbody id="risk-body" class="text-gray-300"></tbody></table>
+                </div>
             </div>
 
             <!-- AI SIGNALS -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
                 <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine: Maxwell AI + OB + Liquidity + COT + Seasonal</p>
-            </div>
-
-            <!-- FOOTER -->
-            <div class="px-8 pb-8">
-                <div class="mt-8 border-t border-gray-800 pt-4">
-                    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                        <div class="flex-1 text-xs text-gray-600">
-                            <p class="mb-2"><strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.</p>
-                            <p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p>
-                        </div>
-                        <div class="md:text-right">
-                            <p class="text-xs text-gray-500 mb-1">Authors</p>
-                            <p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p>
-                            <p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p>
-                        </div>
+                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow mb-6">
+                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">Current Signal</h3>
+                    <div class="grid grid-cols-5 gap-4 text-center mb-6">
+                        <div><p class="text-gray-400 text-xs mb-2">STATUS</p><div id="sig-page-status" class="font-orbitron text-3xl font-bold text-yellow-400">STANDBY</div></div>
+                        <div><p class="text-gray-400 text-xs mb-2">ENTRY</p><div id="sig-page-entry" class="font-orbitron text-3xl font-bold text-white">----.--</div></div>
+                        <div><p class="text-gray-400 text-xs mb-2">STOP LOSS</p><div id="sig-page-sl" class="font-orbitron text-3xl font-bold text-red-400">----.--</div></div>
+                        <div><p class="text-gray-400 text-xs mb-2">TAKE PROFIT 1</p><div id="sig-page-tp1" class="font-orbitron text-3xl font-bold text-green-400">----.--</div></div>
+                        <div><p class="text-gray-400 text-xs mb-2">TAKE PROFIT 2</p><div id="sig-page-tp2" class="font-orbitron text-3xl font-bold text-green-400">----.--</div></div>
                     </div>
+                    <div class="pt-6 border-t border-gray-800 text-center"><p class="text-sm text-gray-400 mb-2" id="sig-page-reason">No confluence</p><p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p></div>
                 </div>
             </div>
+
+            <div class="px-8 pb-8"><div class="mt-8 border-t border-gray-800 pt-4"><div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4"><div class="flex-1 text-xs text-gray-600"><p class="mb-2"><strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.</p><p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p></div><div class="md:text-right"><p class="text-xs text-gray-500 mb-1">Authors</p><p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p><p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p></div></div></div></div>
         </div>
     </div>
 
@@ -178,156 +213,65 @@
     <script>
         new TradingView.widget({"autosize": true,"symbol": "OANDA:XAUUSD","interval": "60","timezone": "Asia/Jakarta","theme": "dark","style": "1","locale": "en","toolbar_bg": "#13131f","enable_publishing": false,"container_id": "tradingview_chart"});
 
-        const sidebar = document.getElementById('sidebar');
-        document.getElementById('sidebarToggle').onclick = () => {
-            sidebar.classList.toggle('collapsed');
-            document.getElementById('mainContent').classList.toggle('ml-64');
-        };
+        const sidebar = document.getElementById('sidebar'); const toggleBtn = document.getElementById('sidebarToggle'); const mainContent = document.getElementById('mainContent');
+        toggleBtn.addEventListener('click', () => { sidebar.classList.toggle('collapsed'); mainContent.classList.toggle('ml-64'); mainContent.classList.toggle('ml-0'); toggleBtn.innerHTML = sidebar.classList.contains('collapsed')? '☰' : '✕'; });
+        if (window.innerWidth < 768) { sidebar.classList.add('collapsed'); mainContent.classList.remove('ml-64'); mainContent.classList.add('ml-0'); }
 
-        function toggleChart() {
-            const grid = document.getElementById('main-grid');
-            const chart = document.getElementById('chart-container');
-            const btn = document.getElementById('expand-btn');
-            if (grid.classList.contains('grid-cols-3')) {
-                grid.className = 'grid grid-cols-2 gap-6 transition-all';
-                chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
-                btn.innerText = 'Default View';
-            } else {
-                grid.className = 'grid grid-cols-3 gap-6 transition-all';
-                chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
-                btn.innerText = 'Expand 50/50';
-            }
-        }
+        function toggleChart() { const grid = document.getElementById('main-grid'); const chart = document.getElementById('chart-container'); const btn = document.getElementById('expand-btn'); if (grid.classList.contains('grid-cols-3')) { grid.className = 'grid grid-cols-2 gap-6 transition-all'; chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all'; btn.innerText = 'Default View'; } else { grid.className = 'grid grid-cols-3 gap-6 transition-all'; chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all'; btn.innerText = 'Expand 50/50'; } }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-' + pageId).classList.remove('hidden');
-            document.querySelectorAll('nav a').forEach(a => { a.className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all'; });
-            const active = document.getElementById('nav-' + pageId);
-            if(active) active.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
-            history.pushState(null, '', '/' + pageId);
-        }
+        function showPage(pageId) { document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden')); document.getElementById('page-' + pageId).classList.remove('hidden'); document.querySelectorAll('nav a').forEach(a => { a.className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all'; }); const active = document.getElementById('nav-' + pageId); if(active) active.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400'; }
 
         const API_URL = 'https://desktop-u6fj6m8.tail379038.ts.net/api';
-        const API_INSTITUTIONAL = 'https://desktop-u6fj6m8.tail379038.ts.net/api/institutional';
-
-        const setText = (id, txt) => { const el = document.getElementById(id) || document.querySelector('[data-' + id + ']'); if(el) el.innerText = txt; };
-
-        // INI YANG ILANG: FUNGSI RENDER LIQUIDITY ZONES
-        function renderLiquidityZones(zones) {
-            const tbody = document.getElementById('liq-body');
-            const empty = document.getElementById('liq-empty');
-            const bslCount = document.getElementById('bsl-count');
-            const sslCount = document.getElementById('ssl-count');
-            const sessionCount = document.getElementById('session-count');
-            if (!zones || zones.length === 0) {
-                tbody.innerHTML = '';
-                empty.classList.remove('hidden');
-                bslCount.innerText = '0';
-                sslCount.innerText = '0';
-                sessionCount.innerText = '0';
-                return;
-            }
-            empty.classList.add('hidden');
-            let bsl = 0, ssl = 0, session = 0;
-            zones.forEach(z => {
-                if (z.type === 'BSL') bsl++;
-                else if (z.type === 'SSL') ssl++;
-                else session++;
-            });
-            bslCount.innerText = bsl;
-            sslCount.innerText = ssl;
-            sessionCount.innerText = session;
-            tbody.innerHTML = zones.map(z => {
-                const badgeColor = z.type === 'BSL'? 'bg-red-600' : z.type === 'SSL'? 'bg-green-600' : 'bg-blue-600';
-                const statusColor = z.status === 'ACTIVE'? 'text-green-400' : z.status === 'AGED'? 'text-yellow-400' : 'text-blue-400';
-                const obColor = z.ob_confluence === 'YES'? 'text-green-400 font-bold' : 'text-gray-500';
-                return `<tr class="border-b border-gray-800/50 hover:bg-yellow-500/5"><td class="py-3"><span class="px-2 py-1 rounded text-xs ${badgeColor} text-white">${z.type}</span></td><td class="py-3 font-orbitron text-yellow-400">${z.price}</td><td class="py-3 ${statusColor}">${z.status}</td><td class="py-3 text-gray-400">${z.age}</td><td class="py-3 ${obColor}">${z.ob_confluence}</td></tr>`;
-            }).join('');
-        }
+        function updateConfluenceBadge(id, active) { const el = document.getElementById(id); if(el) { el.textContent = active? 'ACTIVE' : 'WAIT'; el.className = active? 'px-3 py-1 rounded text-xs bg-green-600 text-white' : 'px-3 py-1 rounded text-xs bg-gray-700'; } }
+        function renderLiquidityZones(zones) { const tbody = document.getElementById('liq-body'); const empty = document.getElementById('liq-empty'); const bslCount = document.getElementById('bsl-count'); const sslCount = document.getElementById('ssl-count'); const sessionCount = document.getElementById('session-count'); if (!zones || zones.length === 0) { tbody.innerHTML = ''; empty.classList.remove('hidden'); bslCount.innerText = '0'; sslCount.innerText = '0'; sessionCount.innerText = '0'; return; } empty.classList.add('hidden'); let bsl = 0, ssl = 0, session = 0; zones.forEach(z => { if (z.type === 'BSL') bsl++; else if (z.type === 'SSL') ssl++; else session++; }); bslCount.innerText = bsl; sslCount.innerText = ssl; sessionCount.innerText = session; tbody.innerHTML = zones.map(z => { const badgeColor = z.type === 'BSL'? 'bg-red-600' : z.type === 'SSL'? 'bg-green-600' : 'bg-blue-600'; const statusColor = z.status === 'ACTIVE'? 'text-green-400' : z.status === 'AGED'? 'text-yellow-400' : 'text-blue-400'; const obColor = z.ob_confluence === 'YES'? 'text-green-400 font-bold' : 'text-gray-500'; return `<tr class="border-b border-gray-800/50 hover:bg-yellow-500/5"><td class="py-3"><span class="px-2 py-1 rounded text-xs ${badgeColor} text-white">${z.type}</span></td><td class="py-3 font-orbitron text-yellow-400">${z.price}</td><td class="py-3 ${statusColor}">${z.status}</td><td class="py-3 text-gray-400">${z.age}</td><td class="py-3 ${obColor}">${z.ob_confluence}</td></tr>`; }).join(''); }
 
         async function updateDashboard() {
             try {
-                // 1. Fetch /api
-                const res = await fetch(API_URL);
-                const data = await res.json();
-
-                // Status bar - BEARISH MERAH
-                const statusEl = document.getElementById('status-text');
-                if(data.error) {
-                    statusEl.innerText = 'MT5 Error: ' + data.error;
-                    statusEl.className = 'text-sm text-red-400';
-                } else {
-                    const timeLabel = data.updated || data.time || '';
-                    statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${timeLabel}`;
-                    statusEl.className = data.bias === 'BULLISH'? 'text-sm text-green-400' : data.bias === 'BEARISH'? 'text-sm text-red-400' : 'text-sm text-yellow-400';
+                const res = await fetch(API_URL); const data = await res.json();
+                // Update Institutional Flow page too
+                document.getElementById('flow-status').innerText = data.error ? 'Error' : 'Live from MT5 + Tailscale';
+                document.getElementById('flow-status').className = data.error ? 'text-sm text-red-400' : 'text-sm text-green-400';
+                
+                if(data.cftc) {
+                    document.getElementById('cftc-date').innerText = 'As of ' + data.cftc.date;
+                    document.getElementById('cftc-net').innerText = data.cftc.net.toLocaleString();
+                    document.getElementById('cftc-long').innerText = data.cftc.long.toLocaleString();
+                    document.getElementById('cftc-short').innerText = data.cftc.short.toLocaleString();
+                }
+                if(data.retail) {
+                    document.getElementById('retail-long').innerText = data.retail.long + '%';
+                    document.getElementById('retail-short').innerText = data.retail.short + '%';
+                    document.getElementById('retail-source').innerText = data.retail.source;
+                }
+                if(data.smi) {
+                    document.getElementById('smi-value').innerText = data.smi.value;
+                    document.getElementById('smi-bias').innerText = data.smi.bias;
+                    document.getElementById('smi-bias').className = data.smi.bias === 'BULLISH' ? 'font-orbitron text-2xl font-bold mt-2 text-green-400' : data.smi.bias === 'BEARISH' ? 'font-orbitron text-2xl font-bold mt-2 text-red-400' : 'font-orbitron text-2xl font-bold mt-2 text-yellow-400';
+                    document.getElementById('smi-updated').innerText = 'Updated: ' + data.smi.updated;
                 }
 
-                // Cards
-                if(data.price) setText('price', '$' + parseFloat(data.price).toFixed(2));
-
-                // BIAS CARD - BEARISH MERAH
-                const biasEl = document.querySelector('[data-bias]');
-                if(biasEl && data.bias) {
-                    biasEl.innerText = data.bias;
-                    biasEl.className = 'font-orbitron text-3xl font-bold ' + (data.bias === 'BULLISH'? 'text-green-400' : data.bias === 'BEARISH'? 'text-red-400' : 'text-yellow-400');
-                }
-
-                setText('smi', data.smi?.value || '--');
-                if(data.cftc_net!== undefined) setText('cftc-net', parseFloat(data.cftc_net).toLocaleString());
-                if(data.cftc_date) setText('cftc-date', 'As of ' + data.cftc_date);
-                if(data.seasonal_bias) setText('seasonal', data.seasonal_bias);
-                if(data.seasonal_month) setText('seasonal-month', data.seasonal_month);
-                if(data.seasonal_value) setText('seasonal-value', data.seasonal_value);
-                if(data.cme_max_pain) setText('maxpain', '$' + data.cme_max_pain);
-                if(data.retail_long!== undefined) setText('retail-long', data.retail_long + '% Long');
-                if(data.retail_short!== undefined) setText('retail-short', data.retail_short + '% Short');
-                setText('retail-updated', data.updated || data.time || 'Live');
-                setText('time', data.updated || data.time || '--:--:--');
-                setText('cot-update', data.cftc_date || 'N/A');
-
-                // PANGGIL RENDER LIQUIDITY ZONES - INI YANG ILANG
                 if (data.liquidity_zones) renderLiquidityZones(data.liquidity_zones);
-
-                // 2. Fetch /api/institutional
-                try {
-                    const instRes = await fetch(API_INSTITUTIONAL);
-                    const inst = await instRes.json();
-
-                    if(inst.cftc) {
-                        setText('cftc-date', 'As of ' + inst.cftc.date);
-                        setText('cftc-net', inst.cftc.net.toLocaleString());
-                        setText('cftc-long', inst.cftc.long.toLocaleString());
-                        setText('cftc-short', inst.cftc.short.toLocaleString());
-                    }
-                    if(inst.retail) {
-                        setText('retail-long', inst.retail.long + '%');
-                        setText('retail-short', inst.retail.short + '%');
-                        setText('retail-source', inst.retail.source);
-                    }
-                    if(inst.smi) {
-                        setText('smi-value', inst.smi.value);
-                        setText('smi-bias', inst.smi.bias);
-                        const smiBiasEl = document.getElementById('smi-bias');
-                        if(smiBiasEl) smiBiasEl.className = 'font-orbitron text-2xl font-bold mt-2 ' + (inst.smi.bias === 'BULLISH'? 'text-green-400' : inst.smi.bias === 'BEARISH'? 'text-red-400' : 'text-yellow-400');
-                        setText('smi-updated', 'Updated: ' + inst.smi.updated);
-                    }
-                    setText('flow-status', 'Live from MT5 + Tailscale');
-                    document.getElementById('flow-status').className = 'text-sm text-green-400';
-                } catch(e) {
-                    setText('flow-status', 'API Error');
-                    console.error(e);
-                }
-
-            } catch (e) {
-                setText('status-text', 'Server mati');
-                document.getElementById('status-text').className = 'text-sm text-red-400';
-            }
+                const statusEl = document.getElementById('status-text');
+                if(data.error) { statusEl.innerText = 'MT5 Error: ' + data.error; statusEl.className = 'text-sm text-red-400'; }
+                else { const timeLabel = data.updated || data.time || ''; statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${timeLabel}`; statusEl.className = data.bias === 'BULLISH'? 'text-sm text-green-400' : 'text-sm text-red-400'; }
+                const price = data.close || data.price; if(price) document.querySelector('[data-price]').innerText = '$' + parseFloat(price).toFixed(2);
+                if(data.bias){ document.querySelector('[data-bias]').innerText = data.bias; document.querySelector('[data-bias]').className = data.bias === 'BULLISH'? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400'; }
+                document.querySelector('[data-smi]').innerText = data.smi?.value || '--';
+                if(data.cftc_net!== undefined){ document.querySelector('[data-cftc-net]').innerText = parseFloat(data.cftc_net).toLocaleString(); document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date; }
+                if(data.seasonal_bias) document.querySelector('[data-seasonal]').innerText = data.seasonal_bias;
+                if(data.seasonal_month) document.querySelector('[data-seasonal-month]').innerText = data.seasonal_month;
+                if(data.seasonal_value) document.querySelector('[data-seasonal-value]').innerText = data.seasonal_value;
+                if(data.cme_max_pain) document.querySelector('[data-maxpain]').innerText = '$' + data.cme_max_pain;
+                if(data.retail_long!== undefined){ document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long'; }
+                if(data.retail_short!== undefined){ document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short'; }
+                document.getElementById('retail-updated').innerText = data.updated || data.time || 'Live';
+                if(data.smc_active!== undefined){ document.querySelector('[data-model="smc"]').innerText = data.smc_active? 'AKTIF' : 'Standby'; }
+                if(data.prz_ready!== undefined){ document.querySelector('[data-model="prz"]').innerText = data.prz_ready? 'READY ✓' : 'Scanning'; }
+                document.querySelector('[data-time]').innerText = data.updated || data.time || '--:--:--';
+                document.querySelector('[data-cot-update]').innerText = data.cftc_date || 'N/A';
+            } catch (e) { document.getElementById('status-text').innerText = 'Server mati'; document.getElementById('status-text').className = 'text-sm text-red-400'; }
         }
-
-        setInterval(updateDashboard, 3000);
-        updateDashboard();
-        showPage('dashboard');
+        setInterval(updateDashboard, 2000); updateDashboard();
     </script>
 </body>
 </html>
