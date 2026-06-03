@@ -8,21 +8,31 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-        .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
-        .live-dot { animation: pulse 2s infinite; }
+     .font-orbitron { font-family: 'Orbitron', sans-serif; }
+     .glow-gold { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+     .card-glow { box-shadow: 0 0 40px rgba(255, 215, 0, 0.1); }
+     .live-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .transition-all { transition: all 0.3s ease; }
-        .hidden { display: none!important; }
+     .transition-all { transition: all 0.3s ease; }
+     .hidden { display: none!important; }
+
+        /* SIDEBAR TOGGLE */
+     .sidebar { transition: transform 0.3s ease; }
+     .sidebar.collapsed { transform: translateX(-100%); }
+     .main-content { transition: margin-left 0.3s ease; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
+    <!-- TOMBOL TOGGLE SIDEBAR -->
+    <button id="sidebarToggle" class="fixed top-5 left-5 z-[999] bg-[#1a1a2e] border border-yellow-500/50 text-yellow-400 text-2xl w-12 h-12 rounded-lg hover:bg-yellow-500 hover:text-black transition-all shadow-lg">
+        ☰
+    </button>
+
     <div class="flex h-screen">
 
         <!-- SIDEBAR -->
-        <div class="w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6">
-            <div class="flex items-center gap-4 mb-10">
+        <div id="sidebar" class="sidebar w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6 fixed h-full z-[998]">
+            <div class="flex items-center gap-4 mb-10 mt-12">
                 <img src="./logo.png" alt="FARONE Logo" class="w-14 h-14 rounded-xl shadow-lg shadow-yellow-500/40 object-contain">
                 <div>
                     <h1 class="font-orbitron font-black text-2xl glow-gold">FARONE</h1>
@@ -50,16 +60,12 @@
         </div>
 
         <!-- MAIN CONTENT -->
-        <div class="flex-1 overflow-auto">
+        <div id="mainContent" class="main-content flex-1 overflow-auto ml-64">
 
             <!-- PAGE: DASHBOARD -->
             <div id="page-dashboard" class="dashboard-page p-8">
-
-                <!-- HEADER -->
                 <div class="mb-6">
-                    <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">
-                        FUTURISTIC GOLD TRADING ANALYTICS
-                    </h1>
+                    <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">FUTURISTIC GOLD TRADING ANALYTICS</h1>
                     <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
                     <div class="flex items-center gap-2 mt-3">
                         <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
@@ -67,55 +73,45 @@
                     </div>
                 </div>
 
-                <!-- DISCLAIMER ENGLISH -->
                 <div class="mb-6 bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-3">
                     <p class="text-xs text-yellow-400/80">
                         <strong>DISCLAIMER:</strong> This dashboard is for informational and educational purposes only.
                         Trading forex, CFDs, and gold involves substantial risk of loss and is not suitable for every investor.
                         Past performance is not indicative of future results. AI signals are not financial advice.
-                        You should carefully consider whether trading is suitable for you in light of your circumstances, knowledge, and financial resources.
-                        FARONE.AI does not guarantee profits and is not responsible for any trading losses.
                     </p>
                 </div>
 
-                <!-- STATS GRID - 7 CARD -->
                 <div class="grid grid-cols-7 gap-4 mb-8">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p>
                         <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
                         <p class="text-xs text-gray-500 mt-2">Live Update</p>
                     </div>
-
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
                         <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
                         <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
-
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CFTC NET</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
                         <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
                     </div>
-
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SEASONAL BIAS</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-seasonal>NEUTRAL</h2>
                         <p class="text-xs text-gray-500 mt-2"><span data-seasonal-month>May</span>: <span data-seasonal-value>+1.75</span> avg</p>
                     </div>
-
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">DAILY RISK</p>
                         <h2 class="font-orbitron text-3xl font-bold text-yellow-400">1.2%</h2>
                         <p class="text-xs text-gray-500 mt-2">Inst. Allocation</p>
                     </div>
-
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-maxpain>$4525</h2>
                         <p class="text-xs text-gray-500 mt-2">MarketBulls</p>
                     </div>
-
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
@@ -127,57 +123,42 @@
                     </div>
                 </div>
 
-                <!-- CHART + AI PANEL -->
                 <div class="grid grid-cols-3 gap-6 transition-all" id="main-grid">
-
-                    <!-- TRADINGVIEW CHART -->
                     <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="chart-container">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-orbitron text-lg font-bold text-yellow-400">
-                                Institutional Momentum Engine - Live XAUUSD H1
-                            </h3>
-                            <button onclick="toggleChart()" id="expand-btn" class="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">
-                                Expand 50/50
-                            </button>
+                            <h3 class="font-orbitron text-lg font-bold text-yellow-400">Institutional Momentum Engine - Live XAUUSD H1</h3>
+                            <button onclick="toggleChart()" id="expand-btn" class="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">Expand 50/50</button>
                         </div>
                         <div class="tradingview-widget-container" style="height:500px;width:100%">
                           <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
                         </div>
                     </div>
-
-                    <!-- AI EXECUTION PANEL -->
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
-
                         <div class="space-y-4">
                             <div class="flex items-center justify-between pb-4 border-b border-gray-800">
                                 <span class="text-gray-400">Model</span>
                                 <span class="text-gray-400">Status</span>
                             </div>
-
                             <div class="flex items-center justify-between">
                                 <span class="text-white">SMC Engine</span>
                                 <span class="font-bold text-yellow-400" data-model="smc">Standby</span>
                             </div>
-
                             <div class="flex items-center justify-between">
                                 <span class="text-white">PRZ Scanner</span>
                                 <span class="font-bold text-blue-400" data-model="prz">Scanning</span>
                             </div>
-
                             <div class="flex items-center justify-between">
                                 <span class="text-white">Liquidity Sweep</span>
                                 <span class="font-bold text-blue-400" data-model="liquidity">Monitoring</span>
                             </div>
-
                             <div class="flex items-center justify-between">
                                 <span class="text-white">Risk AI</span>
                                 <span class="font-bold text-green-400" data-model="risk">Protected</span>
                             </div>
                         </div>
-
                         <div class="mt-6 pt-6 border-t border-gray-800">
-                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
+                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--</span></p>
                             <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
                             <p class="text-xs text-gray-600 mt-1">Retail Lots: <span id="retail-lots">-</span></p>
                         </div>
@@ -189,7 +170,6 @@
             <div id="page-liquidity-zones" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">Liquidity Zones - XAUUSDc H1</h2>
                 <p class="text-gray-400 mb-6">Buy-Side & Sell-Side Liquidity + Session Levels · Auto Sweep Detection</p>
-
                 <div class="grid grid-cols-3 gap-4 mb-6">
                     <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl card-glow">
                         <div class="text-gray-400 text-xs mb-2">BUY-SIDE LIQUIDITY</div>
@@ -207,10 +187,9 @@
                         <div class="text-xs text-gray-500 mt-2">Asia / London / NY</div>
                     </div>
                 </div>
-
                 <div id="liq-table" class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
-                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data. Run mt5_liquidity.py</div>
+                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data</div>
                     <table class="w-full text-sm">
                         <thead class="text-gray-400 border-b border-gray-800">
                             <tr>
@@ -226,12 +205,12 @@
                 </div>
             </div>
 
-            <!-- PAGE: AI SIGNALS -->
+            <!-- PAGE: AI SIGNALS - FIXED -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
                 <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine: Maxwell AI + OB + Liquidity + COT + Seasonal</p>
 
-                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow mb-6">
                     <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">Current Signal</h3>
                     <div class="grid grid-cols-5 gap-4 text-center mb-6">
                         <div>
@@ -260,6 +239,62 @@
                         <p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p>
                     </div>
                 </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">5-Layer Confluence</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Maxwell AI</span>
+                                <span id="cf-maxwell" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Order Block H1</span>
+                                <span id="cf-ob" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Liquidity Sweep</span>
+                                <span id="cf-liq" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">COT Institutional</span>
+                                <span id="cf-cot" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Seasonal Bias</span>
+                                <span id="cf-season" class="px-3 py-1 rounded text-xs bg-gray-700">WAIT</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-800">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-400">Confluence Score</span>
+                                <span id="cf-score" class="text-lg font-bold text-white">0/5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Setup Details</h3>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <div class="text-gray-400">RR Ratio</div>
+                                <div id="setup-rr" class="text-white font-bold text-lg">-</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Timeframe</div>
+                                <div id="setup-tf" class="text-white font-bold text-lg">M15</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Session</div>
+                                <div id="setup-session" class="text-white font-bold text-lg">-</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Win Rate</div>
+                                <div id="setup-wr" class="text-white font-bold text-lg">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- FOOTER -->
@@ -269,29 +304,24 @@
                         <div class="flex-1 text-xs text-gray-600">
                             <p class="mb-2">
                                 <strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.
-                                The high degree of leverage can work against you as well as for you. Before deciding to trade, you should carefully consider your investment objectives,
-                                level of experience, and risk appetite.
+                                The high degree of leverage can work against you as well as for you.
                             </p>
                             <p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p>
                         </div>
-
-                        <div class="md:text-right md:min-w-">
+                        <div class="md:text-right">
                             <p class="text-xs text-gray-500 mb-1">Authors</p>
                             <p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p>
                             <p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p>
-                            <p class="text-xs text-gray-600 mt-1">Specialist Data Engineer</p>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- TRADINGVIEW WIDGET -->
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script type="text/javascript">
-        let tvWidget = new TradingView.widget({
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
             "interval": "60",
@@ -301,11 +331,26 @@
             "locale": "en",
             "toolbar_bg": "#13131f",
             "enable_publishing": false,
-            "hide_top_toolbar": false,
-            "hide_legend": false,
-            "save_image": false,
             "container_id": "tradingview_chart"
         });
+
+        // SIDEBAR TOGGLE
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const mainContent = document.getElementById('mainContent');
+
+        toggleBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('collapsed');
+          mainContent.classList.toggle('ml-64');
+          mainContent.classList.toggle('ml-0');
+          toggleBtn.innerHTML = sidebar.classList.contains('collapsed')? '☰' : '✕';
+        });
+
+        if (window.innerWidth < 768) {
+          sidebar.classList.add('collapsed');
+          mainContent.classList.remove('ml-64');
+          mainContent.classList.add('ml-0');
+        }
 
         function toggleChart() {
             const grid = document.getElementById('main-grid');
@@ -324,106 +369,108 @@
 
         function showPage(pageId) {
             document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden'));
-            const target = document.getElementById('page-' + pageId);
-            if (target) target.classList.remove('hidden');
-
+            document.getElementById('page-' + pageId).classList.remove('hidden');
             document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             document.getElementById('nav-liquidity-zones').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
             document.getElementById('nav-signals').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
-            const activeNav = document.getElementById('nav-' + pageId);
-            if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
+            document.getElementById('nav-' + pageId).className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
         }
-    </script>
 
-    <!-- LIVE DATA DARI FLASK + MARKETBULLS -->
-    <script>
-        // GANTI PAKE NGROK KALO MAU LIVE DI pages.dev
-        // const API_URL = 'https://xxxx-xx-xxx-xx.ngrok-free.app/api';
-        const API_URL = 'http://localhost:5000/api';
+        const API_URL = 'https://desktop-u6fj6m8.tail379038.ts.net/api';
+
+        function updateConfluenceBadge(id, active) {
+            const el = document.getElementById(id);
+            if(el) {
+                if(active) {
+                    el.textContent = 'ACTIVE';
+                    el.className = 'px-3 py-1 rounded text-xs bg-green-600 text-white';
+                } else {
+                    el.textContent = 'WAIT';
+                    el.className = 'px-3 py-1 rounded text-xs bg-gray-700';
+                }
+            }
+        }
+
+        function renderLiquidityZones(zones) {
+          const tbody = document.getElementById('liq-body');
+          const empty = document.getElementById('liq-empty');
+          const bslCount = document.getElementById('bsl-count');
+          const sslCount = document.getElementById('ssl-count');
+          const sessionCount = document.getElementById('session-count');
+
+          if (!zones || zones.length === 0) {
+            tbody.innerHTML = '';
+            empty.classList.remove('hidden');
+            bslCount.innerText = '0'; sslCount.innerText = '0'; sessionCount.innerText = '0';
+            return;
+          }
+
+          empty.classList.add('hidden');
+          let bsl = 0, ssl = 0, session = 0;
+          zones.forEach(z => { if (z.type === 'BSL') bsl++; else if (z.type === 'SSL') ssl++; else session++; });
+          bslCount.innerText = bsl; sslCount.innerText = ssl; sessionCount.innerText = session;
+
+          tbody.innerHTML = zones.map(z => {
+            const badgeColor = z.type === 'BSL'? 'bg-red-600' : z.type === 'SSL'? 'bg-green-600' : 'bg-blue-600';
+            const statusColor = z.status === 'ACTIVE'? 'text-green-400' : z.status === 'AGED'? 'text-yellow-400' : 'text-blue-400';
+            const obColor = z.ob_confluence === 'YES'? 'text-green-400 font-bold' : 'text-gray-500';
+            return `<tr class="border-b border-gray-800/50 hover:bg-yellow-500/5"><td class="py-3"><span class="px-2 py-1 rounded text-xs ${badgeColor} text-white">${z.type}</span></td><td class="py-3 font-orbitron text-yellow-400">${z.price}</td><td class="py-3 ${statusColor}">${z.status}</td><td class="py-3 text-gray-400">${z.age}</td><td class="py-3 ${obColor}">${z.ob_confluence}</td></tr>`;
+          }).join('');
+        }
 
         async function updateDashboard() {
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();
-                
-                if(data.error) {
-                    document.getElementById('status-text').innerText = 'MT5 Error: ' + data.error;
-                    document.getElementById('status-text').className = 'text-sm text-red-400';
-                    // TETEP UPDATE DATA MARKETBULLS WALAU MT5 ERROR
-                } else {
-                    // Update Status
-                    const statusEl = document.getElementById('status-text');
-                    statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.time}`;
-                    statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
-                }
-                
-                // Update Price
-                if(data.price) document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
-                
-                // Update Smart Money Bias
-                if(data.bias){
-                    document.querySelector('[data-bias]').innerText = data.bias;
-                    document.querySelector('[data-bias]').className = data.bias === 'BULLISH' ? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
-                }
-                if(data.smi) document.querySelector('[data-smi]').innerText = data.smi;
-                
-                // Update CFTC NET - FIXED
-                if(data.cftc_net !== undefined){
-                    document.querySelector('[data-cftc-net]').innerText = data.cftc_net.toLocaleString();
-                }
-                if(data.cftc_date) document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
-                
-                // Update Seasonal
+                if (data.liquidity_zones) renderLiquidityZones(data.liquidity_zones);
+                const statusEl = document.getElementById('status-text');
+                if(data.error) { statusEl.innerText = 'MT5 Error: ' + data.error; statusEl.className = 'text-sm text-red-400'; }
+                else { const timeLabel = data.updated || data.time || ''; statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${timeLabel}`; statusEl.className = data.bias === 'BULLISH'? 'text-sm text-green-400' : 'text-sm text-red-400'; }
+                const price = data.close || data.price;
+                if(price) document.querySelector('[data-price]').innerText = '$' + parseFloat(price).toFixed(2);
+                if(data.bias){ document.querySelector('[data-bias]').innerText = data.bias; document.querySelector('[data-bias]').className = data.bias === 'BULLISH'? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400'; }
+                const smiVal = data.smi? data.smi : (data.ema50? data.ema50 : '--'); document.querySelector('[data-smi]').innerText = smiVal;
+                if(data.cftc_net!== undefined){ document.querySelector('[data-cftc-net]').innerText = parseFloat(data.cftc_net).toLocaleString(); document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date; }
                 if(data.seasonal_bias) document.querySelector('[data-seasonal]').innerText = data.seasonal_bias;
                 if(data.seasonal_month) document.querySelector('[data-seasonal-month]').innerText = data.seasonal_month;
                 if(data.seasonal_value) document.querySelector('[data-seasonal-value]').innerText = data.seasonal_value;
-                
-                // Update CME MAX PAIN - FIXED
                 if(data.cme_max_pain) document.querySelector('[data-maxpain]').innerText = '$' + data.cme_max_pain;
-                
-                // Update Retail Sentiment - FIXED
-                if(data.retail_long !== undefined) document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
-                if(data.retail_short !== undefined) document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short';
-                document.getElementById('retail-updated').innerText = data.time || 'Live';
-                
-                // Update AI Execution Panel
-                if(data.smc_active !== undefined){
-                    document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
-                    document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
-                }
-                
-                if(data.prz_ready !== undefined){
-                    document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY' : 'Scanning';
-                    document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
-                }
-                
-                // Update Time
-                if(data.time) document.querySelector('[data-time]').innerText = data.time;
-                if(data.cftc_date) document.querySelector('[data-cot-update]').innerText = data.cftc_date;
-                
-                // Update AI Signals page
-                if(data.signal_status){
-                    document.getElementById('sig-page-status').innerText = data.signal_status;
-                    document.getElementById('sig-page-entry').innerText = data.entry ? data.entry.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-sl').innerText = data.sl ? data.sl.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-tp1').innerText = data.tp1 ? data.tp1.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-tp2').innerText = data.tp2 ? data.tp2.toFixed(2) : '----.--';
-                    document.getElementById('sig-page-reason').innerText = data.reason || 'No confluence';
+                if(data.retail_long!== undefined){ document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long'; }
+                if(data.retail_short!== undefined){ document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short'; }
+                document.getElementById('retail-updated').innerText = data.updated || data.time || 'Live';
+                if(data.smc_active!== undefined){ document.querySelector('[data-model="smc"]').innerText = data.smc_active? 'AKTIF' : 'Standby'; }
+                if(data.prz_ready!== undefined){ document.querySelector('[data-model="prz"]').innerText = data.prz_ready? 'READY ✓' : 'Scanning'; }
+                document.querySelector('[data-time]').innerText = data.updated || data.time || '--:--:--';
+                document.querySelector('[data-cot-update]').innerText = data.cftc_date || 'N/A';
+                const meta = data.signal_meta || {};
+                if(meta.status){
+                    document.getElementById('sig-page-status').innerText = meta.status;
+                    document.getElementById('sig-page-status').className = meta.status === 'BUY'? 'font-orbitron text-3xl font-bold text-green-400' : meta.status === 'SELL'? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
+                    document.getElementById('sig-page-entry').innerText = meta.entry? meta.entry.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-sl').innerText = meta.sl? meta.sl.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp1').innerText = meta.tp1? meta.tp1.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp2').innerText = meta.tp2? meta.tp2.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-reason').innerText = meta.reason || 'No confluence';
                     document.getElementById('sig-page-updated').innerText = data.updated || data.time;
-                    
-                    const sigStatusEl = document.getElementById('sig-page-status');
-                    sigStatusEl.className = data.signal_status === 'BUY' ? 'font-orbitron text-3xl font-bold text-green-400' : data.signal_status === 'SELL' ? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
                 }
-                
-            } catch (e) {
-                document.getElementById('status-text').innerText = 'Server mati - Pastin python main.py jalan';
-                document.getElementById('status-text').className = 'text-sm text-red-400';
-                console.log('Error:', e);
-            }
+                if(meta.confluence){
+                    updateConfluenceBadge('cf-maxwell', meta.confluence.maxwell_ai);
+                    updateConfluenceBadge('cf-ob', meta.confluence.order_block);
+                    updateConfluenceBadge('cf-liq', meta.confluence.liquidity);
+                    updateConfluenceBadge('cf-cot', meta.confluence.cot);
+                    updateConfluenceBadge('cf-season', meta.confluence.seasonal);
+                }
+                if(meta.confluence_score!== undefined){
+                    document.getElementById('cf-score').innerText = `${meta.confluence_score}/5`;
+                    document.getElementById('cf-score').className = meta.confluence_score >= 4? 'text-lg font-bold text-green-400' : 'text-lg font-bold text-yellow-400';
+                }
+                if(meta.rr_ratio!== undefined) document.getElementById('setup-rr').innerText = meta.rr_ratio + 'R';
+                if(meta.timeframe) document.getElementById('setup-tf').innerText = meta.timeframe;
+                if(meta.session) document.getElementById('setup-session').innerText = meta.session;
+                if(meta.win_rate!== undefined) document.getElementById('setup-wr').innerText = meta.win_rate + '%';
+            } catch (e) { document.getElementById('status-text').innerText = 'Server mati'; document.getElementById('status-text').className = 'text-sm text-red-400'; }
         }
-
-        setInterval(updateDashboard, 2000);
-        updateDashboard();
+        setInterval(updateDashboard, 2000); updateDashboard();
     </script>
 </body>
 </html>
