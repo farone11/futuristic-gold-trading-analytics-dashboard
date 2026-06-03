@@ -15,7 +15,6 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         .transition-all { transition: all 0.3s ease; }
         .hidden { display: none!important; }
-        .progress-bg { background: #1a1a2e; }
     </style>
 </head>
 <body class="bg-[#0a0a0f] text-white">
@@ -38,14 +37,13 @@
                 <a href="/institutional-flow.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Institutional Flow</span>
                 </a>
-                <a href="#liquidity-zones" onclick="showPage('liquidity-zones')" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
+                <a href="#" onclick="showPage('liquidity-zones')" id="nav-liquidity-zones" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>Liquidity Zones</span>
                 </a>
-                <!-- FIX: RISK ENGINE UDAH BISA DIKLIK -->
-                <a href="#risk-engine" onclick="showPage('risk-engine')" id="nav-risk-engine" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
+                <a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-yellow-400 cursor-not-allowed opacity-50">
                     <span>Risk Engine</span>
                 </a>
-                <a href="#signals" onclick="showPage('signals')" id="nav-signals" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
+                <a href="#" onclick="showPage('signals')" id="nav-signals" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all">
                     <span>AI Signals</span>
                 </a>
             </nav>
@@ -56,8 +54,12 @@
 
             <!-- PAGE: DASHBOARD -->
             <div id="page-dashboard" class="dashboard-page p-8">
+
+                <!-- HEADER -->
                 <div class="mb-6">
-                    <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">FUTURISTIC GOLD TRADING ANALYTICS</h1>
+                    <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">
+                        FUTURISTIC GOLD TRADING ANALYTICS
+                    </h1>
                     <p class="text-gray-400">Institutional Intelligence Layer · XAUUSD Analytics · Professional Environment</p>
                     <div class="flex items-center gap-2 mt-3">
                         <span class="live-dot w-2 h-2 bg-green-500 rounded-full"></span>
@@ -65,46 +67,59 @@
                     </div>
                 </div>
 
+                <!-- DISCLAIMER ENGLISH -->
                 <div class="mb-6 bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-3">
-                    <p class="text-xs text-yellow-400/80"><strong>DISCLAIMER:</strong> This dashboard is for informational and educational purposes only. Trading forex, CFDs, and gold involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. AI signals are not financial advice.</p>
+                    <p class="text-xs text-yellow-400/80">
+                        <strong>DISCLAIMER:</strong> This dashboard is for informational and educational purposes only.
+                        Trading forex, CFDs, and gold involves substantial risk of loss and is not suitable for every investor.
+                        Past performance is not indicative of future results. AI signals are not financial advice.
+                        You should carefully consider whether trading is suitable for you in light of your circumstances, knowledge, and financial resources.
+                        FARONE.AI does not guarantee profits and is not responsible for any trading losses.
+                    </p>
                 </div>
 
-                <!-- 7 CARD DASHBOARD - TETAP ADA SEMUA -->
+                <!-- STATS GRID - 7 CARD -->
                 <div class="grid grid-cols-7 gap-4 mb-8">
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">XAUUSD PRICE</p>
                         <h2 class="font-orbitron text-3xl font-bold text-yellow-400" data-price>$----.--</h2>
                         <p class="text-xs text-gray-500 mt-2">Live Update</p>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SMART MONEY BIAS</p>
                         <h2 class="font-orbitron text-3xl font-bold text-green-400" data-bias>STANDBY</h2>
                         <p class="text-xs text-gray-500 mt-2">SMI: <span data-smi>--</span></p>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CFTC NET</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-cftc-net>---,---</h2>
-                        <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--</p>
+                        <p class="text-xs text-gray-500 mt-2" data-cftc-date>As of --/--/--</p>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">SEASONAL BIAS</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-seasonal>NEUTRAL</h2>
                         <p class="text-xs text-gray-500 mt-2"><span data-seasonal-month>May</span>: <span data-seasonal-value>+1.75</span> avg</p>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">DAILY RISK</p>
-                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400" id="daily-risk-card">1.2%</h2>
+                        <h2 class="font-orbitron text-3xl font-bold text-yellow-400">1.2%</h2>
                         <p class="text-xs text-gray-500 mt-2">Inst. Allocation</p>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <p class="text-gray-400 text-xs mb-2">CME MAX PAIN</p>
                         <h2 class="font-orbitron text-2xl font-bold text-yellow-400" data-maxpain>$4525</h2>
                         <p class="text-xs text-gray-500 mt-2">MarketBulls</p>
                     </div>
+
                     <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-5 card-glow">
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-gray-400 text-xs">RETAIL SENTIMENT</p>
-                            <span class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
+                            <span id="retail-source" class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">Live</span>
                         </div>
                         <h2 class="font-orbitron text-xl font-bold text-red-400" data-retail-long>--% Long</h2>
                         <h2 class="font-orbitron text-xl font-bold text-green-400" data-retail-short>--% Short</h2>
@@ -112,21 +127,59 @@
                     </div>
                 </div>
 
-                <div id="main-grid" class="grid grid-cols-3 gap-6">
-                    <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow" id="chart-container">
+                <!-- CHART + AI PANEL -->
+                <div class="grid grid-cols-3 gap-6 transition-all" id="main-grid">
+
+                    <!-- TRADINGVIEW CHART -->
+                    <div class="col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="chart-container">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-orbitron text-lg font-bold text-yellow-400">Institutional Momentum Engine - Live XAUUSD H1</h3>
-                            <button onclick="toggleChart()" id="expand-btn" class="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400">Expand 50/50</button>
+                            <h3 class="font-orbitron text-lg font-bold text-yellow-400">
+                                Institutional Momentum Engine - Live XAUUSD H1
+                            </h3>
+                            <button onclick="toggleChart()" id="expand-btn" class="px-3 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 rounded text-xs text-yellow-400 transition-all">
+                                Expand 50/50
+                            </button>
                         </div>
-                        <div class="tradingview-widget-container" style="height:500px;width:100%"><div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div></div>
+                        <div class="tradingview-widget-container" style="height:500px;width:100%">
+                          <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
+                        </div>
                     </div>
-                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow" id="ai-panel">
+
+                    <!-- AI EXECUTION PANEL -->
+                    <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all" id="ai-panel">
                         <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">AI Execution Panel</h3>
-                        <div class="space-y-4 text-sm">
-                            <div class="flex justify-between"><span>SMC Engine</span><span data-model="smc" class="text-yellow-400">Standby</span></div>
-                            <div class="flex justify-between"><span>PRZ Scanner</span><span data-model="prz" class="text-blue-400">Scanning</span></div>
-                            <div class="flex justify-between"><span>Liquidity Sweep</span><span data-model="liquidity" class="text-blue-400">Monitoring</span></div>
-                            <div class="flex justify-between"><span>Risk AI</span><span data-model="risk" class="text-green-400">Protected</span></div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+                                <span class="text-gray-400">Model</span>
+                                <span class="text-gray-400">Status</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">SMC Engine</span>
+                                <span class="font-bold text-yellow-400" data-model="smc">Standby</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">PRZ Scanner</span>
+                                <span class="font-bold text-blue-400" data-model="prz">Scanning</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Liquidity Sweep</span>
+                                <span class="font-bold text-blue-400" data-model="liquidity">Monitoring</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Risk AI</span>
+                                <span class="font-bold text-green-400" data-model="risk">Protected</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <p class="text-xs text-gray-500">Last Update: <span data-time>--:--:--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">COT: <span data-cot-update>--</span></p>
+                            <p class="text-xs text-gray-600 mt-1">Retail Lots: <span id="retail-lots">-</span></p>
                         </div>
                     </div>
                 </div>
@@ -136,45 +189,98 @@
             <div id="page-liquidity-zones" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">Liquidity Zones - XAUUSDc H1</h2>
                 <p class="text-gray-400 mb-6">Buy-Side & Sell-Side Liquidity + Session Levels · Auto Sweep Detection</p>
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl"><div class="text-xs text-gray-400 mb-2">BUY-SIDE LIQUIDITY</div><div id="bsl-count" class="font-orbitron text-3xl font-bold text-red-400">0</div></div>
-                    <div class="bg-[#13131f] border border-green-900/20 p-5 rounded-xl"><div class="text-xs text-gray-400 mb-2">SELL-SIDE LIQUIDITY</div><div id="ssl-count" class="font-orbitron text-3xl font-bold text-green-400">0</div></div>
-                    <div class="bg-[#13131f] border border-blue-900/20 p-5 rounded-xl"><div class="text-xs text-gray-400 mb-2">SESSION LIQUIDITY</div><div id="session-count" class="font-orbitron text-3xl font-bold text-blue-400">0</div></div>
-                </div>
-                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6">
-                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
-                    <table class="w-full text-sm"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Type</th><th class="text-left pb-3">Price Zone</th><th class="text-left pb-3">Status</th><th class="text-left pb-3">Age</th><th class="text-left pb-3">OB Confluence</th></tr></thead><tbody id="liq-body"></tbody></table>
-                </div>
-            </div>
 
-            <!-- PAGE: RISK ENGINE - UDAH DITAMBAHIN -->
-            <div id="page-risk-engine" class="dashboard-page hidden p-8">
-                <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">RISK ENGINE - INSTITUTIONAL GRADE</h2>
-                <p class="text-gray-400 mb-6">Position Sizing · Drawdown Control · Kelly Criterion · Real-time Risk Metrics</p>
-                <div class="grid grid-cols-4 gap-4 mb-6">
-                    <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl"><div class="text-xs text-gray-400 mb-2">ACCOUNT RISK</div><div id="risk-account" class="font-orbitron text-3xl font-bold text-red-400">0.0%</div></div>
-                    <div class="bg-[#13131f] border border-yellow-900/20 p-5 rounded-xl"><div class="text-xs text-gray-400 mb-2">DAILY DRAWDOWN</div><div id="risk-dd" class="font-orbitron text-3xl font-bold text-yellow-400">0.0%</div></div>
-                    <div class="bg-[#13131f] border border-green-900/20 p-5 rounded-xl"><div class="text-xs text-gray-400 mb-2">KELLY OPTIMAL</div><div id="risk-kelly" class="font-orbitron text-3xl font-bold text-green-400">0.0%</div></div>
-                    <div class="bg-[#13131f] border border-blue-900/20 p-5 rounded-xl"><div class="text-xs text-gray-400 mb-2">R:R RATIO</div><div id="risk-rr" class="font-orbitron text-3xl font-bold text-blue-400">0.0</div></div>
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-2">BUY-SIDE LIQUIDITY</div>
+                        <div id="bsl-count" class="font-orbitron text-3xl font-bold text-red-400">0</div>
+                        <div class="text-xs text-gray-500 mt-2">Above Highs - Sweep Target</div>
+                    </div>
+                    <div class="bg-[#13131f] border border-green-900/20 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-2">SELL-SIDE LIQUIDITY</div>
+                        <div id="ssl-count" class="font-orbitron text-3xl font-bold text-green-400">0</div>
+                        <div class="text-xs text-gray-500 mt-2">Below Lows - Sweep Target</div>
+                    </div>
+                    <div class="bg-[#13131f] border border-blue-900/20 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-2">SESSION LIQUIDITY</div>
+                        <div id="session-count" class="font-orbitron text-3xl font-bold text-blue-400">0</div>
+                        <div class="text-xs text-gray-500 mt-2">Asia / London / NY</div>
+                    </div>
                 </div>
-                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6">
-                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Risk Positions</h3>
-                    <div id="risk-positions-empty" class="text-center text-gray-500 py-8">No active positions</div>
-                    <table class="w-full text-sm hidden" id="risk-table"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Symbol</th><th class="text-left pb-3">Type</th><th class="text-left pb-3">Lots</th><th class="text-left pb-3">Entry</th><th class="text-left pb-3">SL</th><th class="text-left pb-3">TP</th><th class="text-left pb-3">Risk $</th><th class="text-left pb-3">R:R</th></tr></thead><tbody id="risk-body"></tbody></table>
+
+                <div id="liq-table" class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
+                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data. Run mt5_liquidity.py</div>
+                    <table class="w-full text-sm">
+                        <thead class="text-gray-400 border-b border-gray-800">
+                            <tr>
+                                <th class="text-left pb-3">Type</th>
+                                <th class="text-left pb-3">Price Zone</th>
+                                <th class="text-left pb-3">Status</th>
+                                <th class="text-left pb-3">Age</th>
+                                <th class="text-left pb-3">OB Confluence</th>
+                            </tr>
+                        </thead>
+                        <tbody id="liq-body" class="text-gray-300"></tbody>
+                    </table>
                 </div>
             </div>
 
             <!-- PAGE: AI SIGNALS -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
-                <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine</p>
-                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6">
-                    <div class="grid grid-cols-5 gap-4 text-center">
-                        <div><p class="text-xs text-gray-400">STATUS</p><div id="sig-page-status" class="font-orbitron text-2xl font-bold text-yellow-400">STANDBY</div></div>
-                        <div><p class="text-xs text-gray-400">ENTRY</p><div id="sig-page-entry" class="font-orbitron text-2xl">----.--</div></div>
-                        <div><p class="text-xs text-gray-400">SL</p><div id="sig-page-sl" class="font-orbitron text-2xl text-red-400">----.--</div></div>
-                        <div><p class="text-xs text-gray-400">TP1</p><div id="sig-page-tp1" class="font-orbitron text-2xl text-green-400">----.--</div></div>
-                        <div><p class="text-xs text-gray-400">TP2</p><div id="sig-page-tp2" class="font-orbitron text-2xl text-green-400">----.--</div></div>
+                <p class="text-gray-400 mb-6">Live trade signals from 5-layer confluence engine: Maxwell AI + OB + Liquidity + COT + Seasonal</p>
+
+                <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
+                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-6">Current Signal</h3>
+                    <div class="grid grid-cols-5 gap-4 text-center mb-6">
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">STATUS</p>
+                            <div id="sig-page-status" class="font-orbitron text-3xl font-bold text-yellow-400">STANDBY</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">ENTRY</p>
+                            <div id="sig-page-entry" class="font-orbitron text-3xl font-bold text-white">----.--</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">STOP LOSS</p>
+                            <div id="sig-page-sl" class="font-orbitron text-3xl font-bold text-red-400">----.--</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">TAKE PROFIT 1</p>
+                            <div id="sig-page-tp1" class="font-orbitron text-3xl font-bold text-green-400">----.--</div>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs mb-2">TAKE PROFIT 2</p>
+                            <div id="sig-page-tp2" class="font-orbitron text-3xl font-bold text-green-400">----.--</div>
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t border-gray-800 text-center">
+                        <p class="text-sm text-gray-400 mb-2" id="sig-page-reason">No confluence</p>
+                        <p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="px-8 pb-8">
+                <div class="mt-8 border-t border-gray-800 pt-4">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                        <div class="flex-1 text-xs text-gray-600">
+                            <p class="mb-2">
+                                <strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.
+                                The high degree of leverage can work against you as well as for you. Before deciding to trade, you should carefully consider your investment objectives,
+                                level of experience, and risk appetite.
+                            </p>
+                            <p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p>
+                        </div>
+
+                        <div class="md:text-right md:min-w-">
+                            <p class="text-xs text-gray-500 mb-1">Authors</p>
+                            <p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p>
+                            <p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p>
+                            <p class="text-xs text-gray-600 mt-1">Specialist Data Engineer</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -182,23 +288,38 @@
         </div>
     </div>
 
-    <script src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        new TradingView.widget({ "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "60", "timezone": "Asia/Jakarta", "theme": "dark", "style": "1", "locale": "en", "container_id": "tradingview_chart" });
+    <!-- TRADINGVIEW WIDGET -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+        let tvWidget = new TradingView.widget({
+            "autosize": true,
+            "symbol": "OANDA:XAUUSD",
+            "interval": "60",
+            "timezone": "Asia/Jakarta",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#13131f",
+            "enable_publishing": false,
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "save_image": false,
+            "container_id": "tradingview_chart"
+        });
 
-        function toggleChart(){ 
-            const grid = document.getElementById('main-grid'); 
-            const chart = document.getElementById('chart-container'); 
-            const btn = document.getElementById('expand-btn'); 
-            if (grid.classList.contains('grid-cols-3')) { 
-                grid.className = 'grid grid-cols-2 gap-6'; 
-                chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow'; 
-                btn.innerText = 'Default View'; 
-            } else { 
-                grid.className = 'grid grid-cols-3 gap-6'; 
-                chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow'; 
-                btn.innerText = 'Expand 50/50'; 
-            } 
+        function toggleChart() {
+            const grid = document.getElementById('main-grid');
+            const chart = document.getElementById('chart-container');
+            const btn = document.getElementById('expand-btn');
+            if (grid.classList.contains('grid-cols-3')) {
+                grid.className = 'grid grid-cols-2 gap-6 transition-all';
+                chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                btn.innerText = 'Default View';
+            } else {
+                grid.className = 'grid grid-cols-3 gap-6 transition-all';
+                chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all';
+                btn.innerText = 'Expand 50/50';
+            }
         }
 
         function showPage(pageId) {
@@ -206,23 +327,103 @@
             const target = document.getElementById('page-' + pageId);
             if (target) target.classList.remove('hidden');
 
-            ['dashboard','liquidity-zones','risk-engine','signals'].forEach(id => {
-                const nav = document.getElementById('nav-' + id);
-                if(nav) nav.className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
-            });
-            const active = document.getElementById('nav-' + pageId);
-            if(active) active.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
-            history.replaceState(null, '', '#' + pageId);
+            document.getElementById('nav-dashboard').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            document.getElementById('nav-liquidity-zones').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            document.getElementById('nav-signals').className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all';
+            const activeNav = document.getElementById('nav-' + pageId);
+            if (activeNav) activeNav.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400';
+        }
+    </script>
+
+    <!-- LIVE DATA DARI FLASK + MARKETBULLS -->
+    <script>
+        // GANTI PAKE NGROK KALO MAU LIVE DI pages.dev
+        // const API_URL = 'https://xxxx-xx-xxx-xx.ngrok-free.app/api';
+        const API_URL = 'http://localhost:5000/api';
+
+        async function updateDashboard() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                
+                if(data.error) {
+                    document.getElementById('status-text').innerText = 'MT5 Error: ' + data.error;
+                    document.getElementById('status-text').className = 'text-sm text-red-400';
+                    // TETEP UPDATE DATA MARKETBULLS WALAU MT5 ERROR
+                } else {
+                    // Update Status
+                    const statusEl = document.getElementById('status-text');
+                    statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${data.time}`;
+                    statusEl.className = data.bias === 'BULLISH' ? 'text-sm text-green-400' : 'text-sm text-red-400';
+                }
+                
+                // Update Price
+                if(data.price) document.querySelector('[data-price]').innerText = '$' + data.price.toFixed(2);
+                
+                // Update Smart Money Bias
+                if(data.bias){
+                    document.querySelector('[data-bias]').innerText = data.bias;
+                    document.querySelector('[data-bias]').className = data.bias === 'BULLISH' ? 'font-orbitron text-3xl font-bold text-green-400' : 'font-orbitron text-3xl font-bold text-red-400';
+                }
+                if(data.smi) document.querySelector('[data-smi]').innerText = data.smi;
+                
+                // Update CFTC NET - FIXED
+                if(data.cftc_net !== undefined){
+                    document.querySelector('[data-cftc-net]').innerText = data.cftc_net.toLocaleString();
+                }
+                if(data.cftc_date) document.querySelector('[data-cftc-date]').innerText = 'As of ' + data.cftc_date;
+                
+                // Update Seasonal
+                if(data.seasonal_bias) document.querySelector('[data-seasonal]').innerText = data.seasonal_bias;
+                if(data.seasonal_month) document.querySelector('[data-seasonal-month]').innerText = data.seasonal_month;
+                if(data.seasonal_value) document.querySelector('[data-seasonal-value]').innerText = data.seasonal_value;
+                
+                // Update CME MAX PAIN - FIXED
+                if(data.cme_max_pain) document.querySelector('[data-maxpain]').innerText = '$' + data.cme_max_pain;
+                
+                // Update Retail Sentiment - FIXED
+                if(data.retail_long !== undefined) document.querySelector('[data-retail-long]').innerText = data.retail_long + '% Long';
+                if(data.retail_short !== undefined) document.querySelector('[data-retail-short]').innerText = data.retail_short + '% Short';
+                document.getElementById('retail-updated').innerText = data.time || 'Live';
+                
+                // Update AI Execution Panel
+                if(data.smc_active !== undefined){
+                    document.querySelector('[data-model="smc"]').innerText = data.smc_active ? 'AKTIF' : 'Standby';
+                    document.querySelector('[data-model="smc"]').className = data.smc_active ? 'font-bold text-green-400' : 'font-bold text-yellow-400';
+                }
+                
+                if(data.prz_ready !== undefined){
+                    document.querySelector('[data-model="prz"]').innerText = data.prz_ready ? 'READY' : 'Scanning';
+                    document.querySelector('[data-model="prz"]').className = data.prz_ready ? 'font-bold text-green-400' : 'font-bold text-blue-400';
+                }
+                
+                // Update Time
+                if(data.time) document.querySelector('[data-time]').innerText = data.time;
+                if(data.cftc_date) document.querySelector('[data-cot-update]').innerText = data.cftc_date;
+                
+                // Update AI Signals page
+                if(data.signal_status){
+                    document.getElementById('sig-page-status').innerText = data.signal_status;
+                    document.getElementById('sig-page-entry').innerText = data.entry ? data.entry.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-sl').innerText = data.sl ? data.sl.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp1').innerText = data.tp1 ? data.tp1.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-tp2').innerText = data.tp2 ? data.tp2.toFixed(2) : '----.--';
+                    document.getElementById('sig-page-reason').innerText = data.reason || 'No confluence';
+                    document.getElementById('sig-page-updated').innerText = data.updated || data.time;
+                    
+                    const sigStatusEl = document.getElementById('sig-page-status');
+                    sigStatusEl.className = data.signal_status === 'BUY' ? 'font-orbitron text-3xl font-bold text-green-400' : data.signal_status === 'SELL' ? 'font-orbitron text-3xl font-bold text-red-400' : 'font-orbitron text-3xl font-bold text-yellow-400';
+                }
+                
+            } catch (e) {
+                document.getElementById('status-text').innerText = 'Server mati - Pastin python main.py jalan';
+                document.getElementById('status-text').className = 'text-sm text-red-400';
+                console.log('Error:', e);
+            }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const hash = location.hash.replace('#','') || 'dashboard';
-            showPage(hash);
-        });
-
-        const API_URL = 'http://localhost:5000/api';
-        async function updateDashboard(){ /* fetch logic kamu tetap */ }
-        setInterval(updateDashboard,2000); updateDashboard();
+        setInterval(updateDashboard, 2000);
+        updateDashboard();
     </script>
 </body>
 </html>
