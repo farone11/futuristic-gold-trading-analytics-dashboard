@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Futuristic Gold Trading Analytics Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+background:
+radial-gradient(circle at top right,#3b2a00 0%,transparent 25%),
+linear-gradient(135deg,#05070d,#0c1019,#0a0f18);
+font-family:Segoe UI,Arial,sans-serif;
+color:#f6d46a;
+overflow-x:hidden;
+}
+.sidebar{
+position:fixed;
+left:0;top:0;
+width:260px;height:100vh;
+background:rgba(10,14,22,.92);
+backdrop-filter:blur(12px);
+border-right:1px solid rgba(255,215,0,.2);
+padding:30px 20px;
+}
+.logo{
+font-size:24px;
+font-weight:700;
+margin-bottom:40px;
+letter-spacing:2px;
+}
+.menu div{
+padding:14px;
+margin:12px 0;
+border-radius:12px;
+background:rgba(255,215,0,.05);
+}
+.main{
+margin-left:280px;
+padding:25px;
+}
+.hero{
+padding:30px;
+border-radius:24px;
+background:rgba(18,24,38,.75);
+border:1px solid rgba(255,215,0,.15);
+box-shadow:0 0 50px rgba(255,215,0,.08);
+}
+.hero h1{
+font-size:42px;
+margin-bottom:10px;
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+margin-top:25px;
+}
+.card{
+background:rgba(15,20,32,.9);
+border:1px solid rgba(255,215,0,.15);
+border-radius:22px;
+padding:24px;
+box-shadow:0 0 25px rgba(255,215,0,.05);
+}
+.metric{
+font-size:38px;
+font-weight:bold;
+margin:10px 0;
+}
+.label{
+color:#9da4b2;
+font-size:14px;
+}
+.chart{
+height:240px;
+display:flex;
+align-items:flex-end;
+gap:10px;
+margin-top:15px;
+}
+.bar{
+flex:1;
+border-radius:10px 10px 0 0;
+background:linear-gradient(180deg,#ffe27a,#8a6500);
+box-shadow:0 0 15px rgba(255,215,0,.35);
+}
+.panel{
+margin-top:25px;
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+.table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+.table td,.table th{
+padding:12px;
+border-bottom:1px solid rgba(255,215,0,.08);
+text-align:left;
+}
+.glow{
+animation:pulse 3s infinite;
+}
+@keyframes pulse{
+50%{box-shadow:0 0 40px rgba(255,215,0,.25)}
+}
+@media(max-width:900px){
+.sidebar{position:relative;width:100%;height:auto}
+.main{margin-left:0}
+.panel{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+<div class="logo">FARONE • GOLD AI</div>
+<div class="menu">
+<div>Dashboard</div>
+<div>Institutional Flow</div>
+<div>Liquidity Zones</div>
+<div>Risk Engine</div>
+<div>AI Signals</div>
+</div>
+</div>
+
+<div class="main">
+
+<div class="hero glow">
+<h1>FUTURISTIC GOLD TRADING ANALYTICS</h1>
+<p>Institutional Intelligence Layer • XAUUSD Analytics • Professional Environment</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<div class="label">XAUUSD PRICE</div>
+<div class="metric">$3,425</div>
+<div class="label">Live Placeholder Feed</div>
+</div>
+
+<div class="card">
+<div class="label">SMART MONEY BIAS</div>
+<div class="metric">BULLISH</div>
+<div class="label">Confidence 84%</div>
+</div>
+
+<div class="card">
+<div class="label">DAILY RISK</div>
+<div class="metric">1.2%</div>
+<div class="label">Institutional Allocation</div>
+</div>
+
+<div class="card">
+<div class="label">LIQUIDITY INDEX</div>
+<div class="metric">72</div>
+<div class="label">High Participation</div>
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="card">
+<h3>Institutional Momentum Engine</h3>
+<div class="chart">
+<div class="bar" style="height:40%"></div>
+<div class="bar" style="height:55%"></div>
+<div class="bar" style="height:35%"></div>
+<div class="bar" style="height:78%"></div>
+<div class="bar" style="height:62%"></div>
+<div class="bar" style="height:90%"></div>
+<div class="bar" style="height:75%"></div>
+<div class="bar" style="height:95%"></div>
+</div>
+</div>
+
+<div class="card">
+<h3>AI Execution Panel</h3>
+<table class="table">
+<tr><th>Model</th><th>Status</th></tr>
+<tr><td>SMC Engine</td><td>Active</td></tr>
+<tr><td>PRZ Scanner</td><td>Ready</td></tr>
+<tr><td>Liquidity Sweep</td><td>Monitoring</td></tr>
+<tr><td>Risk AI</td><td>Protected</td></tr>
+</table>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

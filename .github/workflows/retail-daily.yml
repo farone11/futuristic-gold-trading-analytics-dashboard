@@ -1,0 +1,32 @@
+name: Retail Sentiment Daily
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write  # INI KUNCINYA BRO
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - run: pip install playwright pytz
+      - run: playwright install chromium --with-deps
+      - run: python scrape_retail.py
+      
+      - name: Commit & Push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add retail_sentiment.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update retail sentiment [skip ci]"
+          git push

@@ -1,0 +1,14 @@
+# API
+flask==3.0.3
+flask-cors==4.0.1
+
+# Data Processing
+pandas==2.2.2
+
+# Scraping / HTTP
+requests==2.32.3
+beautifulsoup4==4.14.3
+lxml==6.1.1
+
+# Trading Integration
+MetaTrader5==5.0.45
