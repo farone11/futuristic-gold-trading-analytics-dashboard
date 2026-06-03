@@ -226,58 +226,9 @@
         function renderLiquidityZones(zones) { const tbody = document.getElementById('liq-body'); const empty = document.getElementById('liq-empty'); const bslCount = document.getElementById('bsl-count'); const sslCount = document.getElementById('ssl-count'); const sessionCount = document.getElementById('session-count'); if (!zones || zones.length === 0) { tbody.innerHTML = ''; empty.classList.remove('hidden'); bslCount.innerText = '0'; sslCount.innerText = '0'; sessionCount.innerText = '0'; return; } empty.classList.add('hidden'); let bsl = 0, ssl = 0, session = 0; zones.forEach(z => { if (z.type === 'BSL') bsl++; else if (z.type === 'SSL') ssl++; else session++; }); bslCount.innerText = bsl; sslCount.innerText = ssl; sessionCount.innerText = session; tbody.innerHTML = zones.map(z => { const badgeColor = z.type === 'BSL'? 'bg-red-600' : z.type === 'SSL'? 'bg-green-600' : 'bg-blue-600'; const statusColor = z.status === 'ACTIVE'? 'text-green-400' : z.status === 'AGED'? 'text-yellow-400' : 'text-blue-400'; const obColor = z.ob_confluence === 'YES'? 'text-green-400 font-bold' : 'text-gray-500'; return `<tr class="border-b border-gray-800/50 hover:bg-yellow-500/5"><td class="py-3"><span class="px-2 py-1 rounded text-xs ${badgeColor} text-white">${z.type}</span></td><td class="py-3 font-orbitron text-yellow-400">${z.price}</td><td class="py-3 ${statusColor}">${z.status}</td><td class="py-3 text-gray-400">${z.age}</td><td class="py-3 ${obColor}">${z.ob_confluence}</td></tr>`; }).join(''); }
 
         async function updateDashboard() {
-    try {
-        const res = await fetch(API_URL); const data = await res.json();
-        
-        // Update data dari /api buat dashboard utama
-        if (data.liquidity_zones) renderLiquidityZones(data.liquidity_zones);
-        const statusEl = document.getElementById('status-text');
-        if(data.error) { 
-            statusEl.innerText = 'MT5 Error: ' + data.error; 
-            statusEl.className = 'text-sm text-red-400'; 
-        } else { 
-            const timeLabel = data.updated || data.time || ''; 
-            statusEl.innerText = `Live MT5 | Bias: ${data.bias} | ${timeLabel}`; 
-            statusEl.className = data.bias === 'BULLISH'? 'text-sm text-green-400' : 'text-sm text-red-400'; 
-        }
-        // ... update dashboard card lain dari `data` ...
-
-        // Fetch institutional data terpisah buat page Institutional Flow
-try {
-    const instRes = await fetch('https://desktop-u6fj6m8.tail379038.ts.net/api/institutional');
-    const instData = await instRes.json();
-    
-    if(instData.cftc) {
-        if(document.getElementById('cftc-date')) document.getElementById('cftc-date').innerText = 'As of ' + instData.cftc.date;
-        if(document.getElementById('cftc-net')) document.getElementById('cftc-net').innerText = instData.cftc.net.toLocaleString();
-        if(document.getElementById('cftc-long')) document.getElementById('cftc-long').innerText = instData.cftc.long.toLocaleString();
-        if(document.getElementById('cftc-short')) document.getElementById('cftc-short').innerText = instData.cftc.short.toLocaleString();
-    }
-    if(instData.retail) {
-        if(document.getElementById('retail-long')) document.getElementById('retail-long').innerText = instData.retail.long + '%';
-        if(document.getElementById('retail-short')) document.getElementById('retail-short').innerText = instData.retail.short + '%';
-        if(document.getElementById('retail-source')) document.getElementById('retail-source').innerText = instData.retail.source;
-    }
-    if(instData.smi) {
-        if(document.getElementById('smi-value')) document.getElementById('smi-value').innerText = instData.smi.value;
-        if(document.getElementById('smi-bias')) {
-            document.getElementById('smi-bias').innerText = instData.smi.bias;
-            document.getElementById('smi-bias').className = instData.smi.bias === 'BULLISH' ? 'font-orbitron text-2xl font-bold mt-2 text-green-400' : instData.smi.bias === 'BEARISH' ? 'font-orbitron text-2xl font-bold mt-2 text-red-400' : 'font-orbitron text-2xl font-bold mt-2 text-yellow-400';
-        }
-        if(document.getElementById('smi-updated')) document.getElementById('smi-updated').innerText = 'Updated: ' + instData.smi.updated;
-    }
-    if(document.getElementById('flow-status')) {
-        document.getElementById('flow-status').innerText = 'Live from MT5 + Tailscale';
-        document.getElementById('flow-status').className = 'text-sm text-green-400';
-    }
-} catch(e) {
-    console.error('Institutional error:', e);
-    if(document.getElementById('flow-status')) {
-        document.getElementById('flow-status').innerText = 'API Error';
-        document.getElementById('flow-status').className = 'text-sm text-red-400';
-    }
-}
-                
+            try {
+                const res = await fetch(API_URL); const data = await res.json();
+                // Update Institutional Flow page too
                 document.getElementById('flow-status').innerText = data.error ? 'Error' : 'Live from MT5 + Tailscale';
                 document.getElementById('flow-status').className = data.error ? 'text-sm text-red-400' : 'text-sm text-green-400';
                 
