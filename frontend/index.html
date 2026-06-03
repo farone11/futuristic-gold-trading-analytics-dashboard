@@ -271,7 +271,7 @@
                 document.querySelector('[data-cot-update]').innerText = data.cftc_date || 'N/A';
             } catch (e) { document.getElementById('status-text').innerText = 'Server mati'; document.getElementById('status-text').className = 'text-sm text-red-400'; }
         }
-        setInterval(updateDashboard, 2000); updateDashboard(); showPage('dashboard');
+        setInterval(updateDashboard, 2000); updateDashboard();
     </script>
 </body>
 </html>
