@@ -337,16 +337,13 @@
 
     <!-- LIVE DATA DARI FLASK + MARKETBULLS -->
     <script>
-        const API_URL = 'https://strut-gladly-sliver.ngrok-free.dev/api';
+        // GANTI PAKE NGROK KALO MAU LIVE DI pages.dev
+        // const API_URL = 'https://xxxx-xx-xxx-xx.ngrok-free.app/api';
+        const API_URL = 'http://localhost:5000/api';
 
         async function updateDashboard() {
             try {
-                const res = await fetch(API_URL, {
-                    headers: {
-                        'ngrok-skip-browser-warning': 'true',
-                        'Accept': 'application/json'
-                    }
-                });
+                const res = await fetch(API_URL);
                 const data = await res.json();
                 
                 if(data.error) {
