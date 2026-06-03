@@ -243,37 +243,38 @@
         // ... update dashboard card lain dari `data` ...
 
         // Fetch institutional data terpisah buat page Institutional Flow
-        try {
-            const instRes = await fetch('https://desktop-u6fj6m8.tail379038.ts.net/api/institutional');
-            const instData = await instRes.json();
-            
-            if(instData.cftc) {
-                document.getElementById('cftc-date').innerText = 'As of ' + instData.cftc.date;
-                document.getElementById('cftc-net').innerText = instData.cftc.net.toLocaleString();
-                document.getElementById('cftc-long').innerText = instData.cftc.long.toLocaleString();
-                document.getElementById('cftc-short').innerText = instData.cftc.short.toLocaleString();
-            }
-            if(instData.retail) {
-                document.getElementById('retail-long').innerText = instData.retail.long + '%';
-                document.getElementById('retail-short').innerText = instData.retail.short + '%';
-                document.getElementById('retail-source').innerText = instData.retail.source;
-            }
-            if(instData.smi) {
-                document.getElementById('smi-value').innerText = instData.smi.value;
-                document.getElementById('smi-bias').innerText = instData.smi.bias;
-                document.getElementById('smi-bias').className = instData.smi.bias === 'BULLISH'? 'font-orbitron text-2xl font-bold mt-2 text-green-400' : instData.smi.bias === 'BEARISH'? 'font-orbitron text-2xl font-bold mt-2 text-red-400' : 'font-orbitron text-2xl font-bold mt-2 text-yellow-400';
-                document.getElementById('smi-updated').innerText = 'Updated: ' + instData.smi.updated;
-            }
-            document.getElementById('flow-status').innerText = 'Live from MT5 + Tailscale';
-            document.getElementById('flow-status').className = 'text-sm text-green-400';
-        } catch(e) {
-            document.getElementById('flow-status').innerText = 'API Error';
-            document.getElementById('flow-status').className = 'text-sm text-red-400';
+try {
+    const instRes = await fetch('https://desktop-u6fj6m8.tail379038.ts.net/api/institutional');
+    const instData = await instRes.json();
+    
+    if(instData.cftc) {
+        if(document.getElementById('cftc-date')) document.getElementById('cftc-date').innerText = 'As of ' + instData.cftc.date;
+        if(document.getElementById('cftc-net')) document.getElementById('cftc-net').innerText = instData.cftc.net.toLocaleString();
+        if(document.getElementById('cftc-long')) document.getElementById('cftc-long').innerText = instData.cftc.long.toLocaleString();
+        if(document.getElementById('cftc-short')) document.getElementById('cftc-short').innerText = instData.cftc.short.toLocaleString();
+    }
+    if(instData.retail) {
+        if(document.getElementById('retail-long')) document.getElementById('retail-long').innerText = instData.retail.long + '%';
+        if(document.getElementById('retail-short')) document.getElementById('retail-short').innerText = instData.retail.short + '%';
+        if(document.getElementById('retail-source')) document.getElementById('retail-source').innerText = instData.retail.source;
+    }
+    if(instData.smi) {
+        if(document.getElementById('smi-value')) document.getElementById('smi-value').innerText = instData.smi.value;
+        if(document.getElementById('smi-bias')) {
+            document.getElementById('smi-bias').innerText = instData.smi.bias;
+            document.getElementById('smi-bias').className = instData.smi.bias === 'BULLISH' ? 'font-orbitron text-2xl font-bold mt-2 text-green-400' : instData.smi.bias === 'BEARISH' ? 'font-orbitron text-2xl font-bold mt-2 text-red-400' : 'font-orbitron text-2xl font-bold mt-2 text-yellow-400';
         }
-        
-    } catch (e) { 
-        document.getElementById('status-text').innerText = 'Server mati'; 
-        document.getElementById('status-text').className = 'text-sm text-red-400'; 
+        if(document.getElementById('smi-updated')) document.getElementById('smi-updated').innerText = 'Updated: ' + instData.smi.updated;
+    }
+    if(document.getElementById('flow-status')) {
+        document.getElementById('flow-status').innerText = 'Live from MT5 + Tailscale';
+        document.getElementById('flow-status').className = 'text-sm text-green-400';
+    }
+} catch(e) {
+    console.error('Institutional error:', e);
+    if(document.getElementById('flow-status')) {
+        document.getElementById('flow-status').innerText = 'API Error';
+        document.getElementById('flow-status').className = 'text-sm text-red-400';
     }
 }
                 
