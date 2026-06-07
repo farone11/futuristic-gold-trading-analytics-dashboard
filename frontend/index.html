@@ -24,7 +24,7 @@
 </head>
 <body class="bg-[#0a0a0f] text-white">
     <button id="sidebarToggle" class="fixed top-5 left-5 z-[999] bg-[#1a1a2e] border border-yellow-500/50 text-yellow-400 text-2xl w-12 h-12 rounded-lg hover:bg-yellow-500 hover:text-black transition-all shadow-lg">☰</button>
-
+ 
     <div class="flex h-screen">
         <div id="sidebar" class="sidebar w-64 bg-[#0f0f1a] border-r border-yellow-900/20 p-6 fixed h-full z-[998]">
             <div class="flex items-center gap-4 mb-10 mt-12">
@@ -42,7 +42,7 @@
                 <a href="#" onclick="showPage('signals')" id="nav-signals" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all"><span>AI Signals</span></a>
             </nav>
         </div>
-
+ 
         <div id="mainContent" class="main-content flex-1 overflow-auto ml-64">
             <!-- DASHBOARD -->
             <div id="page-dashboard" class="dashboard-page p-8">
@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             <!-- INSTITUTIONAL FLOW -->
             <div id="page-institutional-flow" class="dashboard-page hidden p-8">
                 <h1 class="font-orbitron text-4xl font-black mb-2 glow-gold">Institutional Flow Analysis</h1>
@@ -126,7 +126,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             <!-- LIQUIDITY ZONES -->
             <div id="page-liquidity-zones" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">Liquidity Zones - XAUUSDc H1</h2>
@@ -142,7 +142,7 @@
                     <table class="w-full text-sm"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Type</th><th class="text-left pb-3">Price Zone</th><th class="text-left pb-3">Status</th><th class="text-left pb-3">Age</th><th class="text-left pb-3">OB Confluence</th></tr></thead><tbody id="liq-body" class="text-gray-300"></tbody></table>
                 </div>
             </div>
-
+ 
             <!-- RISK ENGINE -->
             <div id="page-risk-engine" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">RISK ENGINE - INSTITUTIONAL GRADE</h2>
@@ -178,7 +178,7 @@
                     <table class="w-full text-sm hidden" id="risk-table"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Symbol</th><th class="text-left pb-3">Type</th><th class="text-left pb-3">Lots</th><th class="text-left pb-3">Entry</th><th class="text-left pb-3">SL</th><th class="text-left pb-3">TP</th><th class="text-left pb-3">Risk $</th><th class="text-left pb-3">R:R</th></tr></thead><tbody id="risk-body" class="text-gray-300"></tbody></table>
                 </div>
             </div>
-
+ 
             <!-- AI SIGNALS -->
             <div id="page-signals" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">AI SIGNAL CENTER</h2>
@@ -195,120 +195,327 @@
                     <div class="pt-6 border-t border-gray-800 text-center"><p class="text-sm text-gray-400 mb-2" id="sig-page-reason">No confluence</p><p class="text-xs text-gray-600">Last Update: <span id="sig-page-updated">--:--:--</span> | Risk: 1% per trade</p></div>
                 </div>
             </div>
-
-            <div class="px-8 pb-8"><div class="mt-8 border-t border-gray-800 pt-4"><div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4"><div class="flex-1 text-xs text-gray-600"><p class="mb-2"><strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.</p><p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p></div><div class="md:text-right"><p class="text-xs text-gray-500 mb-1">Authors</p><p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p><p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p></div></div></div></div>
+ 
+            <div class="px-8 pb-8"><div class="mt-8 border-t border-gray-800 pt-4"><div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4"><div class="flex-1 text-xs text-gray-600"><p class="mb-2"><strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.</p><p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: admin@faronecapital.online for licensing</p></div><div class="md:text-right"><p class="text-xs text-gray-500 mb-1">Authors</p><p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p><p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p></div></div></div></div>
         </div>
     </div>
-
+ 
     <script src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script>
         new TradingView.widget({"autosize": true,"symbol": "OANDA:XAUUSD","interval": "60","timezone": "Asia/Jakarta","theme": "dark","style": "1","locale": "en","toolbar_bg": "#13131f","enable_publishing": false,"container_id": "tradingview_chart"});
-
+ 
         const sidebar = document.getElementById('sidebar'); const toggleBtn = document.getElementById('sidebarToggle'); const mainContent = document.getElementById('mainContent');
         toggleBtn.addEventListener('click', () => { sidebar.classList.toggle('collapsed'); mainContent.classList.toggle('ml-64'); mainContent.classList.toggle('ml-0'); toggleBtn.innerHTML = sidebar.classList.contains('collapsed')? '☰' : '✕'; });
         if (window.innerWidth < 768) { sidebar.classList.add('collapsed'); mainContent.classList.remove('ml-64'); mainContent.classList.add('ml-0'); }
-
+ 
         function toggleChart() { const grid = document.getElementById('main-grid'); const chart = document.getElementById('chart-container'); const btn = document.getElementById('expand-btn'); if (grid.classList.contains('grid-cols-3')) { grid.className = 'grid grid-cols-2 gap-6 transition-all'; chart.className = 'col-span-1 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all'; btn.innerText = 'Default View'; } else { grid.className = 'grid grid-cols-3 gap-6 transition-all'; chart.className = 'col-span-2 bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow transition-all'; btn.innerText = 'Expand 50/50'; } }
-
+ 
         function showPage(pageId) { document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden')); document.getElementById('page-' + pageId).classList.remove('hidden'); document.querySelectorAll('nav a').forEach(a => { a.className = 'flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-yellow-500/10 hover:text-yellow-400 rounded-lg transition-all'; }); const active = document.getElementById('nav-' + pageId); if(active) active.className = 'flex items-center gap-3 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400'; }
-
-        // ===== UPGRADE API RAILWAY =====
+ 
+        // ===== CONFIG =====
         const API_URL = 'https://future-production-67e6.up.railway.app';
-        const WS_URL = 'wss://future-production-67e6.up.railway.app/ws/signals';
-
-        let ws = null;
-        let reconnectTimer = null;
-
+ 
+        // ===== STATUS HELPER =====
         function updateStatus(status, color) {
             const statusEl = document.getElementById('status-text');
             const dotEl = document.getElementById('live-dot');
             const flowStatus = document.getElementById('flow-status');
-
-            statusEl.innerText = status;
-            statusEl.className = `text-sm text-${color}-400`;
-            dotEl.className = `live-dot w-2 h-2 bg-${color}-500 rounded-full`;
-
-            if(flowStatus) {
-                flowStatus.innerText = status;
-                flowStatus.className = `text-sm text-${color}-400`;
-            }
+            if (statusEl) { statusEl.innerText = status; statusEl.className = `text-sm text-${color}-400`; }
+            if (dotEl) { dotEl.className = `live-dot w-2 h-2 bg-${color}-500 rounded-full`; }
+            if (flowStatus) { flowStatus.innerText = status; flowStatus.className = `text-sm text-${color}-400`; }
         }
-
+ 
+        // ===== UPDATE SEMUA UI DARI DATA BACKEND =====
         function updateDashboard(data) {
-            // Status LIVE/STANDBY
-            if(data.status === 'LIVE') {
-                updateStatus(`Live MT5 | Price: $${data.price}`, 'green');
-                document.getElementById('price-status').innerText = 'Live Update';
-            } else {
-                updateStatus('STANDBY - MT5 Disconnected', 'yellow');
-                document.getElementById('price-status').innerText = 'Standby';
+            if (!data) return;
+ 
+            // --- Status bar ---
+            const price = parseFloat(data.price || data.bid || 0);
+            if (price > 0) {
+                updateStatus(`WebSocket Live | $${price.toFixed(2)}`, 'green');
             }
-
-            // Price
-            if(data.price) {
-                document.querySelector('[data-price]').innerText = '$' + parseFloat(data.price).toFixed(2);
+ 
+            // --- Price ---
+            const priceEl = document.querySelector('[data-price]');
+            if (priceEl && price > 0) priceEl.innerText = '$' + price.toFixed(2);
+ 
+            // --- AI Signal / Bias ---
+            const biasEl = document.querySelector('[data-bias]');
+            const signal = data.signal_status || data.bias || 'STANDBY';
+            if (biasEl) {
+                biasEl.innerText = signal;
+                const colorMap = { BUY: 'text-green-400', SELL: 'text-red-400', STANDBY: 'text-yellow-400', NEUTRAL: 'text-yellow-400' };
+                biasEl.className = `font-orbitron text-3xl font-bold ${colorMap[signal] || 'text-yellow-400'}`;
             }
-
-            // Signal
-            if(data.signal) {
-                document.querySelector('[data-bias]').innerText = data.signal;
-                document.querySelector('[data-bias]').className = data.signal === 'BUY'?
-                    'font-orbitron text-3xl font-bold text-green-400' :
-                    'font-orbitron text-3xl font-bold text-red-400';
+ 
+            // --- SMI ---
+            const smiEl = document.querySelector('[data-smi]');
+            if (smiEl && data.smi !== undefined) smiEl.innerText = data.smi;
+ 
+            // --- CFTC ---
+            const cftcNetEl = document.querySelector('[data-cftc-net]');
+            if (cftcNetEl && data.cftc_net) cftcNetEl.innerText = parseInt(data.cftc_net).toLocaleString();
+            const cftcDateEl = document.querySelector('[data-cftc-date]');
+            if (cftcDateEl && data.cftc_date) cftcDateEl.innerText = 'As of ' + data.cftc_date;
+ 
+            // --- Seasonal ---
+            const seasonalEl = document.querySelector('[data-seasonal]');
+            if (seasonalEl && data.seasonal_bias) seasonalEl.innerText = data.seasonal_bias;
+            const seasonalMonthEl = document.querySelector('[data-seasonal-month]');
+            if (seasonalMonthEl && data.seasonal_month) seasonalMonthEl.innerText = data.seasonal_month;
+            const seasonalValueEl = document.querySelector('[data-seasonal-value]');
+            if (seasonalValueEl && data.seasonal_value !== undefined) {
+                const v = parseFloat(data.seasonal_value);
+                seasonalValueEl.innerText = (v > 0 ? '+' : '') + v.toFixed(2);
             }
-
-            // Time
-            if(data.last_update) {
-                const date = new Date(data.last_update);
-                const timeStr = date.toLocaleTimeString('id-ID');
-                document.querySelector('[data-time]').innerText = timeStr;
-                document.getElementById('retail-updated').innerText = timeStr;
+ 
+            // --- CME Max Pain ---
+            const maxpainEl = document.querySelector('[data-maxpain]');
+            if (maxpainEl && data.cme_max_pain) maxpainEl.innerText = '$' + parseInt(data.cme_max_pain).toLocaleString();
+ 
+            // --- Retail Sentiment ---
+            const retailLongEl = document.querySelector('[data-retail-long]');
+            if (retailLongEl && data.retail_long !== undefined) retailLongEl.innerText = data.retail_long + '% Long';
+            const retailShortEl = document.querySelector('[data-retail-short]');
+            if (retailShortEl && data.retail_short !== undefined) retailShortEl.innerText = data.retail_short + '% Short';
+ 
+            // --- Time update ---
+            const timeEl = document.querySelector('[data-time]');
+            if (timeEl && data.updated) timeEl.innerText = data.updated;
+            const retailUpdatedEl = document.getElementById('retail-updated');
+            if (retailUpdatedEl && data.updated) retailUpdatedEl.innerText = data.updated;
+ 
+            // --- Price status ---
+            const priceStatusEl = document.getElementById('price-status');
+            if (priceStatusEl) priceStatusEl.innerText = price > 0 ? 'Live Update' : 'Standby';
+ 
+            // --- AI Signals page ---
+            const sigStatus = document.getElementById('sig-page-status');
+            if (sigStatus) {
+                sigStatus.innerText = signal;
+                const colorMap = { BUY: 'text-green-400', SELL: 'text-red-400', STANDBY: 'text-yellow-400' };
+                sigStatus.className = `font-orbitron text-3xl font-bold ${colorMap[signal] || 'text-yellow-400'}`;
+            }
+            const sigEntry = document.getElementById('sig-page-entry');
+            if (sigEntry) sigEntry.innerText = data.entry > 0 ? parseFloat(data.entry).toFixed(2) : '----.--';
+            const sigSl = document.getElementById('sig-page-sl');
+            if (sigSl) sigSl.innerText = data.sl > 0 ? parseFloat(data.sl).toFixed(2) : '----.--';
+            const sigTp1 = document.getElementById('sig-page-tp1');
+            if (sigTp1) sigTp1.innerText = data.tp1 > 0 ? parseFloat(data.tp1).toFixed(2) : '----.--';
+            const sigTp2 = document.getElementById('sig-page-tp2');
+            if (sigTp2) sigTp2.innerText = data.tp2 > 0 ? parseFloat(data.tp2).toFixed(2) : '----.--';
+            const sigReason = document.getElementById('sig-page-reason');
+            if (sigReason && data.reason) sigReason.innerText = data.reason;
+            const sigUpdated = document.getElementById('sig-page-updated');
+            if (sigUpdated && data.updated) sigUpdated.innerText = data.updated;
+ 
+            // --- Liquidity Zones ---
+            const zones = data.liquidity_zones || [];
+            const liqBody = document.getElementById('liq-body');
+            if (liqBody) {
+                const bsl = zones.filter(z => z.type === 'BSL').length;
+                const ssl = zones.filter(z => z.type === 'SSL').length;
+                const ses = zones.filter(z => !['BSL','SSL'].includes(z.type)).length;
+                const bslEl = document.getElementById('bsl-count');
+                const sslEl = document.getElementById('ssl-count');
+                const sesEl = document.getElementById('session-count');
+                if (bslEl) bslEl.innerText = bsl;
+                if (sslEl) sslEl.innerText = ssl;
+                if (sesEl) sesEl.innerText = ses;
+ 
+                if (zones.length === 0) {
+                    liqBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-6">Menunggu data dari MT5...</td></tr>';
+                } else {
+                    liqBody.innerHTML = zones.map(z => {
+                        const typeColor = z.type==='BSL' ? 'text-red-400' : z.type==='SSL' ? 'text-green-400' : 'text-blue-400';
+                        const statusColor = z.status==='ACTIVE' ? 'text-green-400' : z.status==='SESSION' ? 'text-blue-400' : 'text-gray-400';
+                        return `<tr class="border-b border-gray-800/50">
+                            <td class="py-3 ${typeColor} font-bold">${z.type}</td>
+                            <td class="py-3 text-yellow-400 font-mono">${z.price}</td>
+                            <td class="py-3 ${statusColor}">${z.status}</td>
+                            <td class="py-3 text-gray-400">${z.age}</td>
+                            <td class="py-3 ${z.ob_confluence==='YES' ? 'text-green-400' : 'text-gray-600'}">${z.ob_confluence}</td>
+                        </tr>`;
+                    }).join('');
+                }
+            }
+ 
+            // --- Risk Engine ---
+            const acc = data.account || {};
+            const riskAccEl = document.getElementById('risk-account');
+            if (riskAccEl) riskAccEl.innerText = (acc.risk_pct || 0).toFixed(1) + '%';
+            const riskDdEl = document.getElementById('risk-dd');
+            if (riskDdEl) riskDdEl.innerText = (acc.weekly_dd || 0).toFixed(1) + '%';
+            const riskKellyEl = document.getElementById('risk-kelly');
+            if (riskKellyEl) riskKellyEl.innerText = (acc.kelly || 0).toFixed(1) + '%';
+            const riskRrEl = document.getElementById('risk-rr');
+            if (riskRrEl) riskRrEl.innerText = (acc.avg_rr || 0).toFixed(1);
+ 
+            const dailyPct = Math.min(100, ((acc.weekly_dd || 0) / 5) * 100);
+            const weeklyPct = Math.min(100, ((acc.weekly_dd || 0) / 10) * 100);
+            const exposurePct = Math.min(100, ((acc.exposure || 0) / 15) * 100);
+            const barColor = (pct) => pct > 80 ? 'bg-red-500' : pct > 50 ? 'bg-yellow-500' : 'bg-green-500';
+ 
+            const meterDaily = document.getElementById('meter-daily');
+            const barDaily = document.getElementById('bar-daily');
+            if (meterDaily) meterDaily.innerText = (acc.weekly_dd || 0).toFixed(1) + '% / 5%';
+            if (barDaily) { barDaily.style.width = dailyPct + '%'; barDaily.className = `h-full ${barColor(dailyPct)} transition-all`; }
+ 
+            const meterWeekly = document.getElementById('meter-weekly');
+            const barWeekly = document.getElementById('bar-weekly');
+            if (meterWeekly) meterWeekly.innerText = (acc.weekly_dd || 0).toFixed(1) + '% / 10%';
+            if (barWeekly) { barWeekly.style.width = weeklyPct + '%'; barWeekly.className = `h-full ${barColor(weeklyPct)} transition-all`; }
+ 
+            const meterExposure = document.getElementById('meter-exposure');
+            const barExposure = document.getElementById('bar-exposure');
+            if (meterExposure) meterExposure.innerText = (acc.exposure || 0).toFixed(1) + '% / 15%';
+            if (barExposure) { barExposure.style.width = exposurePct + '%'; barExposure.className = `h-full ${barColor(exposurePct)} transition-all`; }
+ 
+            const accBalEl = document.getElementById('acc-balance');
+            if (accBalEl) accBalEl.innerText = '$' + parseFloat(acc.balance || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+            const accEqEl = document.getElementById('acc-equity');
+            if (accEqEl) accEqEl.innerText = '$' + parseFloat(acc.equity || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+            const accDailyEl = document.getElementById('acc-daily');
+            if (accDailyEl) {
+                const pnl = parseFloat(acc.daily_pnl || 0);
+                accDailyEl.innerText = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toFixed(2);
+                accDailyEl.className = pnl >= 0 ? 'font-bold text-green-400' : 'font-bold text-red-400';
+            }
+ 
+            const positions = data.positions || [];
+            const accPosEl = document.getElementById('acc-pos');
+            if (accPosEl) accPosEl.innerText = positions.length;
+ 
+            const riskTable = document.getElementById('risk-table');
+            const riskEmpty = document.getElementById('risk-positions-empty');
+            const riskBody = document.getElementById('risk-body');
+            if (riskBody) {
+                if (positions.length === 0) {
+                    if (riskTable) riskTable.classList.add('hidden');
+                    if (riskEmpty) riskEmpty.classList.remove('hidden');
+                } else {
+                    if (riskTable) riskTable.classList.remove('hidden');
+                    if (riskEmpty) riskEmpty.classList.add('hidden');
+                    riskBody.innerHTML = positions.map(p => `<tr class="border-b border-gray-800/50">
+                        <td class="py-2 text-white">${p.symbol}</td>
+                        <td class="py-2 ${p.type==='BUY'?'text-green-400':'text-red-400'} font-bold">${p.type}</td>
+                        <td class="py-2">${p.lots}</td>
+                        <td class="py-2 font-mono">${p.entry}</td>
+                        <td class="py-2 text-red-400 font-mono">${p.sl}</td>
+                        <td class="py-2 text-green-400 font-mono">${p.tp}</td>
+                        <td class="py-2 text-yellow-400">$${p.risk}</td>
+                        <td class="py-2 text-blue-400">${p.rr}:1</td>
+                    </tr>`).join('');
+                }
             }
         }
-
+ 
+        function updateInstitutional(data) {
+            if (!data) return;
+            const cftc = data.cftc || {};
+            const retail = data.retail || {};
+            const smi = data.smi || {};
+ 
+            const cftcNetEl = document.getElementById('cftc-net');
+            if (cftcNetEl) cftcNetEl.innerText = parseInt(cftc.net || 0).toLocaleString();
+            const cftcDateEl = document.getElementById('cftc-date');
+            if (cftcDateEl) cftcDateEl.innerText = 'As of ' + (cftc.date || '--');
+            const cftcLongEl = document.getElementById('cftc-long');
+            if (cftcLongEl) cftcLongEl.innerText = parseInt(cftc.long || 0).toLocaleString();
+            const cftcShortEl = document.getElementById('cftc-short');
+            if (cftcShortEl) cftcShortEl.innerText = parseInt(cftc.short || 0).toLocaleString();
+ 
+            const retLongEl = document.getElementById('retail-long');
+            if (retLongEl) retLongEl.innerText = (retail.long || '--') + '%';
+            const retShortEl = document.getElementById('retail-short');
+            if (retShortEl) retShortEl.innerText = (retail.short || '--') + '%';
+            const retSourceEl = document.getElementById('retail-source');
+            if (retSourceEl) retSourceEl.innerText = retail.source || 'Live MT5';
+ 
+            const smiValEl = document.getElementById('smi-value');
+            if (smiValEl) smiValEl.innerText = smi.value || '--';
+            const smiBiasEl = document.getElementById('smi-bias');
+            if (smiBiasEl) {
+                smiBiasEl.innerText = smi.bias || 'STANDBY';
+                smiBiasEl.className = `font-orbitron text-2xl font-bold mt-2 ${smi.bias==='BULLISH'?'text-green-400':smi.bias==='BEARISH'?'text-red-400':'text-yellow-400'}`;
+            }
+            const smiUpdEl = document.getElementById('smi-updated');
+            if (smiUpdEl) smiUpdEl.innerText = 'Updated: ' + (smi.updated || '--:--:--');
+        }
+ 
+        // ===== SOCKET.IO (bukan raw WebSocket) =====
+        let socket = null;
+ 
+        function connectSocketIO() {
+            if (socket) socket.disconnect();
+ 
+            socket = io(API_URL, {
+                path: '/socket.io',
+                namespace: '/ws/signals',
+                transports: ['websocket', 'polling'],
+                reconnection: true,
+                reconnectionDelay: 3000,
+                reconnectionAttempts: Infinity
+            });
+ 
+            socket.on('connect', () => {
+                console.log('Socket.IO connected');
+                updateStatus('WebSocket Connected', 'green');
+            });
+ 
+            socket.on('signal', (data) => {
+                updateDashboard(data);
+            });
+ 
+            socket.on('disconnect', (reason) => {
+                console.log('Socket.IO disconnected:', reason);
+                updateStatus('WebSocket Disconnected - Reconnecting...', 'yellow');
+            });
+ 
+            socket.on('connect_error', (err) => {
+                console.error('Socket.IO error:', err.message);
+                updateStatus('Connecting...', 'yellow');
+            });
+        }
+ 
+        // ===== HTTP POLLING FALLBACK =====
         async function fetchSignals() {
             try {
                 const res = await fetch(`${API_URL}/api/signals`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 updateDashboard(data);
+                // Jika Socket.IO belum connect, set status dari HTTP
+                if (!socket || !socket.connected) {
+                    updateStatus('HTTP Polling | Live', 'yellow');
+                }
             } catch (e) {
-                updateStatus('Server mati: ' + e.message, 'red');
+                if (!socket || !socket.connected) {
+                    updateStatus('Server error: ' + e.message, 'red');
+                }
                 console.error('API Error:', e);
             }
         }
-
-        function connectWebSocket() {
-            if (ws) ws.close();
-
-            ws = new WebSocket(WS_URL);
-
-            ws.onopen = () => {
-                console.log('WS Connected to Railway');
-                clearTimeout(reconnectTimer);
-            };
-
-            ws.onmessage = (e) => {
-                const data = JSON.parse(e.data);
-                updateDashboard(data);
-            };
-
-            ws.onclose = () => {
-                updateStatus('WebSocket Disconnected', 'red');
-                // Auto reconnect 3 detik
-                reconnectTimer = setTimeout(connectWebSocket, 3000);
-            };
-
-            ws.onerror = (err) => {
-                console.error('WS Error:', err);
-                ws.close();
-            };
+ 
+        async function fetchInstitutional() {
+            try {
+                const res = await fetch(`${API_URL}/api/institutional`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                updateInstitutional(data);
+            } catch (e) {
+                console.error('Institutional API Error:', e);
+            }
         }
-
-        // Start
-        connectWebSocket();
-        setInterval(fetchSignals, 5000); // Backup HTTP polling
-        fetchSignals(); // First load
+ 
+        // ===== START =====
+        connectSocketIO();
+        fetchSignals();
+        fetchInstitutional();
+        setInterval(fetchSignals, 5000);
+        setInterval(fetchInstitutional, 30000);
     </script>
 </body>
 </html>
