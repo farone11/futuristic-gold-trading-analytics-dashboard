@@ -1,14 +1,18 @@
 # API
 flask==3.0.3
 flask-cors==4.0.1
-
+flask-socketio==5.3.6
+python-socketio==5.11.3
+ 
+# WSGI Server
+gunicorn==22.0.0
+eventlet==0.36.1
+ 
 # Data Processing
-pandas==2.2.2
-
+pandas==2.2.3
+numpy>=1.26.0
+ 
 # Scraping / HTTP
 requests==2.32.3
-beautifulsoup4==4.14.3
-lxml==6.1.1
-
-# Trading Integration
-MetaTrader5==5.0.45
+beautifulsoup4==4.12.3
+lxml==5.2.2
