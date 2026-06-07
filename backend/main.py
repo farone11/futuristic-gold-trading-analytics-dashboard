@@ -1,5 +1,6 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 import MetaTrader5 as mt5
 import pandas as pd
 from datetime import datetime, timedelta
@@ -8,9 +9,16 @@ import os
 import traceback
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 MT5_INITIALIZED = False
+
+# Global buat simpen data terakhir, biar client baru konek langsung dapet
+latest_tick_data = {
+    "symbol": "XAUUSD", "bid": 0, "ask": 0, "time": 0, 
+    "balance": 0, "equity": 0, "profit": 0
+}
 
 def safe_float(val, default=0.0):
     try: return float(val)
@@ -28,9 +36,9 @@ def init_mt5():
 
 def get_market_data():
     default = {"cftc_net": 245678, "cftc_date": "01/06/26", "cme_max_pain": 4525, "cftc_long": 200704, "cftc_short": 46444}
-    if os.path.exists('market_data.json'):
+    if os.path.exists('data/market_data.json'):
         try:
-            with open('market_data.json', 'r') as f:
+            with open('data/market_data.json', 'r') as f:
                 data = json.load(f)
                 return {**default, **data}
         except: return default
@@ -176,10 +184,9 @@ def get_institutional_data():
     retail_long = 65
     retail_short = 35
 
-    # SMI NORMALIZED 0-100
-    cftc_norm = min(100, max(0, (cftc_net / 3000))) # 300k = max bullish
-    retail_contrarian = 100 - retail_long # Lawan retail
-    smi = int((cftc_norm * 0.7) + (retail_contrarian * 0.3)) # 70% COT, 30% Retail
+    cftc_norm = min(100, max(0, (cftc_net / 3000)))
+    retail_contrarian = 100 - retail_long
+    smi = int((cftc_norm * 0.7) + (retail_contrarian * 0.3))
     smi_bias = "BULLISH" if smi > 60 else "BEARISH" if smi < 40 else "NEUTRAL"
 
     return {
@@ -187,6 +194,31 @@ def get_institutional_data():
         "retail": {"long": retail_long, "short": retail_short, "source": "Live MT5"},
         "smi": {"value": smi, "bias": smi_bias, "updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     }
+
+# ====== ENDPOINT BARU BUAT TERIMA DATA DARI mt5_push_railway.py ======
+@app.post("/api/mt5-tick")
+def receive_mt5_tick():
+    global latest_tick_data
+    try:
+        data = request.json
+        latest_tick_data.update(data)
+        # Broadcast ke semua client dashboard yang konek WebSocket
+        socketio.emit('signal', latest_tick_data, namespace='/ws/signals')
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Tick received: {data.get('bid')}", flush=True)
+        return {"status": "ok", "received": data}
+    except Exception as e:
+        print(f"Error /api/mt5-tick: {e}", flush=True)
+        return {"status": "error", "message": str(e)}, 500
+
+# ====== WEBSOCKET ENDPOINT BUAT DASHBOARD ======
+@socketio.on('connect', namespace='/ws/signals')
+def ws_connect():
+    print("Client connected to WebSocket", flush=True)
+    emit('signal', latest_tick_data) # Kirim data terakhir langsung
+
+@socketio.on('disconnect', namespace='/ws/signals')
+def ws_disconnect():
+    print("Client disconnected", flush=True)
 
 @app.route('/api')
 def get_data():
@@ -292,8 +324,7 @@ def institutional():
 
 if __name__ == '__main__':
     print("="*50, flush=True)
-    print("FARONE API v2.2 - TAILSCALE READY", flush=True)
-    print("SERVER: http://localhost:5000/api", flush=True)
-    print("TAILSCALE: tailscale funnel 5000", flush=True)
+    print("FARONE API v3.0 - RAILWAY WEBSOCKET READY", flush=True)
+    print("SERVER: http://localhost:5000", flush=True)
     print("="*50, flush=True)
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=False)
