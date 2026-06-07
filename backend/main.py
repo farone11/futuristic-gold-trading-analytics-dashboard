@@ -14,10 +14,10 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 MT5_INITIALIZED = False
 
-# Global buat simpen data terakhir, biar client baru konek langsung dapet
+# Global data buat WebSocket
 latest_tick_data = {
     "symbol": "XAUUSD", "bid": 0, "ask": 0, "time": 0, 
-    "balance": 0, "equity": 0, "profit": 0
+    "balance": 0, "equity": 0, "profit": 0, "price": 0
 }
 
 def safe_float(val, default=0.0):
@@ -195,26 +195,27 @@ def get_institutional_data():
         "smi": {"value": smi, "bias": smi_bias, "updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     }
 
-# ====== ENDPOINT BARU BUAT TERIMA DATA DARI mt5_push_railway.py ======
+# ====== ENDPOINT BARU: TERIMA DATA DARI mt5_push_railway.py ======
 @app.post("/api/mt5-tick")
 def receive_mt5_tick():
     global latest_tick_data
     try:
         data = request.json
         latest_tick_data.update(data)
-        # Broadcast ke semua client dashboard yang konek WebSocket
+        latest_tick_data["price"] = data.get("bid", 0) # Dashboard pake 'price'
+        # Broadcast ke semua client WebSocket
         socketio.emit('signal', latest_tick_data, namespace='/ws/signals')
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] Tick received: {data.get('bid')}", flush=True)
-        return {"status": "ok", "received": data}
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Tick: {data.get('bid')} Bal:{data.get('balance')}", flush=True)
+        return {"status": "ok"}
     except Exception as e:
         print(f"Error /api/mt5-tick: {e}", flush=True)
         return {"status": "error", "message": str(e)}, 500
 
-# ====== WEBSOCKET ENDPOINT BUAT DASHBOARD ======
+# ====== WEBSOCKET BUAT DASHBOARD ======
 @socketio.on('connect', namespace='/ws/signals')
 def ws_connect():
     print("Client connected to WebSocket", flush=True)
-    emit('signal', latest_tick_data) # Kirim data terakhir langsung
+    emit('signal', latest_tick_data)
 
 @socketio.on('disconnect', namespace='/ws/signals')
 def ws_disconnect():
@@ -325,6 +326,6 @@ def institutional():
 if __name__ == '__main__':
     print("="*50, flush=True)
     print("FARONE API v3.0 - RAILWAY WEBSOCKET READY", flush=True)
-    print("SERVER: http://localhost:5000", flush=True)
+    print("SERVER: http://0.0.0.0:5000", flush=True)
     print("="*50, flush=True)
     socketio.run(app, host='0.0.0.0', port=5000, debug=False)
