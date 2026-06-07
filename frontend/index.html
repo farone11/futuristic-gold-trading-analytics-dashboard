@@ -130,16 +130,72 @@
             <!-- LIQUIDITY ZONES -->
             <div id="page-liquidity-zones" class="dashboard-page hidden p-8">
                 <h2 class="font-orbitron text-3xl font-black mb-2 glow-gold">Liquidity Zones - XAUUSDc H1</h2>
-                <p class="text-gray-400 mb-6">Buy-Side & Sell-Side Liquidity + Session Levels · Auto Sweep Detection</p>
+                <p class="text-gray-400 mb-6">Buy-Side &amp; Sell-Side Liquidity + Session Levels · Auto Sweep Detection</p>
                 <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-[#13131f] border border-red-900/20 p-5 rounded-xl card-glow"><div class="text-gray-400 text-xs mb-2">BUY-SIDE LIQUIDITY</div><div id="bsl-count" class="font-orbitron text-3xl font-bold text-red-400">0</div><div class="text-xs text-gray-500 mt-2">Above Highs - Sweep Target</div></div>
-                    <div class="bg-[#13131f] border border-green-900/20 p-5 rounded-xl card-glow"><div class="text-gray-400 text-xs mb-2">SELL-SIDE LIQUIDITY</div><div id="ssl-count" class="font-orbitron text-3xl font-bold text-green-400">0</div><div class="text-xs text-gray-500 mt-2">Below Lows - Sweep Target</div></div>
-                    <div class="bg-[#13131f] border border-blue-900/20 p-5 rounded-xl card-glow"><div class="text-gray-400 text-xs mb-2">SESSION LIQUIDITY</div><div id="session-count" class="font-orbitron text-3xl font-bold text-blue-400">0</div><div class="text-xs text-gray-500 mt-2">Asia / London / NY</div></div>
+                    <div class="bg-[#13131f] border border-red-900/30 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-3 tracking-widest uppercase">Buy-Side Liquidity</div>
+                        <div id="bsl-count" class="text-5xl font-bold text-red-400 mb-2" style="font-family:'Orbitron',sans-serif">0</div>
+                        <div class="flex items-center gap-2 mt-3">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                            <span class="text-xs text-gray-500">Above Highs · Sweep Target</span>
+                        </div>
+                    </div>
+                    <div class="bg-[#13131f] border border-green-900/30 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-3 tracking-widest uppercase">Sell-Side Liquidity</div>
+                        <div id="ssl-count" class="text-5xl font-bold text-green-400 mb-2" style="font-family:'Orbitron',sans-serif">0</div>
+                        <div class="flex items-center gap-2 mt-3">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                            <span class="text-xs text-gray-500">Below Lows · Sweep Target</span>
+                        </div>
+                    </div>
+                    <div class="bg-[#13131f] border border-blue-900/30 p-5 rounded-xl card-glow">
+                        <div class="text-gray-400 text-xs mb-3 tracking-widest uppercase">Session Liquidity</div>
+                        <div id="session-count" class="text-5xl font-bold text-blue-400 mb-2" style="font-family:'Orbitron',sans-serif">0</div>
+                        <div class="flex items-center gap-2 mt-3">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span class="text-xs text-gray-500">Asia · London · NY</span>
+                        </div>
+                    </div>
                 </div>
+ 
                 <div class="bg-[#13131f] border border-yellow-900/20 rounded-xl p-6 card-glow">
-                    <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4">Active Liquidity Zones</h3>
-                    <div id="liq-empty" class="text-center text-gray-500 py-8 hidden">No liquidity data</div>
-                    <table class="w-full text-sm"><thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left pb-3">Type</th><th class="text-left pb-3">Price Zone</th><th class="text-left pb-3">Status</th><th class="text-left pb-3">Age</th><th class="text-left pb-3">OB Confluence</th></tr></thead><tbody id="liq-body" class="text-gray-300"></tbody></table>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-orbitron text-lg font-bold text-yellow-400">Active Liquidity Zones</h3>
+                        <div class="flex items-center gap-2">
+                            <span id="liq-status-dot" class="w-2 h-2 rounded-full bg-yellow-500 live-dot"></span>
+                            <span id="liq-status-text" class="text-xs text-yellow-400">Menunggu MT5...</span>
+                        </div>
+                    </div>
+ 
+                    <!-- Legend -->
+                    <div class="flex gap-4 mb-4 text-xs text-gray-500">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span> BSL = Buy-Side Liq</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> SSL = Sell-Side Liq</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span> Session High/Low</span>
+                    </div>
+ 
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="text-left pb-3 pr-4">Type</th>
+                                    <th class="text-left pb-3 pr-4">Price Zone</th>
+                                    <th class="text-left pb-3 pr-4">Status</th>
+                                    <th class="text-left pb-3 pr-4">Age</th>
+                                    <th class="text-left pb-3">OB Confluence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="liq-body" class="text-gray-300">
+                                <tr id="liq-placeholder">
+                                    <td colspan="5" class="py-10 text-center">
+                                        <div class="text-gray-600 mb-2">⏳</div>
+                                        <div class="text-gray-500 text-sm">Menunggu data dari MT5...</div>
+                                        <div class="text-gray-600 text-xs mt-1">Data otomatis muncul saat MT5 push aktif</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
  
@@ -196,7 +252,7 @@
                 </div>
             </div>
  
-            <div class="px-8 pb-8"><div class="mt-8 border-t border-gray-800 pt-4"><div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4"><div class="flex-1 text-xs text-gray-600"><p class="mb-2"><strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.</p><p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: admin@faronecapital.online for licensing</p></div><div class="md:text-right"><p class="text-xs text-gray-500 mb-1">Authors</p><p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p><p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p></div></div></div></div>
+            <div class="px-8 pb-8"><div class="mt-8 border-t border-gray-800 pt-4"><div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4"><div class="flex-1 text-xs text-gray-600"><p class="mb-2"><strong>Risk Warning:</strong> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.</p><p class="mt-3">© 2026 FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing</p></div><div class="md:text-right"><p class="text-xs text-gray-500 mb-1">Authors</p><p class="text-sm font-bold text-yellow-400">Setiawan F | Selviana R</p><p class="text-xs text-gray-500 mt-1">Founder @ Aitopia</p></div></div></div></div>
         </div>
     </div>
  
@@ -314,29 +370,53 @@
             // --- Liquidity Zones ---
             const zones = data.liquidity_zones || [];
             const liqBody = document.getElementById('liq-body');
-            if (liqBody) {
-                const bsl = zones.filter(z => z.type === 'BSL').length;
-                const ssl = zones.filter(z => z.type === 'SSL').length;
-                const ses = zones.filter(z => !['BSL','SSL'].includes(z.type)).length;
-                const bslEl = document.getElementById('bsl-count');
-                const sslEl = document.getElementById('ssl-count');
-                const sesEl = document.getElementById('session-count');
-                if (bslEl) bslEl.innerText = bsl;
-                if (sslEl) sslEl.innerText = ssl;
-                if (sesEl) sesEl.innerText = ses;
+            const liqStatusDot = document.getElementById('liq-status-dot');
+            const liqStatusText = document.getElementById('liq-status-text');
  
+            const bsl = zones.filter(z => z.type === 'BSL').length;
+            const ssl = zones.filter(z => z.type === 'SSL').length;
+            const ses = zones.filter(z => !['BSL','SSL'].includes(z.type)).length;
+            const bslEl = document.getElementById('bsl-count');
+            const sslEl = document.getElementById('ssl-count');
+            const sesEl = document.getElementById('session-count');
+            if (bslEl) bslEl.textContent = bsl;
+            if (sslEl) sslEl.textContent = ssl;
+            if (sesEl) sesEl.textContent = ses;
+ 
+            if (liqBody) {
                 if (zones.length === 0) {
-                    liqBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-6">Menunggu data dari MT5...</td></tr>';
+                    liqBody.innerHTML = `<tr><td colspan="5" class="py-10 text-center">
+                        <div class="text-gray-600 mb-2">⏳</div>
+                        <div class="text-gray-500 text-sm">Menunggu data dari MT5...</div>
+                        <div class="text-gray-600 text-xs mt-1">Data otomatis muncul saat MT5 push aktif</div>
+                    </td></tr>`;
+                    if (liqStatusDot) { liqStatusDot.className = 'w-2 h-2 rounded-full bg-yellow-500 live-dot'; }
+                    if (liqStatusText) { liqStatusText.innerText = 'Menunggu MT5...'; liqStatusText.className = 'text-xs text-yellow-400'; }
                 } else {
+                    if (liqStatusDot) { liqStatusDot.className = 'w-2 h-2 rounded-full bg-green-500 live-dot'; }
+                    if (liqStatusText) { liqStatusText.innerText = `${zones.length} zona aktif · ${data.updated || '--'}`; liqStatusText.className = 'text-xs text-green-400'; }
                     liqBody.innerHTML = zones.map(z => {
                         const typeColor = z.type==='BSL' ? 'text-red-400' : z.type==='SSL' ? 'text-green-400' : 'text-blue-400';
+                        const typeBg = z.type==='BSL' ? 'bg-red-900/20' : z.type==='SSL' ? 'bg-green-900/20' : 'bg-blue-900/20';
                         const statusColor = z.status==='ACTIVE' ? 'text-green-400' : z.status==='SESSION' ? 'text-blue-400' : 'text-gray-400';
-                        return `<tr class="border-b border-gray-800/50">
-                            <td class="py-3 ${typeColor} font-bold">${z.type}</td>
-                            <td class="py-3 text-yellow-400 font-mono">${z.price}</td>
-                            <td class="py-3 ${statusColor}">${z.status}</td>
-                            <td class="py-3 text-gray-400">${z.age}</td>
-                            <td class="py-3 ${z.ob_confluence==='YES' ? 'text-green-400' : 'text-gray-600'}">${z.ob_confluence}</td>
+                        const statusBadge = z.status==='ACTIVE'
+                            ? '<span class="px-2 py-0.5 rounded text-xs bg-green-900/40 text-green-400 border border-green-700/30">ACTIVE</span>'
+                            : z.status==='SESSION'
+                            ? '<span class="px-2 py-0.5 rounded text-xs bg-blue-900/40 text-blue-400 border border-blue-700/30">SESSION</span>'
+                            : '<span class="px-2 py-0.5 rounded text-xs bg-gray-900/40 text-gray-400 border border-gray-700/30">AGED</span>';
+                        const obBadge = z.ob_confluence==='YES'
+                            ? '<span class="px-2 py-0.5 rounded text-xs bg-yellow-900/40 text-yellow-400 border border-yellow-700/30">✓ YES</span>'
+                            : z.ob_confluence==='N/A'
+                            ? '<span class="text-gray-600 text-xs">N/A</span>'
+                            : '<span class="text-gray-600 text-xs">NO</span>';
+                        return `<tr class="border-b border-gray-800/40 hover:bg-white/5 transition-all">
+                            <td class="py-3 pr-4">
+                                <span class="px-2 py-1 rounded text-xs font-bold ${typeColor} ${typeBg} border border-current/20">${z.type}</span>
+                            </td>
+                            <td class="py-3 pr-4 font-mono text-yellow-300 font-bold">${z.price}</td>
+                            <td class="py-3 pr-4">${statusBadge}</td>
+                            <td class="py-3 pr-4 text-gray-400 text-xs">${z.age}</td>
+                            <td class="py-3">${obBadge}</td>
                         </tr>`;
                     }).join('');
                 }
