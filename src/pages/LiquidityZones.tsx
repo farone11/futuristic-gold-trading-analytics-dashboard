@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Droplets } from 'lucide-react';
- 
+
 interface LiquidityZone {
   type: 'BSL' | 'SSL';
   price: number;
@@ -8,14 +8,14 @@ interface LiquidityZone {
   age: string;
   obConfluence: boolean;
 }
- 
+
 interface SessionData {
   high: number | null;
   low: number | null;
   mid: number | null;
   range: number | null;
 }
- 
+
 interface LiquidityData {
   buySideLiquidity: number;
   sellSideLiquidity: number;
@@ -27,7 +27,7 @@ interface LiquidityData {
   lastUpdate: string;
   activeZones: number;
 }
- 
+
 type ApiZone = Partial<{
   type: string;
   price: number | string;
@@ -37,9 +37,9 @@ type ApiZone = Partial<{
   obConfluence: boolean;
   ob_confluence: boolean;
 }>;
- 
+
 const emptySession: SessionData = { high: null, low: null, mid: null, range: null };
- 
+
 const demoLiquidityData: LiquidityData = {
   buySideLiquidity: 2,
   sellSideLiquidity: 6,
@@ -60,15 +60,15 @@ const demoLiquidityData: LiquidityData = {
   lastUpdate: 'demo',
   activeZones: 5,
 };
- 
+
 const normalizeZones = (zones: ApiZone[] = []): LiquidityZone[] => zones
   .map((zone) => {
     const type = zone.type === 'BSL' ? 'BSL' : zone.type === 'SSL' ? 'SSL' : null;
-    const price = Number(zone.price ?? zone.price_zone);
+    const price = Number(zone.price ?? zone.price_zone); // Support price_zone dari backend
     const status = zone.status === 'AGED' || zone.status === 'SWEPT' ? zone.status : 'ACTIVE';
- 
+
     if (!type || !Number.isFinite(price)) return null;
- 
+
     return {
       type,
       price,
@@ -78,18 +78,19 @@ const normalizeZones = (zones: ApiZone[] = []): LiquidityZone[] => zones
     };
   })
   .filter((zone): zone is LiquidityZone => zone !== null);
- 
+
 export default function LiquidityZones() {
   const [data, setData] = useState<LiquidityData>(demoLiquidityData);
- 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/liquidity');
+        // FIX: endpoint harus /api/liquidity-zones bukan /api/liquidity
+        const response = await fetch('/api/liquidity-zones');
         if (response.ok) {
           const json = await response.json();
-          const zones = normalizeZones(json.zones ?? json.liquidity_zones ?? []);
- 
+          const zones = normalizeZones(json.zones ?? []);
+
           if (json) {
             setData({
               buySideLiquidity: json.buy_side_count ?? zones.filter((zone) => zone.type === 'BSL').length,
@@ -99,41 +100,42 @@ export default function LiquidityZones() {
               asiaSession: json.asia_session ?? emptySession,
               londonSession: json.london_session ?? emptySession,
               newYorkSession: json.new_york_session ?? emptySession,
-              lastUpdate: json.timestamp ?? json.updated ?? '--:--:--',
+              lastUpdate: json.last_update ?? json.updated ?? '--:--:--',
               activeZones: json.active_zones ?? zones.filter((zone) => zone.status === 'ACTIVE').length,
             });
           }
         }
-      } catch {
+      } catch (error) {
+        console.error('Liquidity fetch error:', error);
         setData(demoLiquidityData);
       }
     };
- 
+
     fetchData();
-    const interval = setInterval(fetchData, 30000);
+    const interval = setInterval(fetchData, 5000); // 5 detik biar realtime
     return () => clearInterval(interval);
   }, []);
- 
+
   const displayData = data.zones.length > 0 ? data : demoLiquidityData;
- 
-  const formatPrice = (price: number | null) => price === null ? '----,--' : price.toFixed(2).replace('.', ',');
+
+  const formatPrice = (price: number | null) => price === null ? '----.--' : price.toFixed(2);
   const formatRange = (range: number | null) => range === null ? '--- pips' : `${range.toFixed(0)} pips`;
- 
+
   const now = new Date();
   const timeStr = displayData.lastUpdate && displayData.lastUpdate !== 'demo'
     ? displayData.lastUpdate
     : `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
- 
+
   const card: React.CSSProperties = { background: '#111113', border: '1px solid #24242a', borderRadius: '8px', padding: '20px' };
   const labelStyle: React.CSSProperties = { color: '#9fb0cb', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '14px', marginTop: 0 };
   const tableGrid = '90px minmax(160px, 1fr) 120px 80px 140px';
- 
+
   const sessionCards = [
     { name: 'Asia Session', data: displayData.asiaSession },
     { name: 'London Session', data: displayData.londonSession },
     { name: 'New York Session', data: displayData.newYorkSession },
   ];
- 
+
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0c', color: '#fff', padding: '28px 20px 24px', fontFamily: 'inherit', boxSizing: 'border-box' }}>
       <div style={{ marginBottom: '20px' }}>
@@ -145,40 +147,44 @@ export default function LiquidityZones() {
           Buy-Side &amp; Sell-Side Liquidity + Session Levels &middot; Auto Sweep Detection
         </p>
       </div>
- 
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '16px' }}>
         <div style={card}>
           <p style={labelStyle}>Buy-Side Liquidity</p>
           <p style={{ fontSize: '36px', fontWeight: 800, color: '#ff6b6b', margin: '0 0 6px 0', lineHeight: 1 }}>{displayData.buySideLiquidity}</p>
           <p style={{ color: '#8090ad', fontSize: '12px', margin: 0 }}>Above Highs &middot; Sweep Target</p>
         </div>
- 
+
         <div style={card}>
           <p style={labelStyle}>Sell-Side Liquidity</p>
           <p style={{ fontSize: '36px', fontWeight: 800, color: '#33e681', margin: '0 0 6px 0', lineHeight: 1 }}>{displayData.sellSideLiquidity}</p>
           <p style={{ color: '#8090ad', fontSize: '12px', margin: 0 }}>Below Lows &middot; Sweep Target</p>
         </div>
- 
+
         <div style={card}>
           <p style={labelStyle}>Session Liquidity</p>
           <p style={{ fontSize: '36px', fontWeight: 800, color: '#68a3ff', margin: '0 0 6px 0', lineHeight: 1 }}>{displayData.sessionLiquidity}</p>
           <p style={{ color: '#8090ad', fontSize: '12px', margin: 0 }}>Asia / London / NY</p>
         </div>
       </div>
- 
+
       <div style={{ ...card, marginBottom: '16px', overflowX: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', minWidth: '760px' }}>
           <p style={{ color: '#facc15', fontWeight: 700, fontSize: '14px', margin: 0 }}>Active Liquidity Zones</p>
           <span style={{ color: '#facc15', fontSize: '11px' }}>{displayData.activeZones} active &middot; {timeStr}</span>
         </div>
- 
+
         <div style={{ display: 'grid', gridTemplateColumns: tableGrid, gap: '8px', padding: '0 0 10px', borderBottom: '1px solid #24242a', minWidth: '760px' }}>
           {['Type', 'Price Zone', 'Status', 'Age', 'OB Confluence'].map((h) => (
             <span key={h} style={{ color: '#8fa2c2', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>{h}</span>
           ))}
         </div>
- 
-        {displayData.zones.map((zone, idx) => (
+
+        {displayData.zones.length === 0 ? (
+          <div style={{ padding: '20px 0', textAlign: 'center', color: '#6b7280', fontSize: '13px' }}>
+            No liquidity zones detected. Open XAUUSDc H1 chart in MT5.
+          </div>
+        ) : displayData.zones.map((zone, idx) => (
           <div key={`${zone.type}-${zone.price}-${idx}`} style={{
             display: 'grid',
             gridTemplateColumns: tableGrid,
@@ -209,7 +215,7 @@ export default function LiquidityZones() {
           </div>
         ))}
       </div>
- 
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
         {sessionCards.map((session) => (
           <div key={session.name} style={card}>
@@ -228,7 +234,7 @@ export default function LiquidityZones() {
           </div>
         ))}
       </div>
- 
+
       <div style={{ marginTop: '20px', paddingTop: '14px', borderTop: '1px solid #24242a', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
         <div>
           <p style={{ fontSize: '11px', color: '#6b7280', margin: '0 0 2px 0' }}>
