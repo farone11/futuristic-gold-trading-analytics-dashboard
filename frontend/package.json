@@ -1,0 +1,20 @@
+{
+  "name": "futuristic-gold-trading-analytics-dashboard",
+  "version": "1.0.0",
+  "description": "FARONE Gold AI — Futuristic Gold Trading Analytics Dashboard",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static site - no build required' && exit 0",
+    "start": "npx serve frontend",
+    "dev": "npx serve frontend"
+  },
+  "keywords": [
+    "gold",
+    "trading",
+    "xauusd",
+    "dashboard",
+    "ai"
+  ],
+  "author": "Setiawan F | Selviana R — Founder @ Aitopia",
+  "license": "UNLICENSED"
+}
