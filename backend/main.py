@@ -7,8 +7,9 @@ import json
 import os
 import traceback
 import logging
+import time
 from threading import Lock
-
+ 
 # ===== LOGGING SETUP =====
 logging.basicConfig(
     level=logging.INFO,
@@ -16,7 +17,7 @@ logging.basicConfig(
     datefmt='%H:%M:%S'
 )
 logger = logging.getLogger(__name__)
-
+ 
 # MetaTrader5 hanya tersedia di Windows, Railway = Linux
 # Jadi kita import dengan fallback graceful
 MT5_AVAILABLE = False
@@ -28,14 +29,23 @@ try:
     logger.info("✅ MetaTrader5 tersedia (Windows mode)")
 except ImportError:
     logger.info("⚠️  MetaTrader5 tidak tersedia (Linux/Railway mode - gunakan /api/mt5-tick push)")
-
+ 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet', ping_timeout=10, ping_interval=5)
-
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode='eventlet',
+    ping_timeout=60,       # was 10 — too short, caused [Errno 9] Bad file descriptor spam
+    ping_interval=25,      # was 5 — too aggressive
+    logger=False,          # suppress internal socketio noise
+    engineio_logger=False,
+)
+ 
 MT5_INITIALIZED = False
 tick_data_lock = Lock()  # Thread-safe untuk concurrent access
-
+last_broadcast_time = 0  # Throttle WebSocket broadcast (max 1x per detik)
+ 
 # Global data buat WebSocket (diisi oleh mt5_push_railway.py dari Windows)
 latest_tick_data = {
     "symbol": "XAUUSD", "bid": 0, "ask": 0, "time": 0,
@@ -53,19 +63,19 @@ latest_tick_data = {
     "liquidity_zones": [],
     "updated": "--:--:--"
 }
-
+ 
 def safe_float(val, default=0.0):
     try:
         return float(val) if val is not None else default
     except (ValueError, TypeError):
         return default
-
+ 
 def safe_int(val, default=0):
     try:
         return int(val) if val is not None else default
     except (ValueError, TypeError):
         return default
-
+ 
 def init_mt5():
     global MT5_INITIALIZED
     if not MT5_AVAILABLE:
@@ -81,7 +91,7 @@ def init_mt5():
             logger.error(f"MT5 init error: {e}")
             return False
     return True
-
+ 
 def get_market_data():
     """Ambil market data dari file atau latest_tick_data"""
     default = {
@@ -102,7 +112,7 @@ def get_market_data():
             logger.warning(f"Error reading market_data.json: {e}")
             return default
     return default
-
+ 
 def get_seasonal_bias():
     """Hitung seasonal bias untuk emas berdasarkan bulan"""
     month = datetime.now().month
@@ -121,7 +131,7 @@ def get_seasonal_bias():
         12: {"bias": "BULLISH", "value": 2.0}
     }
     return seasonal_map.get(month, {"bias": "NEUTRAL", "value": 0})
-
+ 
 def get_institutional_data():
     """Hitung Smart Money Index dan institutional metrics"""
     market_data = get_market_data()
@@ -129,30 +139,30 @@ def get_institutional_data():
     cftc_long = int(market_data.get("cftc_long", 200704))
     cftc_short = int(market_data.get("cftc_short", 46444))
     cftc_date = market_data.get("cftc_date", "01/06/26")
-
+ 
     retail_long = latest_tick_data.get("retail_long", 65)
     retail_short = latest_tick_data.get("retail_short", 35)
-
+ 
     # SMI calculation: 70% COT + 30% Retail Contrarian
     cftc_norm = min(100, max(0, (cftc_net / 3000)))
     retail_contrarian = 100 - retail_long
     smi = int((cftc_norm * 0.7) + (retail_contrarian * 0.3))
     smi_bias = "BULLISH" if smi > 60 else "BEARISH" if smi < 40 else "NEUTRAL"
-
+ 
     return {
         "cftc": {"net": cftc_net, "long": cftc_long, "short": cftc_short, "date": cftc_date},
         "retail": {"long": retail_long, "short": retail_short, "source": "Live MT5"},
         "smi": {"value": smi, "bias": smi_bias, "updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     }
-
+ 
 # ====== ENDPOINT: TERIMA DATA PUSH DARI mt5_push_railway.py (Windows) ======
 @app.route("/api/mt5-tick", methods=["POST"])
 def receive_mt5_tick():
     """
     Endpoint untuk menerima real-time tick data dari MT5 pusher script.
-    Data dibroadcast ke semua WebSocket clients.
+    Data dibroadcast ke semua WebSocket clients (max 1x/detik untuk cegah duplikat).
     """
-    global latest_tick_data
+    global latest_tick_data, last_broadcast_time
     try:
         data = request.json
         if not data:
@@ -162,18 +172,27 @@ def receive_mt5_tick():
         with tick_data_lock:
             latest_tick_data.update(data)
             latest_tick_data["price"] = data.get("bid", latest_tick_data.get("price", 0))
+            # Fix: balance bisa datang langsung atau dalam nested "account"
+            if "balance" in data:
+                latest_tick_data["balance"] = data["balance"]
+            elif "account" in data and isinstance(data["account"], dict):
+                latest_tick_data["balance"] = data["account"].get("balance", 0)
             latest_tick_data["updated"] = datetime.now().strftime("%H:%M:%S")
         
-        # Broadcast ke semua client WebSocket
-        socketio.emit('signal', latest_tick_data, namespace='/ws/signals')
+        # Throttle: broadcast max 1x per detik untuk cegah duplicate events
+        now_ts = time.time()
+        if now_ts - last_broadcast_time >= 1.0:
+            socketio.emit('signal', latest_tick_data, namespace='/ws/signals')
+            last_broadcast_time = now_ts
         
-        logger.info(f"✅ Tick received | Price: ${data.get('bid', 0):.2f} | Bal: ${data.get('balance', 0):.0f}")
+        balance = latest_tick_data.get("balance", 0)
+        logger.info(f"✅ Tick received | Price: ${data.get('bid', 0):.2f} | Bal: ${balance:.0f}")
         return jsonify({"status": "ok", "timestamp": latest_tick_data["updated"]})
         
     except Exception as e:
         logger.error(f"❌ Error /api/mt5-tick: {e}", exc_info=True)
         return jsonify({"status": "error", "message": str(e)}), 500
-
+ 
 # ====== WEBSOCKET ======
 @socketio.on('connect', namespace='/ws/signals')
 def ws_connect():
@@ -181,11 +200,11 @@ def ws_connect():
     # Send latest data immediately upon connection
     with tick_data_lock:
         emit('signal', latest_tick_data.copy())
-
+ 
 @socketio.on('disconnect', namespace='/ws/signals')
 def ws_disconnect():
     logger.info("⚠️  WebSocket client disconnected")
-
+ 
 # ====== ENDPOINT UTAMA: GET DATA ======
 @app.route('/api')
 def get_data():
@@ -218,7 +237,7 @@ def get_data():
                     # EMA bias
                     ema50 = safe_float(df['close'].ewm(span=50).mean().iloc[-1])
                     bias = "BULLISH" if last_price > ema50 else "BEARISH"
-
+ 
                     # 5-layer confluence
                     confluence_dict = {
                         "maxwell_ai": bool(bias == "BULLISH"),
@@ -228,7 +247,7 @@ def get_data():
                         "seasonal": bool(seasonal["bias"] == "BULLISH")
                     }
                     confluence_score = int(sum(confluence_dict.values()))
-
+ 
                     # Generate signal
                     signal_status = "STANDBY"
                     entry = sl = tp1 = tp2 = 0.0
@@ -245,10 +264,10 @@ def get_data():
                         sl = round(entry + 15.0, 2)
                         tp1 = round(entry - 15.0, 2)
                         tp2 = round(entry - 30.0, 2)
-
+ 
                     now = datetime.now()
                     session = "London" if 8 <= now.hour <= 16 else "NY" if 13 <= now.hour <= 21 else "Asia"
-
+ 
                     logger.info(f"📊 API (MT5 mode) | {signal_status} | Score: {confluence_score}/5")
                     
                     return jsonify({
@@ -279,7 +298,7 @@ def get_data():
             except Exception as e:
                 logger.warning(f"⚠️  MT5 live mode error: {e}")
                 # Fall through to push mode
-
+ 
         # Mode 2: Fallback ke data yang di-push dari mt5_push_railway.py
         with tick_data_lock:
             tick = latest_tick_data.copy()
@@ -315,12 +334,12 @@ def get_data():
     except Exception as e:
         logger.error(f"❌ API error: {e}", exc_info=True)
         return jsonify({"error": str(e), "message": "Internal server error"}), 500
-
+ 
 @app.route('/api/signals')
 def get_signals():
     """Alias endpoint untuk /api"""
     return get_data()
-
+ 
 @app.route('/api/institutional')
 def institutional():
     """Endpoint untuk institutional data: COT + SMI"""
@@ -331,7 +350,7 @@ def institutional():
     except Exception as e:
         logger.error(f"❌ Institutional error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 500
-
+ 
 @app.route('/health')
 def health():
     """Health check endpoint"""
@@ -344,7 +363,7 @@ def health():
         "price": latest_tick_data.get("price", 0),
         "timestamp": datetime.now().isoformat()
     })
-
+ 
 @app.route('/')
 def index():
     """Root endpoint"""
@@ -360,7 +379,7 @@ def index():
             "ws://*/ws/signals": "WebSocket namespace for real-time updates"
         }
     })
-
+ 
 if __name__ == '__main__':
     print("\n" + "="*60)
     print("🚀 FARONE API v3.2 - RAILWAY WEBSOCKET READY")
