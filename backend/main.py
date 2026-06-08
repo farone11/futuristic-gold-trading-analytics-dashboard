@@ -9,7 +9,7 @@ import traceback
 import logging
 import time
 from threading import Lock
- 
+
 # ===== LOGGING SETUP =====
 logging.basicConfig(
     level=logging.INFO,
@@ -17,7 +17,7 @@ logging.basicConfig(
     datefmt='%H:%M:%S'
 )
 logger = logging.getLogger(__name__)
- 
+
 # MetaTrader5 hanya tersedia di Windows, Railway = Linux
 # Jadi kita import dengan fallback graceful
 MT5_AVAILABLE = False
@@ -29,7 +29,7 @@ try:
     logger.info("✅ MetaTrader5 tersedia (Windows mode)")
 except ImportError:
     logger.info("⚠️  MetaTrader5 tidak tersedia (Linux/Railway mode - gunakan /api/mt5-tick push)")
- 
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 socketio = SocketIO(
@@ -41,11 +41,11 @@ socketio = SocketIO(
     logger=False,          # suppress internal socketio noise
     engineio_logger=False,
 )
- 
+
 MT5_INITIALIZED = False
 tick_data_lock = Lock()  # Thread-safe untuk concurrent access
 last_broadcast_time = 0  # Throttle WebSocket broadcast (max 1x per detik)
- 
+
 # Global data buat WebSocket (diisi oleh mt5_push_railway.py dari Windows)
 latest_tick_data = {
     "symbol": "XAUUSD", "bid": 0, "ask": 0, "time": 0,
@@ -63,19 +63,19 @@ latest_tick_data = {
     "liquidity_zones": [],
     "updated": "--:--:--"
 }
- 
+
 def safe_float(val, default=0.0):
     try:
         return float(val) if val is not None else default
     except (ValueError, TypeError):
         return default
- 
+
 def safe_int(val, default=0):
     try:
         return int(val) if val is not None else default
     except (ValueError, TypeError):
         return default
- 
+
 def init_mt5():
     global MT5_INITIALIZED
     if not MT5_AVAILABLE:
@@ -91,7 +91,7 @@ def init_mt5():
             logger.error(f"MT5 init error: {e}")
             return False
     return True
- 
+
 def get_market_data():
     """Ambil market data dari file atau latest_tick_data"""
     default = {
@@ -112,7 +112,7 @@ def get_market_data():
             logger.warning(f"Error reading market_data.json: {e}")
             return default
     return default
- 
+
 def get_seasonal_bias():
     """Hitung seasonal bias untuk emas berdasarkan bulan"""
     month = datetime.now().month
@@ -131,7 +131,7 @@ def get_seasonal_bias():
         12: {"bias": "BULLISH", "value": 2.0}
     }
     return seasonal_map.get(month, {"bias": "NEUTRAL", "value": 0})
- 
+
 def get_institutional_data():
     """Hitung Smart Money Index dan institutional metrics"""
     market_data = get_market_data()
@@ -139,22 +139,22 @@ def get_institutional_data():
     cftc_long = int(market_data.get("cftc_long", 200704))
     cftc_short = int(market_data.get("cftc_short", 46444))
     cftc_date = market_data.get("cftc_date", "01/06/26")
- 
+
     retail_long = latest_tick_data.get("retail_long", 65)
     retail_short = latest_tick_data.get("retail_short", 35)
- 
+
     # SMI calculation: 70% COT + 30% Retail Contrarian
     cftc_norm = min(100, max(0, (cftc_net / 3000)))
     retail_contrarian = 100 - retail_long
     smi = int((cftc_norm * 0.7) + (retail_contrarian * 0.3))
     smi_bias = "BULLISH" if smi > 60 else "BEARISH" if smi < 40 else "NEUTRAL"
- 
+
     return {
         "cftc": {"net": cftc_net, "long": cftc_long, "short": cftc_short, "date": cftc_date},
         "retail": {"long": retail_long, "short": retail_short, "source": "Live MT5"},
         "smi": {"value": smi, "bias": smi_bias, "updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     }
- 
+
 # ====== ENDPOINT: TERIMA DATA PUSH DARI mt5_push_railway.py (Windows) ======
 @app.route("/api/mt5-tick", methods=["POST"])
 def receive_mt5_tick():
@@ -192,7 +192,7 @@ def receive_mt5_tick():
     except Exception as e:
         logger.error(f"❌ Error /api/mt5-tick: {e}", exc_info=True)
         return jsonify({"status": "error", "message": str(e)}), 500
- 
+
 # ====== WEBSOCKET ======
 @socketio.on('connect', namespace='/ws/signals')
 def ws_connect():
@@ -200,11 +200,11 @@ def ws_connect():
     # Send latest data immediately upon connection
     with tick_data_lock:
         emit('signal', latest_tick_data.copy())
- 
+
 @socketio.on('disconnect', namespace='/ws/signals')
 def ws_disconnect():
     logger.info("⚠️  WebSocket client disconnected")
- 
+
 # ====== ENDPOINT UTAMA: GET DATA ======
 @app.route('/api')
 def get_data():
@@ -237,7 +237,7 @@ def get_data():
                     # EMA bias
                     ema50 = safe_float(df['close'].ewm(span=50).mean().iloc[-1])
                     bias = "BULLISH" if last_price > ema50 else "BEARISH"
- 
+
                     # 5-layer confluence
                     confluence_dict = {
                         "maxwell_ai": bool(bias == "BULLISH"),
@@ -247,7 +247,7 @@ def get_data():
                         "seasonal": bool(seasonal["bias"] == "BULLISH")
                     }
                     confluence_score = int(sum(confluence_dict.values()))
- 
+
                     # Generate signal
                     signal_status = "STANDBY"
                     entry = sl = tp1 = tp2 = 0.0
@@ -264,10 +264,10 @@ def get_data():
                         sl = round(entry + 15.0, 2)
                         tp1 = round(entry - 15.0, 2)
                         tp2 = round(entry - 30.0, 2)
- 
+
                     now = datetime.now()
                     session = "London" if 8 <= now.hour <= 16 else "NY" if 13 <= now.hour <= 21 else "Asia"
- 
+
                     logger.info(f"📊 API (MT5 mode) | {signal_status} | Score: {confluence_score}/5")
                     
                     return jsonify({
@@ -298,7 +298,7 @@ def get_data():
             except Exception as e:
                 logger.warning(f"⚠️  MT5 live mode error: {e}")
                 # Fall through to push mode
- 
+
         # Mode 2: Fallback ke data yang di-push dari mt5_push_railway.py
         with tick_data_lock:
             tick = latest_tick_data.copy()
@@ -334,12 +334,57 @@ def get_data():
     except Exception as e:
         logger.error(f"❌ API error: {e}", exc_info=True)
         return jsonify({"error": str(e), "message": "Internal server error"}), 500
- 
+
 @app.route('/api/signals')
 def get_signals():
     """Alias endpoint untuk /api"""
     return get_data()
- 
+
+@app.route('/api/liquidity')
+@app.route('/api/liquidity-zones')
+def get_liquidity():
+    """Endpoint untuk liquidity zones + session levels"""
+    try:
+        with tick_data_lock:
+            tick = latest_tick_data.copy()
+
+        zones = tick.get("liquidity_zones", [])
+
+        # Hitung counts
+        bsl_zones = [z for z in zones if z.get("type") == "BSL"]
+        ssl_zones = [z for z in zones if z.get("type") == "SSL"]
+        session_types = {"Asia High", "Asia Low", "London High", "London Low", "NY High", "NY Low"}
+        session_zones = [z for z in zones if z.get("type") in session_types]
+        active_zones = [z for z in zones if z.get("status") == "ACTIVE"]
+
+        # Extract session H/L/Mid/Range dari zones
+        def extract_session(high_key, low_key):
+            h = next((z["price"] for z in zones if z.get("type") == high_key), None)
+            l = next((z["price"] for z in zones if z.get("type") == low_key), None)
+            mid = round((h + l) / 2, 2) if h and l else None
+            rng = round((h - l) * 10, 1) if h and l else None  # dalam pips (0.1 = 1 pip)
+            return {"high": h, "low": l, "mid": mid, "range": rng}
+
+        asia_session    = extract_session("Asia High",   "Asia Low")
+        london_session  = extract_session("London High", "London Low")
+        ny_session      = extract_session("NY High",     "NY Low")
+
+        return jsonify({
+            "buy_side_count":  len(bsl_zones),
+            "sell_side_count": len(ssl_zones),
+            "session_count":   len(session_zones),
+            "active_zones":    len(active_zones),
+            "zones":           zones,
+            "liquidity_zones": zones,   # alias agar kompatibel
+            "asia_session":    asia_session,
+            "london_session":  london_session,
+            "new_york_session": ny_session,
+            "timestamp":       tick.get("updated", "--:--:--"),
+        })
+    except Exception as e:
+        logger.error(f"❌ Liquidity error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/institutional')
 def institutional():
     """Endpoint untuk institutional data: COT + SMI"""
@@ -350,7 +395,7 @@ def institutional():
     except Exception as e:
         logger.error(f"❌ Institutional error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 500
- 
+
 @app.route('/health')
 def health():
     """Health check endpoint"""
@@ -363,7 +408,7 @@ def health():
         "price": latest_tick_data.get("price", 0),
         "timestamp": datetime.now().isoformat()
     })
- 
+
 @app.route('/')
 def index():
     """Root endpoint"""
@@ -379,7 +424,7 @@ def index():
             "ws://*/ws/signals": "WebSocket namespace for real-time updates"
         }
     })
- 
+
 if __name__ == '__main__':
     print("\n" + "="*60)
     print("🚀 FARONE API v3.2 - RAILWAY WEBSOCKET READY")
