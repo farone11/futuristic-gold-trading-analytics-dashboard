@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Droplets } from 'lucide-react';
 
 interface LiquidityZone {
-  type: 'BSL' | 'SSL';
+  type: string;
   price: number;
-  status: 'ACTIVE' | 'AGED' | 'SWEPT';
+  status: 'ACTIVE' | 'AGED' | 'SWEPT' | 'SESSION';
   age: string;
   obConfluence: boolean;
 }
@@ -28,116 +28,84 @@ interface LiquidityData {
   activeZones: number;
 }
 
-type ApiZone = Partial<{
-  type: string;
-  price: number | string;
-  price_zone: number | string;
-  status: string;
-  age: string;
-  obConfluence: boolean;
-  ob_confluence: boolean;
-}>;
-
 const emptySession: SessionData = { high: null, low: null, mid: null, range: null };
 
-const demoLiquidityData: LiquidityData = {
-  buySideLiquidity: 2,
-  sellSideLiquidity: 6,
-  sessionLiquidity: 0,
-  zones: [
-    { type: 'SSL', price: 4438.88, status: 'ACTIVE', age: '16h', obConfluence: true },
-    { type: 'SSL', price: 4433.59, status: 'ACTIVE', age: '9h', obConfluence: true },
-    { type: 'SSL', price: 4426.14, status: 'ACTIVE', age: '12h', obConfluence: true },
-    { type: 'SSL', price: 4452.35, status: 'AGED', age: '26h', obConfluence: false },
-    { type: 'SSL', price: 4452.68, status: 'AGED', age: '48h', obConfluence: false },
-    { type: 'BSL', price: 4458.03, status: 'ACTIVE', age: '14h', obConfluence: false },
-    { type: 'SSL', price: 4478.52, status: 'AGED', age: '31h', obConfluence: false },
-    { type: 'BSL', price: 4488.24, status: 'ACTIVE', age: '21h', obConfluence: false },
-  ],
-  asiaSession: emptySession,
-  londonSession: emptySession,
-  newYorkSession: emptySession,
-  lastUpdate: 'demo',
-  activeZones: 5,
-};
-
-const normalizeZones = (zones: ApiZone[] = []): LiquidityZone[] => zones
-  .map((zone) => {
-    const type = zone.type === 'BSL' ? 'BSL' : zone.type === 'SSL' ? 'SSL' : null;
-    const price = Number(zone.price ?? zone.price_zone); // Support price_zone dari backend
-    const status = zone.status === 'AGED' || zone.status === 'SWEPT' ? zone.status : 'ACTIVE';
-
-    if (!type || !Number.isFinite(price)) return null;
-
-    return {
-      type,
-      price,
-      status,
-      age: zone.age ?? '--',
-      obConfluence: Boolean(zone.obConfluence ?? zone.ob_confluence),
-    };
-  })
-  .filter((zone): zone is LiquidityZone => zone !== null);
-
 export default function LiquidityZones() {
-  const [data, setData] = useState<LiquidityData>(demoLiquidityData);
+  const [data, setData] = useState<LiquidityData>({
+    buySideLiquidity: 0,
+    sellSideLiquidity: 0,
+    sessionLiquidity: 0,
+    zones: [],
+    asiaSession: emptySession,
+    londonSession: emptySession,
+    newYorkSession: emptySession,
+    lastUpdate: '--:--:--',
+    activeZones: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // FIX: endpoint harus /api/liquidity-zones bukan /api/liquidity
-        const response = await fetch('/api/liquidity-zones');
+        const response = await fetch('https://future-production-67e6.up.railway.app/api/liquidity-zones');
         if (response.ok) {
           const json = await response.json();
-          const zones = normalizeZones(json.zones ?? []);
+          const zones = (json.zones ?? []).map((z: any) => ({
+            type: z.type,
+            price: Number(z.price),
+            status: z.status ?? 'ACTIVE',
+            age: z.age ?? '--',
+            obConfluence: Boolean(z.obConfluence ?? z.ob_confluence),
+          }));
 
-          if (json) {
-            setData({
-              buySideLiquidity: json.buy_side_count ?? zones.filter((zone) => zone.type === 'BSL').length,
-              sellSideLiquidity: json.sell_side_count ?? zones.filter((zone) => zone.type === 'SSL').length,
-              sessionLiquidity: json.session_count ?? 0,
-              zones,
-              asiaSession: json.asia_session ?? emptySession,
-              londonSession: json.london_session ?? emptySession,
-              newYorkSession: json.new_york_session ?? emptySession,
-              lastUpdate: json.last_update ?? json.updated ?? '--:--:--',
-              activeZones: json.active_zones ?? zones.filter((zone) => zone.status === 'ACTIVE').length,
-            });
-          }
+          setData({
+            buySideLiquidity: json.buy_side_count ?? 0,
+            sellSideLiquidity: json.sell_side_count ?? 0,
+            sessionLiquidity: json.session_count ?? 0,
+            zones,
+            asiaSession: json.asia_session ?? emptySession,
+            londonSession: json.london_session ?? emptySession,
+            newYorkSession: json.new_york_session ?? emptySession,
+            lastUpdate: json.timestamp ?? '--:--:--',
+            activeZones: json.active_zones ?? 0,
+          });
         }
       } catch (error) {
         console.error('Liquidity fetch error:', error);
-        setData(demoLiquidityData);
       }
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 5000); // 5 detik biar realtime
+    const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const displayData = data.zones.length > 0 ? data : demoLiquidityData;
 
   const formatPrice = (price: number | null) => price === null ? '----.--' : price.toFixed(2);
   const formatRange = (range: number | null) => range === null ? '--- pips' : `${range.toFixed(0)} pips`;
 
-  const now = new Date();
-  const timeStr = displayData.lastUpdate && displayData.lastUpdate !== 'demo'
-    ? displayData.lastUpdate
-    : `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-
   const card: React.CSSProperties = { background: '#111113', border: '1px solid #24242a', borderRadius: '8px', padding: '20px' };
   const labelStyle: React.CSSProperties = { color: '#9fb0cb', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '14px', marginTop: 0 };
-  const tableGrid = '90px minmax(160px, 1fr) 120px 80px 140px';
+  const tableGrid = '110px minmax(160px, 1fr) 120px 80px 140px';
 
   const sessionCards = [
-    { name: 'Asia Session', data: displayData.asiaSession },
-    { name: 'London Session', data: displayData.londonSession },
-    { name: 'New York Session', data: displayData.newYorkSession },
+    { name: 'Asia Session', data: data.asiaSession },
+    { name: 'London Session', data: data.londonSession },
+    { name: 'New York Session', data: data.newYorkSession },
   ];
 
+  const getZoneColor = (type: string) => {
+    if (type === 'BSL') return '#ef2f3a';
+    if (type === 'SSL') return '#19c463';
+    return '#3b82f6';
+  };
+
+  const getStatusColor = (status: string) => {
+    if (status === 'ACTIVE') return '#33e681';
+    if (status === 'SESSION') return '#3b82f6';
+    return '#6f7f99';
+  };
+
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0c', color: '#fff', padding: '28px 20px 24px', fontFamily: 'inherit', boxSizing: 'border-box' }}>
+    <div style={{ minHeight: '100vh', background: '#0a0c', color: '#fff', padding: '28px 20px 24px', fontFamily: 'inherit', boxSizing: 'border-box' }}>
       <div style={{ marginBottom: '20px' }}>
         <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, letterSpacing: '0.02em' }}>
           <Droplets size={22} color="#facc15" />
@@ -151,19 +119,19 @@ export default function LiquidityZones() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '16px' }}>
         <div style={card}>
           <p style={labelStyle}>Buy-Side Liquidity</p>
-          <p style={{ fontSize: '36px', fontWeight: 800, color: '#ff6b6b', margin: '0 0 6px 0', lineHeight: 1 }}>{displayData.buySideLiquidity}</p>
+          <p style={{ fontSize: '36px', fontWeight: 800, color: '#ff6b6b', margin: '0 0 6px 0', lineHeight: 1 }}>{data.buySideLiquidity}</p>
           <p style={{ color: '#8090ad', fontSize: '12px', margin: 0 }}>Above Highs &middot; Sweep Target</p>
         </div>
 
         <div style={card}>
           <p style={labelStyle}>Sell-Side Liquidity</p>
-          <p style={{ fontSize: '36px', fontWeight: 800, color: '#33e681', margin: '0 0 6px 0', lineHeight: 1 }}>{displayData.sellSideLiquidity}</p>
+          <p style={{ fontSize: '36px', fontWeight: 800, color: '#33e681', margin: '0 0 6px 0', lineHeight: 1 }}>{data.sellSideLiquidity}</p>
           <p style={{ color: '#8090ad', fontSize: '12px', margin: 0 }}>Below Lows &middot; Sweep Target</p>
         </div>
 
         <div style={card}>
           <p style={labelStyle}>Session Liquidity</p>
-          <p style={{ fontSize: '36px', fontWeight: 800, color: '#68a3ff', margin: '0 0 6px 0', lineHeight: 1 }}>{displayData.sessionLiquidity}</p>
+          <p style={{ fontSize: '36px', fontWeight: 800, color: '#68a3ff', margin: '0 0 6px 0', lineHeight: 1 }}>{data.sessionLiquidity}</p>
           <p style={{ color: '#8090ad', fontSize: '12px', margin: 0 }}>Asia / London / NY</p>
         </div>
       </div>
@@ -171,7 +139,7 @@ export default function LiquidityZones() {
       <div style={{ ...card, marginBottom: '16px', overflowX: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', minWidth: '760px' }}>
           <p style={{ color: '#facc15', fontWeight: 700, fontSize: '14px', margin: 0 }}>Active Liquidity Zones</p>
-          <span style={{ color: '#facc15', fontSize: '11px' }}>{displayData.activeZones} active &middot; {timeStr}</span>
+          <span style={{ color: '#facc15', fontSize: '11px' }}>{data.activeZones} active &middot; {data.lastUpdate}</span>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: tableGrid, gap: '8px', padding: '0 0 10px', borderBottom: '1px solid #24242a', minWidth: '760px' }}>
@@ -180,17 +148,17 @@ export default function LiquidityZones() {
           ))}
         </div>
 
-        {displayData.zones.length === 0 ? (
+        {data.zones.length === 0 ? (
           <div style={{ padding: '20px 0', textAlign: 'center', color: '#6b7280', fontSize: '13px' }}>
-            No liquidity zones detected. Open XAUUSDc H1 chart in MT5.
+            No liquidity zones. Open XAUUSDc H1 chart in MT5.
           </div>
-        ) : displayData.zones.map((zone, idx) => (
+        ) : data.zones.map((zone, idx) => (
           <div key={`${zone.type}-${zone.price}-${idx}`} style={{
             display: 'grid',
             gridTemplateColumns: tableGrid,
             gap: '8px',
             padding: '11px 0',
-            borderBottom: idx < displayData.zones.length - 1 ? '1px solid #202027' : 'none',
+            borderBottom: idx < data.zones.length - 1 ? '1px solid #202027' : 'none',
             alignItems: 'center',
             minWidth: '760px',
           }}>
@@ -202,12 +170,12 @@ export default function LiquidityZones() {
               borderRadius: '4px',
               fontSize: '10px',
               fontWeight: 800,
-              background: zone.type === 'BSL' ? '#ef2f3a' : '#19c463',
+              background: getZoneColor(zone.type),
               color: '#fff',
               width: 'fit-content',
             }}>{zone.type}</span>
             <span style={{ color: '#fff', fontSize: '14px', fontWeight: 700 }}>{zone.price.toFixed(2)}</span>
-            <span style={{ color: zone.status === 'ACTIVE' ? '#33e681' : '#6f7f99', fontSize: '13px' }}>{zone.status}</span>
+            <span style={{ color: getStatusColor(zone.status), fontSize: '13px' }}>{zone.status}</span>
             <span style={{ color: '#b8d7ff', fontSize: '13px' }}>{zone.age}</span>
             <span style={{ color: zone.obConfluence ? '#33e681' : '#66738a', fontSize: '13px', fontWeight: zone.obConfluence ? 700 : 400 }}>
               {zone.obConfluence ? 'YES' : 'NO'}
