@@ -45,7 +45,7 @@ MT5_INITIALIZED = False
 tick_data_lock = Lock()
 last_broadcast_time = 0
 
-# Global data buat WebSocket - UPDATE: tambahin commercial_hedgers + non_reportable
+# Global data buat WebSocket - UPDATE: default value fix biar ga null
 latest_tick_data = {
     "symbol": "XAUUSDc", "bid": 0, "ask": 0, "time": 0,
     "balance": 0, "equity": 0, "profit": 0, "price": 0,
@@ -55,8 +55,8 @@ latest_tick_data = {
     "confluence_score": 0, "rr_ratio": 0,
     "cftc_net": 245678, "cftc_long": 200704, "cftc_short": 46444,
     "cftc_date": "01/06/26", "cme_max_pain": 4525,
-    "commercial_hedgers": -154260, # FIX: default value biar ga null
-    "non_reportable": -46418, # FIX: default value biar ga null
+    "commercial_hedgers": -154260, # FIX: default value
+    "non_reportable": -46418, # FIX: default value
     "bias": "NEUTRAL", "session": "Asia",
     "seasonal_bias": "BULLISH", "seasonal_value": 1.3,
     "account": {"balance": 0, "equity": 0, "daily_pnl": 0, "weekly_dd": 0, "risk_pct": 0, "kelly": 0, "avg_rr": 0, "exposure": 0},
@@ -94,7 +94,7 @@ def init_mt5():
     return True
 
 def get_market_data():
-    # FIX: ambil dari latest_tick_data dulu biar ga null
+    # FIX: merge dengan latest_tick_data biar commercial_hedgers ga ilang
     default = {
         "cftc_net": latest_tick_data.get("cftc_net", 245678),
         "cftc_date": latest_tick_data.get("cftc_date", "01/06/26"),
@@ -115,7 +115,6 @@ def get_market_data():
         try:
             with open(data_path, 'r') as f:
                 data = json.load(f)
-                # Merge, tapi default tetep kepake kalo file json ga lengkap
                 return {**default, **data}
         except Exception as e:
             logger.warning(f"Error reading market_data.json: {e}")
@@ -136,12 +135,12 @@ def get_seasonal_bias():
 
 def get_institutional_data():
     market_data = get_market_data()
-    cftc_net = int(market_data.get("cftc_net", 245678))
-    cftc_long = int(market_data.get("cftc_long", 200704))
-    cftc_short = int(market_data.get("cftc_short", 46444))
+    cftc_net = safe_int(market_data.get("cftc_net"), 245678)
+    cftc_long = safe_int(market_data.get("cftc_long"), 200704)
+    cftc_short = safe_int(market_data.get("cftc_short"), 46444)
     cftc_date = market_data.get("cftc_date", "01/06/26")
     
-    # Data tambahan dari CFTC - FIX: pake safe_int biar ga crash kalo None
+    # FIX: pake safe_int biar ga None
     commercial_hedgers = safe_int(market_data.get("commercial_hedgers"), -154260)
     non_reportable = safe_int(market_data.get("non_reportable"), -46418)
     cot_history = market_data.get("cot_history", [])
@@ -154,17 +153,17 @@ def get_institutional_data():
     smi = int((cftc_norm * 0.7) + (retail_contrarian * 0.3))
     smi_bias = "BULLISH" if smi > 60 else "BEARISH" if smi < 40 else "NEUTRAL"
 
-    # Hitung YoY Change dari cot_history - FIX: lebih robust
-    yoy_change = None
+    # FIX: YoY Change lebih robust, ga bakal null
+    yoy_change = 0.0
     if isinstance(cot_history, list) and len(cot_history) >= 2:
         try:
             current_week = safe_float(cot_history[0].get('value'), 0)
-            month_ago_week = safe_float(cot_history[-1].get('value'), 0)
+            month_ago_week = safe_float(cot_history[-1].get('value'), 1) # Default 1 biar ga div by zero
             if month_ago_week!= 0:
                 yoy_change = round(((current_week - month_ago_week) / month_ago_week) * 100, 1)
         except Exception as e:
             logger.warning(f"YoY calc error: {e}")
-            yoy_change = None
+            yoy_change = 0.0
 
     return {
         "cftc": {"net": cftc_net, "long": cftc_long, "short": cftc_short, "date": cftc_date},
@@ -350,6 +349,20 @@ def get_data():
 def get_signals():
     return get_data()
 
+# TAMBAH: Endpoint signal-history buat frontend polling
+@app.route('/api/signal-history')
+def get_signal_history():
+    try:
+        history_path = os.path.join(os.path.dirname(__file__), 'data', 'signal_history.json')
+        if os.path.exists(history_path):
+            with open(history_path, 'r') as f:
+                data = json.load(f)
+                return jsonify({"history": data})
+        return jsonify({"history": []})
+    except Exception as e:
+        logger.error(f"Signal history error: {e}")
+        return jsonify({"history": [], "error": str(e)})
+
 @app.route('/api/liquidity')
 @app.route('/api/liquidity-zones')
 def get_liquidity():
@@ -507,7 +520,7 @@ def get_cot_endpoint():
 def index():
     return jsonify({
         "service": "FARONE Gold Trading Analytics API",
-        "version": "3.7", # UPDATE VERSION
+        "version": "3.8", # UPDATE VERSION
         "endpoints": {
             "/api": "Get latest trading data",
             "/api/dashboard": "Alias for /api",
@@ -516,6 +529,7 @@ def index():
             "/api/cot": "CFTC COT data",
             "/api/liquidity-zones": "BSL/SSL + Session levels",
             "/api/signal": "Current BUY/SELL signal",
+            "/api/signal-history": "Signal history array", # TAMBAH
             "/api/account": "Balance/equity",
             "/api/institutional": "COT + SMI + Flow Summary + History",
             "/api/mt5-tick": "Receive MT5 tick push (POST)",
@@ -527,7 +541,7 @@ def index():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 FARONE API v3.7 - RAILWAY READY")
+    print("🚀 FARONE API v3.8 - RAILWAY READY")
     print("="*60)
     print(f"Mode: {'MT5 Windows' if MT5_AVAILABLE else 'Push from mt5_push_railway.py'}")
     print("="*60 + "\n")
