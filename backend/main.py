@@ -45,7 +45,7 @@ MT5_INITIALIZED = False
 tick_data_lock = Lock()
 last_broadcast_time = 0
 
-# Global data buat WebSocket
+# Global data buat WebSocket - UPDATE: tambahin commercial_hedgers + non_reportable
 latest_tick_data = {
     "symbol": "XAUUSDc", "bid": 0, "ask": 0, "time": 0,
     "balance": 0, "equity": 0, "profit": 0, "price": 0,
@@ -55,6 +55,8 @@ latest_tick_data = {
     "confluence_score": 0, "rr_ratio": 0,
     "cftc_net": 245678, "cftc_long": 200704, "cftc_short": 46444,
     "cftc_date": "01/06/26", "cme_max_pain": 4525,
+    "commercial_hedgers": -154260, # FIX: default value biar ga null
+    "non_reportable": -46418, # FIX: default value biar ga null
     "bias": "NEUTRAL", "session": "Asia",
     "seasonal_bias": "BULLISH", "seasonal_value": 1.3,
     "account": {"balance": 0, "equity": 0, "daily_pnl": 0, "weekly_dd": 0, "risk_pct": 0, "kelly": 0, "avg_rr": 0, "exposure": 0},
@@ -92,6 +94,7 @@ def init_mt5():
     return True
 
 def get_market_data():
+    # FIX: ambil dari latest_tick_data dulu biar ga null
     default = {
         "cftc_net": latest_tick_data.get("cftc_net", 245678),
         "cftc_date": latest_tick_data.get("cftc_date", "01/06/26"),
@@ -112,6 +115,7 @@ def get_market_data():
         try:
             with open(data_path, 'r') as f:
                 data = json.load(f)
+                # Merge, tapi default tetep kepake kalo file json ga lengkap
                 return {**default, **data}
         except Exception as e:
             logger.warning(f"Error reading market_data.json: {e}")
@@ -137,9 +141,9 @@ def get_institutional_data():
     cftc_short = int(market_data.get("cftc_short", 46444))
     cftc_date = market_data.get("cftc_date", "01/06/26")
     
-    # Data tambahan dari CFTC
-    commercial_hedgers = int(market_data.get("commercial_hedgers", -154260))
-    non_reportable = int(market_data.get("non_reportable", -46418))
+    # Data tambahan dari CFTC - FIX: pake safe_int biar ga crash kalo None
+    commercial_hedgers = safe_int(market_data.get("commercial_hedgers"), -154260)
+    non_reportable = safe_int(market_data.get("non_reportable"), -46418)
     cot_history = market_data.get("cot_history", [])
 
     retail_long = latest_tick_data.get("retail_long", 65)
@@ -150,13 +154,17 @@ def get_institutional_data():
     smi = int((cftc_norm * 0.7) + (retail_contrarian * 0.3))
     smi_bias = "BULLISH" if smi > 60 else "BEARISH" if smi < 40 else "NEUTRAL"
 
-    # Hitung YoY Change dari cot_history
+    # Hitung YoY Change dari cot_history - FIX: lebih robust
     yoy_change = None
-    if len(cot_history) >= 2:
-        current_week = cot_history[0]['value'] 
-        month_ago_week = cot_history[-1]['value']
-        if month_ago_week!= 0:
-            yoy_change = round(((current_week - month_ago_week) / month_ago_week) * 100, 1)
+    if isinstance(cot_history, list) and len(cot_history) >= 2:
+        try:
+            current_week = safe_float(cot_history[0].get('value'), 0)
+            month_ago_week = safe_float(cot_history[-1].get('value'), 0)
+            if month_ago_week!= 0:
+                yoy_change = round(((current_week - month_ago_week) / month_ago_week) * 100, 1)
+        except Exception as e:
+            logger.warning(f"YoY calc error: {e}")
+            yoy_change = None
 
     return {
         "cftc": {"net": cftc_net, "long": cftc_long, "short": cftc_short, "date": cftc_date},
@@ -396,7 +404,7 @@ def get_liquidity():
 def institutional():
     try:
         data = get_institutional_data()
-        logger.info(f"📊 Institutional data | SMI: {data['smi']['value']} ({data['smi']['bias']})")
+        logger.info(f"📊 Institutional data | SMI: {data['smi']['value']} ({data['smi']['bias']}) | YoY: {data['flow_summary']['yoy_change']}%")
         return jsonify(data)
     except Exception as e:
         logger.error(f"❌ Institutional error: {e}", exc_info=True)
@@ -499,7 +507,7 @@ def get_cot_endpoint():
 def index():
     return jsonify({
         "service": "FARONE Gold Trading Analytics API",
-        "version": "3.6",
+        "version": "3.7", # UPDATE VERSION
         "endpoints": {
             "/api": "Get latest trading data",
             "/api/dashboard": "Alias for /api",
@@ -519,7 +527,7 @@ def index():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 FARONE API v3.6 - RAILWAY READY")
+    print("🚀 FARONE API v3.7 - RAILWAY READY")
     print("="*60)
     print(f"Mode: {'MT5 Windows' if MT5_AVAILABLE else 'Push from mt5_push_railway.py'}")
     print("="*60 + "\n")
