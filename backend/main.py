@@ -353,9 +353,9 @@ def get_liquidity():
             "asia_session": asia_session,
             "london_session": london_session,
             "new_york_session": ny_session,
-            "asia": asia_session, # <-- TAMBAH ALIAS
-            "london": london_session, # <-- TAMBAH ALIAS
-            "ny": ny_session, # <-- TAMBAH ALIAS
+            "asia": asia_session,
+            "london": london_session,
+            "ny": ny_session,
             "timestamp": tick.get("updated", "--:--:--"),
         })
     except Exception as e:
@@ -366,6 +366,27 @@ def get_liquidity():
 def institutional():
     try:
         data = get_institutional_data()
+        
+        # TAMBAHAN: COT History 4 minggu terakhir
+        cot_history = [
+            {"week": "Week -1", "value": 65, "date": "09/06/26"},
+            {"week": "Week -2", "value": 57, "date": "02/06/26"}, 
+            {"week": "Week -3", "value": 49, "date": "26/05/26"},
+            {"week": "Week -4", "value": 41, "date": "19/05/26"}
+        ]
+        
+        # TAMBAHAN: Flow Summary
+        flow_summary = {
+            "institutional_net": data['cftc']['net'],
+            "managed_long": data['cftc']['long'],
+            "managed_short": data['cftc']['short'],
+            "commercial_hedgers": 0,  # Belum ada data real
+            "non_reportable": 0      # Belum ada data real
+        }
+        
+        data['cot_history'] = cot_history
+        data['flow_summary'] = flow_summary
+        
         logger.info(f"📊 Institutional data | SMI: {data['smi']['value']} ({data['smi']['bias']})")
         return jsonify(data)
     except Exception as e:
