@@ -192,6 +192,7 @@ def get_data():
     try:
         market_data = get_market_data()
         seasonal = get_seasonal_bias()
+        inst_data = get_institutional_data() # <-- TAMBAH INI
         
         # Mode 1: MT5 langsung
         if MT5_AVAILABLE and init_mt5():
@@ -251,6 +252,9 @@ def get_data():
                         "cftc_net": int(market_data.get("cftc_net", 0)),
                         "cftc_date": str(market_data.get("cftc_date", "")),
                         "cme_max_pain": int(market_data.get("cme_max_pain", 4525)),
+                        "smi": inst_data['smi']['value'], # <-- TAMBAH INI
+                        "smi_bias": inst_data['smi']['bias'], # <-- TAMBAH INI
+                        "smi_updated": inst_data['smi']['updated'], # <-- TAMBAH INI
                         "account": latest_tick_data.get("account", {}),
                         "positions": latest_tick_data.get("positions", []),
                         "liquidity_zones": latest_tick_data.get("liquidity_zones", []),
@@ -285,6 +289,9 @@ def get_data():
             "cftc_net": int(market_data.get("cftc_net", 245678)),
             "cftc_date": str(market_data.get("cftc_date", "01/06/26")),
             "cme_max_pain": int(market_data.get("cme_max_pain", 4525)),
+            "smi": inst_data['smi']['value'], # <-- TAMBAH INI
+            "smi_bias": inst_data['smi']['bias'], # <-- TAMBAH INI
+            "smi_updated": inst_data['smi']['updated'], # <-- TAMBAH INI
             "account": tick.get("account", {}),
             "positions": tick.get("positions", []),
             "liquidity_zones": tick.get("liquidity_zones", []),
@@ -384,7 +391,6 @@ def get_signal():
         "session": tick.get("session", "Asia")
     })
 
-# ====== TAMBAHAN ROUTE YANG HILANG - INI FIX 404 ======
 @app.route('/health')
 @app.route('/api/health')
 def health():
