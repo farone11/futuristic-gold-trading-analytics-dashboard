@@ -187,7 +187,7 @@ def ws_disconnect():
 
 # ====== ENDPOINT UTAMA ======
 @app.route('/api')
-@app.route('/api/dashboard')  # Alias biar nggak 404
+@app.route('/api/dashboard')
 def get_data():
     try:
         market_data = get_market_data()
@@ -309,7 +309,6 @@ def get_liquidity():
             tick = latest_tick_data.copy()
 
         zones = tick.get("liquidity_zones", [])
-        # Fix: Frontend minta price_zone + obConfluence camelCase
         for z in zones:
             if 'price' in z and 'price_zone' not in z:
                 z['price_zone'] = z['price']
@@ -385,7 +384,9 @@ def get_signal():
         "session": tick.get("session", "Asia")
     })
 
+# ====== TAMBAHAN ROUTE YANG HILANG - INI FIX 404 ======
 @app.route('/health')
+@app.route('/api/health')
 def health():
     return jsonify({
         "status": "ok",
@@ -398,27 +399,84 @@ def health():
         "timestamp": datetime.now().isoformat()
     })
 
+@app.route('/api/session-data')
+def get_session_data():
+    """Endpoint buat frontend yang minta /api/session-data terpisah"""
+    try:
+        with tick_data_lock:
+            zones = latest_tick_data.get("liquidity_zones", [])
+        
+        def get_zone_price(name):
+            zone = next((z for z in zones if z.get("type") == name), None)
+            return safe_float(zone.get("price", 0)) if zone else 0
+            
+        asia_high, asia_low = get_zone_price('Asia High'), get_zone_price('Asia Low')
+        london_high, london_low = get_zone_price('London High'), get_zone_price('London Low')
+        ny_high, ny_low = get_zone_price('NY High'), get_zone_price('NY Low')
+        
+        def calc_mid_range(h, l):
+            if h == 0 or l == 0: return 0, 0
+            return round((h + l) / 2, 2), round((h - l) * 10, 1)
+        
+        asia_mid, asia_range = calc_mid_range(asia_high, asia_low)
+        london_mid, london_range = calc_mid_range(london_high, london_low)
+        ny_mid, ny_range = calc_mid_range(ny_high, ny_low)
+        
+        return jsonify({
+            "asia": {"high": asia_high, "low": asia_low, "mid": asia_mid, "range": asia_range},
+            "london": {"high": london_high, "low": london_low, "mid": london_mid, "range": london_range},
+            "ny": {"high": ny_high, "low": ny_low, "mid": ny_mid, "range": ny_range},
+            "updated": latest_tick_data.get("updated", "--:--:--")
+        })
+    except Exception as e:
+        logger.error(f"❌ Session data error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/smi')
+def get_smi_endpoint():
+    """Endpoint terpisah buat SMI"""
+    try:
+        data = get_institutional_data()
+        return jsonify(data['smi'])
+    except Exception as e:
+        logger.error(f"❌ SMI error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/cot')
+def get_cot_endpoint():
+    """Endpoint terpisah buat COT"""
+    try:
+        data = get_institutional_data()
+        return jsonify(data['cftc'])
+    except Exception as e:
+        logger.error(f"❌ COT error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/')
 def index():
     return jsonify({
         "service": "FARONE Gold Trading Analytics API",
-        "version": "3.3",
+        "version": "3.4",
         "endpoints": {
             "/api": "Get latest trading data",
             "/api/dashboard": "Alias for /api",
+            "/api/session-data": "Session High/Low/Mid/Range",
+            "/api/smi": "Smart Money Index",
+            "/api/cot": "CFTC COT data",
             "/api/liquidity-zones": "BSL/SSL + Session levels",
             "/api/signal": "Current BUY/SELL signal",
             "/api/account": "Balance/equity",
             "/api/institutional": "COT + SMI data",
             "/api/mt5-tick": "Receive MT5 tick push (POST)",
             "/health": "Health check",
+            "/api/health": "Health check",
             "ws://*/ws/signals": "WebSocket real-time"
         }
     })
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 FARONE API v3.3 - RAILWAY READY")
+    print("🚀 FARONE API v3.4 - RAILWAY READY")
     print("="*60)
     print(f"Mode: {'MT5 Windows' if MT5_AVAILABLE else 'Push from mt5_push_railway.py'}")
     print("="*60 + "\n")
