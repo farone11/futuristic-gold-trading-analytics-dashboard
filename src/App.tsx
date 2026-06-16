@@ -8,7 +8,6 @@ import LiquidityZones from './pages/LiquidityZones';
 import RiskEngine from './pages/RiskEngine';
 import AISignals from './pages/AISignals';
 
-// 1. Context buat share data ke semua page
 interface AppContextType {
   liveData: any;
   signalHistory: any[];
@@ -25,18 +24,17 @@ const AppContext = createContext<AppContextType>({
 
 export const useAppData = () => useContext(AppContext);
 
-// 2. API URL dari env, fallback ke Railway kamu
 const API_URL = import.meta.env.VITE_API_URL || 'https://future-production-67e6.up.railway.app';
 
 function AppContent() {
   const [liveData, setLiveData] = useState<any>({});
   const [signalHistory, setSignalHistory] = useState<any[]>([]);
   const [isConnected, setIsConnected] = useState(false);
-  const currentYear = new Date().getFullYear(); // OTOMATIS 2026 TANPA .env
+  const [currentYear, setCurrentYear] = useState(2026);
 
-  // 3. WebSocket + Polling buat live data
   useEffect(() => {
-    // Fetch initial data
+    setCurrentYear(new Date().getFullYear());
+    
     const fetchData = async () => {
       try {
         const [dashboardRes, historyRes] = await Promise.all([
@@ -53,7 +51,6 @@ function AppContent() {
     };
     fetchData();
 
-    // WebSocket buat update real-time
     const socket = io(`${API_URL}`, {
       path: '/socket.io',
       transports: ['websocket'],
@@ -61,19 +58,9 @@ function AppContent() {
       reconnectionAttempts: 5
     });
 
-    socket.on('connect', () => {
-      setIsConnected(true);
-      console.log('✅ WebSocket Connected');
-    });
-
-    socket.on('disconnect', () => {
-      setIsConnected(false);
-      console.log('⚠ WebSocket Disconnected');
-    });
-
-    socket.on('signal', (data: any) => {
-      setLiveData(data);
-    });
+    socket.on('connect', () => setIsConnected(true));
+    socket.on('disconnect', () => setIsConnected(false));
+    socket.on('signal', (data: any) => setLiveData(data));
 
     const historyInterval = setInterval(async () => {
       try {
@@ -93,11 +80,11 @@ function AppContent() {
 
   return (
     <AppContext.Provider value={{ liveData, signalHistory, isConnected, apiUrl: API_URL }}>
-      <div className="flex min-h-screen bg-[#0a0a0c] text-gray-100">
+      <div className="flex h-screen bg-[#0a0a0c] text-gray-100">
         <Sidebar />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <main className="flex-1 overflow-y-auto">
-            {/* Status koneksi */}
+        {/* GANTI overflow-hidden JADI overflow-y-auto DI SINI */}
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          <main className="flex-1">
             <div className="fixed top-2 right-4 z-50">
               <span className={`text-xs px-2 py-1 rounded ${isConnected ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
                 {isConnected ? '● LIVE' : '● OFFLINE'}
@@ -112,8 +99,8 @@ function AppContent() {
             </Routes>
           </main>
 
-          {/* FOOTER GLOBAL - TAMBAHIN INI YANG HILANG */}
-          <footer className="border-t border-[#1e1e24] px-5 py-3 flex items-start justify-between text-xs text-gray-600 shrink-0">
+          {/* FOOTER GLOBAL - SEKARANG PASTI MUNCUL */}
+          <footer className="border-t border-[#1e1e24] px-5 py-3 flex items-start justify-between text-xs text-gray-600 shrink-0 bg-[#0a0a0c] z-10">
             <div>
               <span className="text-red-400 font-semibold">Risk Warning:</span> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.
               <br />© {currentYear} FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing
