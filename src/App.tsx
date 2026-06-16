@@ -32,6 +32,7 @@ function AppContent() {
   const [liveData, setLiveData] = useState<any>({});
   const [signalHistory, setSignalHistory] = useState<any[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const currentYear = new Date().getFullYear(); // OTOMATIS 2026 TANPA .env
 
   // 3. WebSocket + Polling buat live data
   useEffect(() => {
@@ -71,10 +72,9 @@ function AppContent() {
     });
 
     socket.on('signal', (data: any) => {
-      setLiveData(data); // Update price, signal, account langsung
+      setLiveData(data);
     });
 
-    // Polling history tiap 15 detik
     const historyInterval = setInterval(async () => {
       try {
         const res = await fetch(`${API_URL}/api/signal-history`);
@@ -95,21 +95,40 @@ function AppContent() {
     <AppContext.Provider value={{ liveData, signalHistory, isConnected, apiUrl: API_URL }}>
       <div className="flex min-h-screen bg-[#0a0a0c] text-gray-100">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto">
-          {/* Status koneksi */}
-          <div className="fixed top-2 right-4 z-50">
-            <span className={`text-xs px-2 py-1 rounded ${isConnected ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
-              {isConnected ? '● LIVE' : '● OFFLINE'}
-            </span>
-          </div>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/institutional-flow" element={<InstitutionalFlow />} />
-            <Route path="/liquidity-zones" element={<LiquidityZones />} />
-            <Route path="/risk-engine" element={<RiskEngine />} />
-            <Route path="/ai-signals" element={<AISignals />} />
-          </Routes>
-        </main>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <main className="flex-1 overflow-y-auto">
+            {/* Status koneksi */}
+            <div className="fixed top-2 right-4 z-50">
+              <span className={`text-xs px-2 py-1 rounded ${isConnected ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
+                {isConnected ? '● LIVE' : '● OFFLINE'}
+              </span>
+            </div>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/institutional-flow" element={<InstitutionalFlow />} />
+              <Route path="/liquidity-zones" element={<LiquidityZones />} />
+              <Route path="/risk-engine" element={<RiskEngine />} />
+              <Route path="/ai-signals" element={<AISignals />} />
+            </Routes>
+          </main>
+
+          {/* FOOTER GLOBAL - TAMBAHIN INI YANG HILANG */}
+          <footer className="border-t border-[#1e1e24] px-5 py-3 flex items-start justify-between text-xs text-gray-600 shrink-0">
+            <div>
+              <span className="text-red-400 font-semibold">Risk Warning:</span> Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors.
+              <br />© {currentYear} FARONE.AI — Powered by MetaTrader 5 | Contact: farone2013@gmail.com for licensing
+            </div>
+            <div className="text-right shrink-0 ml-4">
+              <div className="text-gray-500 mb-1">Authors</div>
+              <div>
+                <span className="text-yellow-400">Setiawan F</span>
+                <span className="text-gray-500"> | </span>
+                <span className="text-yellow-400">Selviana R</span>
+              </div>
+              <div className="text-gray-500">Founder @ Aitopia</div>
+            </div>
+          </footer>
+        </div>
       </div>
     </AppContext.Provider>
   );
