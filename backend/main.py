@@ -97,7 +97,15 @@ def get_market_data():
         "cftc_date": latest_tick_data.get("cftc_date", "01/06/26"),
         "cme_max_pain": latest_tick_data.get("cme_max_pain", 4525),
         "cftc_long": latest_tick_data.get("cftc_long", 200704),
-        "cftc_short": latest_tick_data.get("cftc_short", 46444)
+        "cftc_short": latest_tick_data.get("cftc_short", 46444),
+        "commercial_hedgers": latest_tick_data.get("commercial_hedgers", -154260),
+        "non_reportable": latest_tick_data.get("non_reportable", -46418),
+        "cot_history": [
+            {"week": "Week -1", "value": 65, "date": "09/06/26"},
+            {"week": "Week -2", "value": 57, "date": "02/06/26"}, 
+            {"week": "Week -3", "value": 49, "date": "26/05/26"},
+            {"week": "Week -4", "value": 41, "date": "19/05/26"}
+        ]
     }
     data_path = os.path.join(os.path.dirname(__file__), 'data', 'market_data.json')
     if os.path.exists(data_path):
@@ -128,6 +136,11 @@ def get_institutional_data():
     cftc_long = int(market_data.get("cftc_long", 200704))
     cftc_short = int(market_data.get("cftc_short", 46444))
     cftc_date = market_data.get("cftc_date", "01/06/26")
+    
+    # Data tambahan dari CFTC
+    commercial_hedgers = int(market_data.get("commercial_hedgers", -154260))
+    non_reportable = int(market_data.get("non_reportable", -46418))
+    cot_history = market_data.get("cot_history", [])
 
     retail_long = latest_tick_data.get("retail_long", 65)
     retail_short = latest_tick_data.get("retail_short", 35)
@@ -140,7 +153,15 @@ def get_institutional_data():
     return {
         "cftc": {"net": cftc_net, "long": cftc_long, "short": cftc_short, "date": cftc_date},
         "retail": {"long": retail_long, "short": retail_short, "source": "Live MT5"},
-        "smi": {"value": smi, "bias": smi_bias, "updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        "smi": {"value": smi, "bias": smi_bias, "updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S")},
+        "cot_history": cot_history,
+        "flow_summary": {
+            "institutional_net": cftc_net,
+            "managed_long": cftc_long,
+            "managed_short": cftc_short,
+            "commercial_hedgers": commercial_hedgers,
+            "non_reportable": non_reportable
+        }
     }
 
 # ====== ENDPOINT: TERIMA DATA PUSH DARI mt5_push_railway.py ======
@@ -366,27 +387,6 @@ def get_liquidity():
 def institutional():
     try:
         data = get_institutional_data()
-        
-        # TAMBAHAN: COT History 4 minggu terakhir
-        cot_history = [
-            {"week": "Week -1", "value": 65, "date": "09/06/26"},
-            {"week": "Week -2", "value": 57, "date": "02/06/26"}, 
-            {"week": "Week -3", "value": 49, "date": "26/05/26"},
-            {"week": "Week -4", "value": 41, "date": "19/05/26"}
-        ]
-        
-        # TAMBAHAN: Flow Summary
-        flow_summary = {
-            "institutional_net": data['cftc']['net'],
-            "managed_long": data['cftc']['long'],
-            "managed_short": data['cftc']['short'],
-            "commercial_hedgers": 0,  # Belum ada data real
-            "non_reportable": 0      # Belum ada data real
-        }
-        
-        data['cot_history'] = cot_history
-        data['flow_summary'] = flow_summary
-        
         logger.info(f"📊 Institutional data | SMI: {data['smi']['value']} ({data['smi']['bias']})")
         return jsonify(data)
     except Exception as e:
@@ -490,7 +490,7 @@ def get_cot_endpoint():
 def index():
     return jsonify({
         "service": "FARONE Gold Trading Analytics API",
-        "version": "3.4",
+        "version": "3.5",
         "endpoints": {
             "/api": "Get latest trading data",
             "/api/dashboard": "Alias for /api",
@@ -500,7 +500,7 @@ def index():
             "/api/liquidity-zones": "BSL/SSL + Session levels",
             "/api/signal": "Current BUY/SELL signal",
             "/api/account": "Balance/equity",
-            "/api/institutional": "COT + SMI data",
+            "/api/institutional": "COT + SMI + Flow Summary + History",
             "/api/mt5-tick": "Receive MT5 tick push (POST)",
             "/health": "Health check",
             "/api/health": "Health check",
@@ -510,7 +510,7 @@ def index():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 FARONE API v3.4 - RAILWAY READY")
+    print("🚀 FARONE API v3.5 - RAILWAY READY")
     print("="*60)
     print(f"Mode: {'MT5 Windows' if MT5_AVAILABLE else 'Push from mt5_push_railway.py'}")
     print("="*60 + "\n")
