@@ -1,13 +1,12 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import InstitutionalFlow from './pages/InstitutionalFlow';
 import LiquidityZones from './pages/LiquidityZones';
 import RiskEngine from './pages/RiskEngine';
 import AISignals from './pages/AISignals';
-import { io } from 'socket.io-client';
-
-type Page = 'dashboard' | 'institutional-flow' | 'liquidity-zones' | 'risk-engine' | 'ai-signals';
 
 // 1. Context buat share data ke semua page
 interface AppContextType {
@@ -29,8 +28,7 @@ export const useAppData = () => useContext(AppContext);
 // 2. API URL dari env, fallback ke Railway kamu
 const API_URL = import.meta.env.VITE_API_URL || 'https://future-production-67e6.up.railway.app';
 
-export default function App() {
-  const [activePage, setActivePage] = useState<Page>('dashboard');
+function AppContent() {
   const [liveData, setLiveData] = useState<any>({});
   const [signalHistory, setSignalHistory] = useState<any[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -76,7 +74,7 @@ export default function App() {
       setLiveData(data); // Update price, signal, account langsung
     });
 
-    // Polling history tiap 15 detik, karena history nggak dikirim via WS
+    // Polling history tiap 15 detik
     const historyInterval = setInterval(async () => {
       try {
         const res = await fetch(`${API_URL}/api/signal-history`);
@@ -93,30 +91,34 @@ export default function App() {
     };
   }, []);
 
-  const renderPage = () => {
-    switch (activePage) {
-      case 'dashboard': return <Dashboard />;
-      case 'institutional-flow': return <InstitutionalFlow />;
-      case 'liquidity-zones': return <LiquidityZones />;
-      case 'risk-engine': return <RiskEngine />;
-      case 'ai-signals': return <AISignals />;
-    }
-  };
-
   return (
     <AppContext.Provider value={{ liveData, signalHistory, isConnected, apiUrl: API_URL }}>
       <div className="flex min-h-screen bg-[#0a0a0c] text-gray-100">
-        <Sidebar activePage={activePage} onNavigate={setActivePage} />
-        <main className="flex-1 overflow-y-auto p-6">
+        <Sidebar />
+        <main className="flex-1 overflow-y-auto">
           {/* Status koneksi */}
           <div className="fixed top-2 right-4 z-50">
             <span className={`text-xs px-2 py-1 rounded ${isConnected ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
               {isConnected ? '● LIVE' : '● OFFLINE'}
             </span>
           </div>
-          {renderPage()}
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/institutional-flow" element={<InstitutionalFlow />} />
+            <Route path="/liquidity-zones" element={<LiquidityZones />} />
+            <Route path="/risk-engine" element={<RiskEngine />} />
+            <Route path="/ai-signals" element={<AISignals />} />
+          </Routes>
         </main>
       </div>
     </AppContext.Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   );
 }
