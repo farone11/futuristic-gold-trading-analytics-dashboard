@@ -2,10 +2,10 @@ import { useEffect, useState, useRef } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SessionData {
-  high: number;
-  low: number;
-  mid: number;
-  range: number;
+  high: number | null;
+  low: number | null;
+  mid: number | null;
+  range: number | null;
 }
 
 interface CotData {
@@ -17,7 +17,7 @@ interface CotData {
   managedMoneyShort: number | null;
   commercialHedgers: number | null;
   nonReportable: number | null;
-  history: { week: number; pct: number }[];
+  history: { week: string; value: number }[];
 }
 
 interface SentimentData {
@@ -31,6 +31,14 @@ interface SmartMoneyData {
   updated: string | null;
 }
 
+interface FlowSummary {
+  institutional_net: number | null;
+  managed_long: number | null;
+  managed_short: number | null;
+  commercial_hedgers: number | null;
+  non_reportable: number | null;
+}
+
 interface FlowState {
   cot: CotData;
   sentiment: SentimentData;
@@ -40,15 +48,16 @@ interface FlowState {
     london: SessionData;
     ny: SessionData;
   };
+  flow_summary: FlowSummary;
   isLive: boolean;
   lastUpdate: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n: number | null, dec = 0) =>
-  n == null || n === 0 ? "---,--" : n.toLocaleString("en-US", { maximumFractionDigits: dec });
+  n == null || n === 0 ? "---" : n.toLocaleString("en-US", { maximumFractionDigits: dec });
 
-const pct = (n: number | null) => (n == null ? "--%" : `${n.toFixed(1)}%`);
+const pct = (n: number | null) => (n == null ? "--%" : `${n.toFixed(0)}%`);
 
 const signalColor = (signal: string | null) => {
   if (!signal) return "#a0a0a0";
@@ -59,9 +68,9 @@ const signalColor = (signal: string | null) => {
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-function LiveBadge({ live }: { live: boolean }) {
+function LiveBadge({ live, price }: { live: boolean; price?: number }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <span
         style={{
           width: 8,
@@ -73,8 +82,8 @@ function LiveBadge({ live }: { live: boolean }) {
           animation: live ? "pulse 2s infinite" : "none",
         }}
       />
-      <span style={{ color: live ? "#22c55e" : "#ef4444", fontSize: 12, fontWeight: 600 }}>
-        {live ? "Live from Railway API" : "Disconnected"}
+      <span style={{ color: live ? "#22c55e" : "#ef4444", fontSize: 14, fontWeight: 600 }}>
+        {live ? "WebSocket Live" : "Disconnected"} {price ? `| $${fmt(price, 2)}` : ""}
       </span>
     </div>
   );
@@ -127,10 +136,10 @@ function Card({
   );
 }
 
-function CotBar({ week, pct: value }: { week: number; pct: number }) {
+function CotBar({ week, value }: { week: string; value: number }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-      <span style={{ color: "#6b7280", fontSize: 12, width: 56, flexShrink: 0 }}>Week -{week}</span>
+      <span style={{ color: "#6b7280", fontSize: 12, width: 56, flexShrink: 0 }}>{week}</span>
       <div style={{ flex: 1, background: "#1e2229", borderRadius: 4, height: 8, overflow: "hidden" }}>
         <div
           style={{
@@ -158,12 +167,12 @@ function FlowSummaryRow({ label, value, color }: { label: string; value: string;
 
 function SessionCard({ name, data }: { name: string; data: SessionData }) {
   return (
-    <div style={{ textAlign: "center", flex: 1 }}>
-      <div style={{ color: "#f5c518", fontSize: 12, fontWeight: 700, marginBottom: 8 }}>{name}</div>
-      <div style={{ fontSize: 18, fontWeight: 700, color: "#22c55e" }}>{fmt(data.high, 2)}</div>
-      <div style={{ color: "#6b7280", fontSize: 10, margin: "2px 0" }}>High</div>
-      <div style={{ fontSize: 18, fontWeight: 700, color: "#ef4444", marginTop: 8 }}>{fmt(data.low, 2)}</div>
-      <div style={{ color: "#6b7280", fontSize: 10, margin: "2px 0" }}>Low</div>
+    <div style={{ textAlign: "center", flex: 1, padding: "8px 0" }}>
+      <div style={{ color: "#f5c518", fontSize: 12, fontWeight: 700, marginBottom: 12, textTransform: "uppercase" }}>{name}</div>
+      <div style={{ fontSize: 20, fontWeight: 700, color: "#22c55e" }}>{fmt(data.high, 2)}</div>
+      <div style={{ color: "#6b7280", fontSize: 10, margin: "2px 0 8px" }}>High</div>
+      <div style={{ fontSize: 20, fontWeight: 700, color: "#ef4444" }}>{fmt(data.low, 2)}</div>
+      <div style={{ color: "#6b7280", fontSize: 10, margin: "2px 0 8px" }}>Low</div>
       <div style={{ color: "#9ca3af", fontSize: 11, marginTop: 8 }}>
         Mid: {fmt(data.mid, 2)} | {fmt(data.range, 1)} pips
       </div>
@@ -171,9 +180,9 @@ function SessionCard({ name, data }: { name: string; data: SessionData }) {
   );
 }
 
-// ─── Mock / fallback data generator ──────────────────────────────────────────
-function getMockData(): FlowState {
-  return {
+// ─── Main Component ───────────────────────────────────────────────────────────
+export default function InstitutionalFlow() {
+  const [state, setState] = useState<FlowState>({
     isLive: false,
     lastUpdate: "--:--:--",
     cot: {
@@ -185,95 +194,103 @@ function getMockData(): FlowState {
       managedMoneyShort: null,
       commercialHedgers: null,
       nonReportable: null,
-      history: [
-        { week: 1, pct: 65 },
-        { week: 2, pct: 57 },
-        { week: 3, pct: 49 },
-        { week: 4, pct: 41 },
-      ],
+      history: [],
     },
     sentiment: { longPct: null, shortPct: null },
     smartMoney: { value: null, signal: null, updated: null },
     session: {
-      asia: { high: 0, low: 0, mid: 0, range: 0 },
-      london: { high: 0, low: 0, mid: 0, range: 0 },
-      ny: { high: 0, low: 0, mid: 0, range: 0 },
+      asia: { high: null, low: null, mid: null, range: null },
+      london: { high: null, low: null, mid: null, range: null },
+      ny: { high: null, low: null, mid: null, range: null },
     },
-  };
-}
-
-// ─── Live data fetcher - OPSI A: Ambil dari /api Railway ────────────────────
-const API_URL = import.meta.env.VITE_API_URL;
-
-async function fetchLiveData(): Promise<Partial<FlowState>> {
-  try {
-    const res = await fetch(`${API_URL}/api`, { signal: AbortSignal.timeout(4000) });
-    if (!res.ok) throw new Error("non-200");
-    const json = await res.json();
-    
-    // Extract session dari liquidity_zones
-    const zones = json.liquidity_zones || [];
-    const getZone = (type: string) => zones.find((z: any) => z.type === type);
-    
-    const asiaHigh = getZone("Asia High")?.price || 0;
-    const asiaLow = getZone("Asia Low")?.price || 0;
-    const londonHigh = getZone("London High")?.price || 0;
-    const londonLow = getZone("London Low")?.price || 0;
-
-    return {
-      isLive: true,
-      lastUpdate: json.updated || new Date().toLocaleTimeString(),
-      cot: {
-        asOf: json.cftc_date || "--/--/--",
-        netNonCommercial: json.cftc_net || null,
-        longPositions: null, // belum ada di API
-        shortPositions: null,
-        managedMoneyLong: null,
-        managedMoneyShort: null,
-        commercialHedgers: null,
-        nonReportable: null,
-        history: getMockData().cot.history, // history masih dummy
-      },
-      sentiment: {
-        longPct: json.retail_long || null,
-        shortPct: json.retail_short || null,
-      },
-      smartMoney: {
-        value: json.smi || null,
-        signal: json.bias || null,
-        updated: json.updated || null,
-      },
-      session: {
-        asia: {
-          high: asiaHigh,
-          low: asiaLow,
-          mid: asiaHigh && asiaLow ? (asiaHigh + asiaLow) / 2 : 0,
-          range: asiaHigh && asiaLow ? (asiaHigh - asiaLow) * 10 : 0,
-        },
-        london: {
-          high: londonHigh,
-          low: londonLow,
-          mid: londonHigh && londonLow ? (londonHigh + londonLow) / 2 : 0,
-          range: londonHigh && londonLow ? (londonHigh - londonLow) * 10 : 0,
-        },
-        ny: { high: 0, low: 0, mid: 0, range: 0 }, // belum ada di API
-      },
-    };
-  } catch (e) {
-    console.error("Fetch error:", e);
-    return { isLive: false };
-  }
-}
-
-// ─── Main Component ───────────────────────────────────────────────────────────
-export default function InstitutionalFlow() {
-  const [state, setState] = useState<FlowState>(getMockData());
+    flow_summary: {
+      institutional_net: null,
+      managed_long: null,
+      managed_short: null,
+      commercial_hedgers: null,
+      non_reportable: null,
+    },
+  });
+  const [currentPrice, setCurrentPrice] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const refresh = async () => {
-    const live = await fetchLiveData();
-    if (live) {
-      setState((prev) => ({ ...prev, ...live }));
+    try {
+      // 1. Ambil data utama dari /api buat price + session
+      const mainRes = await fetch(`${API_URL}/api`, { signal: AbortSignal.timeout(4000) });
+      const mainJson = await mainRes.json();
+      
+      // 2. Ambil data institutional dari /api/institutional buat cot_history + flow_summary
+      const instRes = await fetch(`${API_URL}/api/institutional`, { signal: AbortSignal.timeout(4000) });
+      const instJson = await instRes.json();
+      
+      // Extract session dari liquidity_zones
+      const zones = mainJson.liquidity_zones || [];
+      const getZone = (type: string) => zones.find((z: any) => z.type === type);
+      const asiaHigh = getZone("Asia High")?.price || null;
+      const asiaLow = getZone("Asia Low")?.price || null;
+      const londonHigh = getZone("London High")?.price || null;
+      const londonLow = getZone("London Low")?.price || null;
+      const nyHigh = getZone("NY High")?.price || null;
+      const nyLow = getZone("NY Low")?.price || null;
+
+      setCurrentPrice(mainJson.price || 0);
+      setState({
+        isLive: true,
+        lastUpdate: mainJson.updated || new Date().toLocaleTimeString(),
+        cot: {
+          asOf: instJson.cftc?.date || "--/--/--",
+          netNonCommercial: instJson.cftc?.net || null,
+          longPositions: instJson.cftc?.long || null,
+          shortPositions: instJson.cftc?.short || null,
+          managedMoneyLong: instJson.flow_summary?.managed_long || null,
+          managedMoneyShort: instJson.flow_summary?.managed_short || null,
+          commercialHedgers: instJson.flow_summary?.commercial_hedgers || null,
+          nonReportable: instJson.flow_summary?.non_reportable || null,
+          history: instJson.cot_history || [],
+        },
+        sentiment: {
+          longPct: instJson.retail?.long || null,
+          shortPct: instJson.retail?.short || null,
+        },
+        smartMoney: {
+          value: instJson.smi?.value || null,
+          signal: instJson.smi?.bias || null,
+          updated: instJson.smi?.updated || null,
+        },
+        session: {
+          asia: {
+            high: asiaHigh,
+            low: asiaLow,
+            mid: asiaHigh && asiaLow ? (asiaHigh + asiaLow) / 2 : null,
+            range: asiaHigh && asiaLow ? (asiaHigh - asiaLow) * 10 : null,
+          },
+          london: {
+            high: londonHigh,
+            low: londonLow,
+            mid: londonHigh && londonLow ? (londonHigh + londonLow) / 2 : null,
+            range: londonHigh && londonLow ? (londonHigh - londonLow) * 10 : null,
+          },
+          ny: {
+            high: nyHigh,
+            low: nyLow,
+            mid: nyHigh && nyLow ? (nyHigh + nyLow) / 2 : null,
+            range: nyHigh && nyLow ? (nyHigh - nyLow) * 10 : null,
+          },
+        },
+        flow_summary: {
+          institutional_net: instJson.flow_summary?.institutional_net || null,
+          managed_long: instJson.flow_summary?.managed_long || null,
+          managed_short: instJson.flow_summary?.managed_short || null,
+          commercial_hedgers: instJson.flow_summary?.commercial_hedgers || null,
+          non_reportable: instJson.flow_summary?.non_reportable || null,
+        },
+      });
+    } catch (e) {
+      console.error("Fetch error:", e);
+      setState(prev => ({ ...prev, isLive: false }));
     }
   };
 
@@ -285,41 +302,29 @@ export default function InstitutionalFlow() {
     };
   }, []);
 
-  const { cot, sentiment, smartMoney, session, isLive } = state;
+  const { cot, sentiment, smartMoney, session, flow_summary, isLive } = state;
 
   const netDisplay =
     cot.netNonCommercial == null
-      ? "---,---"
+      ? "---"
       : cot.netNonCommercial > 0
       ? `+${fmt(cot.netNonCommercial)}`
       : fmt(cot.netNonCommercial);
 
-  const institutionalNetPos =
-    cot.managedMoneyLong != null && cot.managedMoneyShort != null
-      ? `${fmt(cot.managedMoneyLong - cot.managedMoneyShort)}`
-      : "---";
-
   return (
     <div style={{ background: "#0c0e12", minHeight: "100vh", padding: "28px 24px", fontFamily: "'Inter', 'Segoe UI', sans-serif", color: "#e0e0e0" }}>
-      <style>{`
-        @keyframes pulse {0%,100%{opacity:1}50%{opacity:.4}}
-        @keyframes fadeIn {from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-        .if-row{animation:fadeIn .4s ease both}
-      `}</style>
+      <style>{`@keyframes pulse {0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1.5, margin: 0, color: "#ffffff", textTransform: "uppercase" }}>
-            Institutional Flow Analysis
-          </h1>
-        </div>
+        <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1.5, margin: 0, color: "#ffffff", textTransform: "uppercase" }}>
+          Institutional Flow Analysis
+        </h1>
         <div style={{ marginTop: 6 }}>
-          <LiveBadge live={isLive} />
+          <LiveBadge live={isLive} price={currentPrice} />
         </div>
       </div>
 
-      {/* ── Row 1: Session High/Low - BARU ─────────────────────────────────── */}
+      {/* ── Row 1: Session High/Low ─────────────────────────── */}
       <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
         <Card title="Session High/Low" subtitle={`Updated: ${state.lastUpdate}`} accent="#3b82f6">
           <div style={{ display: "flex", justifyContent: "space-around", padding: "8px 0" }}>
@@ -339,37 +344,23 @@ export default function InstitutionalFlow() {
             </span>
             <p style={{ color: "#6b7280", fontSize: 12, margin: "6px 0 0" }}>Net Non-Commercial</p>
           </div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 12, borderTop: "1px solid #1e2229" }}>
+            <span style={{ color: "#22c55e", fontSize: 13, fontWeight: 600 }}>Long: {fmt(cot.longPositions)}</span>
+            <span style={{ color: "#ef4444", fontSize: 13, fontWeight: 600 }}>Short: {fmt(cot.shortPositions)}</span>
+          </div>
         </Card>
 
-        <Card title="Retail Sentiment" subtitle="Live MT5" accent="#22c55e">
+        <Card title="Retail Sentiment SWFX" subtitle="Live MT5" accent="#22c55e">
           <div style={{ textAlign: "center", padding: "8px 0 12px" }}>
             <div style={{ display: "flex", justifyContent: "center", gap: 32, marginBottom: 14 }}>
               <div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: "#22c55e", fontVariantNumeric: "tabular-nums" }}>
-                  {pct(sentiment.longPct)}
-                </div>
+                <div style={{ fontSize: 28, fontWeight: 800, color: "#22c55e", fontVariantNumeric: "tabular-nums" }}>{pct(sentiment.longPct)}</div>
                 <div style={{ color: "#6b7280", fontSize: 12, marginTop: 2 }}>Long</div>
               </div>
               <div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: "#ef4444", fontVariantNumeric: "tabular-nums" }}>
-                  {pct(sentiment.shortPct)}
-                </div>
+                <div style={{ fontSize: 28, fontWeight: 800, color: "#ef4444", fontVariantNumeric: "tabular-nums" }}>{pct(sentiment.shortPct)}</div>
                 <div style={{ color: "#6b7280", fontSize: 12, marginTop: 2 }}>Short</div>
               </div>
-            </div>
-            <div style={{ background: "#1e2229", borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: sentiment.longPct != null ? `${sentiment.longPct}%` : "50%",
-                  background: "linear-gradient(90deg, #22c55e, #16a34a)",
-                  borderRadius: 6,
-                  transition: "width 0.8s ease",
-                }}
-              />
             </div>
           </div>
         </Card>
@@ -377,7 +368,7 @@ export default function InstitutionalFlow() {
         <Card title="Smart Money Index" accent="#a78bfa">
           <div style={{ textAlign: "center", padding: "12px 0 8px" }}>
             <div style={{ fontSize: 36, fontWeight: 900, color: smartMoney.value == null ? "#f5c518" : signalColor(smartMoney.signal), letterSpacing: 1, marginBottom: 6 }}>
-              {smartMoney.value == null ? "---" : fmt(smartMoney.value, 0)}
+              {smartMoney.value == null ? "--" : fmt(smartMoney.value, 0)}
             </div>
             <div style={{ color: signalColor(smartMoney.signal), fontSize: 14, fontWeight: 700, marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
               {smartMoney.signal ?? "NEUTRAL"}
@@ -387,58 +378,35 @@ export default function InstitutionalFlow() {
         </Card>
       </div>
 
-      {/* ── Row 3: COT History | Flow Summary ──────────────────────────────── */}
+      {/* ── Row 3: COT History | Flow Summary - INI YANG HILANG ──────────────── */}
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <div style={{ flex: "1 1 380px", minWidth: 300 }}>
-          <Card title="COT Positioning History" accent="#f5c518">
-            <div style={{ marginTop: 4 }}>
-              {cot.history.map((h) => (
-                <CotBar key={h.week} week={h.week} pct={h.pct} />
-              ))}
-            </div>
-          </Card>
-        </div>
+        <Card title="COT Positioning History" accent="#f5c518">
+          <div style={{ marginTop: 4 }}>
+            {cot.history.length > 0 ? cot.history.map((h) => (
+              <CotBar key={h.week} week={h.week} value={h.value} />
+            )) : <div style={{ color: "#6b7280", fontSize: 12, textAlign: "center", padding: "20px 0" }}>No history data</div>}
+          </div>
+        </Card>
 
-        <div style={{ flex: "1 1 380px", minWidth: 300 }}>
-          <Card title="Flow Summary" accent="#f5c518">
-            <div>
-              <FlowSummaryRow
-                label="Institutional Net Position"
-                value={institutionalNetPos}
-                color={
-                  cot.managedMoneyLong != null && cot.managedMoneyShort != null
-                    ? cot.managedMoneyLong > cot.managedMoneyShort
-                      ? "#22c55e"
-                      : "#ef4444"
-                    : "#6b7280"
-                }
-              />
-              <FlowSummaryRow label="Managed Money Long" value={fmt(cot.managedMoneyLong)} color="#22c55e" />
-              <FlowSummaryRow label="Managed Money Short" value={fmt(cot.managedMoneyShort)} color="#ef4444" />
-            </div>
-            <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid #1e2229", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "#4b5563", fontSize: 11 }}>Auto-refresh every 30s</span>
-              <span style={{ color: "#4b5563", fontSize: 11 }}>Last: {state.lastUpdate}</span>
-            </div>
-          </Card>
-        </div>
-      </div>
-
-      {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <div style={{ marginTop: 40, borderTop: "1px solid #1e2229", paddingTop: 14, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 8 }}>
-        <div>
-          <p style={{ color: "#6b7280", fontSize: 10, margin: "0 0 4px", maxWidth: 600, lineHeight: 1.6 }}>
-            <span style={{ color: "#9ca3af", fontWeight: 600 }}>Risk Warning: </span>
-            Trading foreign exchange on margin carries a high level of risk.
-          </p>
-          <p style={{ color: "#4b5563", fontSize: 10, margin: 0 }}>
-            © 2026 FARONE.AI — Powered by Railway API | Contact: admin@faronecapital.online
-          </p>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={{ color: "#4b5563", fontSize: 10, margin: "0 0 2px", letterSpacing: 0.5 }}>Authors</p>
-          <p style={{ color: "#9ca3af", fontSize: 11, margin: 0, fontWeight: 600, letterSpacing: 0.5 }}>Setiawan F | Selviana R</p>
-        </div>
+        <Card title="Flow Summary" accent="#f5c518">
+          <div>
+            <FlowSummaryRow
+              label="Institutional Net Position"
+              value={fmt(flow_summary.institutional_net)}
+              color={
+                flow_summary.institutional_net != null
+                  ? flow_summary.institutional_net >= 0
+                    ? "#22c55e"
+                    : "#ef4444"
+                  : "#6b7280"
+              }
+            />
+            <FlowSummaryRow label="Managed Money Long" value={fmt(flow_summary.managed_long)} color="#22c55e" />
+            <FlowSummaryRow label="Managed Money Short" value={fmt(flow_summary.managed_short)} color="#ef4444" />
+            <FlowSummaryRow label="Commercial Hedgers" value={fmt(flow_summary.commercial_hedgers)} color="#3b82f6" />
+            <FlowSummaryRow label="Non-Reportable" value={fmt(flow_summary.non_reportable)} color="#a78bfa" />
+          </div>
+        </Card>
       </div>
     </div>
   );
