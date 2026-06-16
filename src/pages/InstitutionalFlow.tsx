@@ -1,11 +1,27 @@
 import { useEffect, useState, useRef } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SessionData {
   high: number | null;
   low: number | null;
   mid: number | null;
   range: number | null;
+}
+
+interface CotHistoryItem {
+  week: string;
+  value: number;
+  date: string;
+}
+
+interface FlowSummary {
+  institutional_net: number | null;
+  managed_long: number | null;
+  managed_short: number | null;
+  commercial_hedgers: number | null;
+  non_reportable: number | null;
 }
 
 interface CotData {
@@ -17,7 +33,7 @@ interface CotData {
   managedMoneyShort: number | null;
   commercialHedgers: number | null;
   nonReportable: number | null;
-  history: { week: string; value: number }[];
+  history: CotHistoryItem[];
 }
 
 interface SentimentData {
@@ -29,14 +45,6 @@ interface SmartMoneyData {
   value: number | null;
   signal: string | null;
   updated: string | null;
-}
-
-interface FlowSummary {
-  institutional_net: number | null;
-  managed_long: number | null;
-  managed_short: number | null;
-  commercial_hedgers: number | null;
-  non_reportable: number | null;
 }
 
 interface FlowState {
@@ -214,19 +222,14 @@ export default function InstitutionalFlow() {
   const [currentPrice, setCurrentPrice] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
   const refresh = async () => {
     try {
-      // 1. Ambil data utama dari /api buat price + session
       const mainRes = await fetch(`${API_URL}/api`, { signal: AbortSignal.timeout(4000) });
       const mainJson = await mainRes.json();
       
-      // 2. Ambil data institutional dari /api/institutional buat cot_history + flow_summary
       const instRes = await fetch(`${API_URL}/api/institutional`, { signal: AbortSignal.timeout(4000) });
       const instJson = await instRes.json();
       
-      // Extract session dari liquidity_zones
       const zones = mainJson.liquidity_zones || [];
       const getZone = (type: string) => zones.find((z: any) => z.type === type);
       const asiaHigh = getZone("Asia High")?.price || null;
@@ -281,11 +284,11 @@ export default function InstitutionalFlow() {
           },
         },
         flow_summary: {
-          institutional_net: instJson.flow_summary?.institutional_net || null,
-          managed_long: instJson.flow_summary?.managed_long || null,
-          managed_short: instJson.flow_summary?.managed_short || null,
-          commercial_hedgers: instJson.flow_summary?.commercial_hedgers || null,
-          non_reportable: instJson.flow_summary?.non_reportable || null,
+          institutional_net: instJson.flow_summary?.institutional_net ?? null,
+          managed_long: instJson.flow_summary?.managed_long ?? null,
+          managed_short: instJson.flow_summary?.managed_short ?? null,
+          commercial_hedgers: instJson.flow_summary?.commercial_hedgers ?? null,
+          non_reportable: instJson.flow_summary?.non_reportable ?? null,
         },
       });
     } catch (e) {
@@ -378,7 +381,7 @@ export default function InstitutionalFlow() {
         </Card>
       </div>
 
-      {/* ── Row 3: COT History | Flow Summary - INI YANG HILANG ──────────────── */}
+      {/* ── Row 3: COT History | Flow Summary ──────────────── */}
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
         <Card title="COT Positioning History" accent="#f5c518">
           <div style={{ marginTop: 4 }}>
@@ -392,19 +395,19 @@ export default function InstitutionalFlow() {
           <div>
             <FlowSummaryRow
               label="Institutional Net Position"
-              value={fmt(flow_summary.institutional_net)}
+              value={fmt(flow_summary?.institutional_net)}
               color={
-                flow_summary.institutional_net != null
+                flow_summary?.institutional_net != null
                   ? flow_summary.institutional_net >= 0
                     ? "#22c55e"
                     : "#ef4444"
                   : "#6b7280"
               }
             />
-            <FlowSummaryRow label="Managed Money Long" value={fmt(flow_summary.managed_long)} color="#22c55e" />
-            <FlowSummaryRow label="Managed Money Short" value={fmt(flow_summary.managed_short)} color="#ef4444" />
-            <FlowSummaryRow label="Commercial Hedgers" value={fmt(flow_summary.commercial_hedgers)} color="#3b82f6" />
-            <FlowSummaryRow label="Non-Reportable" value={fmt(flow_summary.non_reportable)} color="#a78bfa" />
+            <FlowSummaryRow label="Managed Money Long" value={fmt(flow_summary?.managed_long)} color="#22c55e" />
+            <FlowSummaryRow label="Managed Money Short" value={fmt(flow_summary?.managed_short)} color="#ef4444" />
+            <FlowSummaryRow label="Commercial Hedgers" value={fmt(flow_summary?.commercial_hedgers)} color="#3b82f6" />
+            <FlowSummaryRow label="Non-Reportable" value={fmt(flow_summary?.non_reportable)} color="#a78bfa" />
           </div>
         </Card>
       </div>
