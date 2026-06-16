@@ -1,23 +1,18 @@
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, TrendingUp, Droplets, Shield, Zap, Menu, X, Download } from 'lucide-react';
 
-type Page = 'dashboard' | 'institutional-flow' | 'liquidity-zones' | 'risk-engine' | 'ai-signals';
-
-interface SidebarProps {
-  activePage: Page;
-  onNavigate: (page: Page) => void;
-}
-
-const navItems: { id: Page; label: string; icon: React.ReactNode }[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
-  { id: 'institutional-flow', label: 'Institutional Flow', icon: <TrendingUp size={16} /> },
-  { id: 'liquidity-zones', label: 'Liquidity Zones', icon: <Droplets size={16} /> },
-  { id: 'risk-engine', label: 'Risk Engine', icon: <Shield size={16} /> },
-  { id: 'ai-signals', label: 'AI Signals', icon: <Zap size={16} /> },
+const navItems = [
+  { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
+  { path: '/institutional-flow', label: 'Institutional Flow', icon: <TrendingUp size={16} /> },
+  { path: '/liquidity-zones', label: 'Liquidity Zones', icon: <Droplets size={16} /> },
+  { path: '/risk-engine', label: 'Risk Engine', icon: <Shield size={16} /> },
+  { path: '/ai-signals', label: 'AI Signals', icon: <Zap size={16} /> },
 ];
 
-export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
+export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
 
   return (
     <aside
@@ -63,23 +58,26 @@ export default function Sidebar({ activePage, onNavigate }: SidebarProps) {
         </button>
       )}
 
-      {/* Nav */}
+      {/* Nav - GANTI onClick JADI <Link> */}
       <nav className="flex flex-col gap-1 mt-4 px-2">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onNavigate(item.id)}
-            title={collapsed ? item.label : undefined}
-            className={`flex items-center gap-3 px-2 py-2 rounded text-sm transition-all duration-150 text-left ${
-              activePage === item.id
-                ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-white/5 border border-transparent'
-            }`}
-          >
-            <span className="shrink-0">{item.icon}</span>
-            {!collapsed && <span className="truncate">{item.label}</span>}
-          </button>
-        ))}
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              title={collapsed ? item.label : undefined}
+              className={`flex items-center gap-3 px-2 py-2 rounded text-sm transition-all duration-150 text-left ${
+                isActive
+                  ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-white/5 border border-transparent'
+              }`}
+            >
+              <span className="shrink-0">{item.icon}</span>
+              {!collapsed && <span className="truncate">{item.label}</span>}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Download button */}
