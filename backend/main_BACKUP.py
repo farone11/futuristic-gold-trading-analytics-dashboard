@@ -192,7 +192,7 @@ def get_data():
     try:
         market_data = get_market_data()
         seasonal = get_seasonal_bias()
-        inst_data = get_institutional_data() # <-- TAMBAH INI
+        inst_data = get_institutional_data()
         
         # Mode 1: MT5 langsung
         if MT5_AVAILABLE and init_mt5():
@@ -250,11 +250,13 @@ def get_data():
                         "retail_long": latest_tick_data.get("retail_long", 65),
                         "retail_short": latest_tick_data.get("retail_short", 35),
                         "cftc_net": int(market_data.get("cftc_net", 0)),
+                        "cftc_long": int(market_data.get("cftc_long", 0)),
+                        "cftc_short": int(market_data.get("cftc_short", 0)),
                         "cftc_date": str(market_data.get("cftc_date", "")),
                         "cme_max_pain": int(market_data.get("cme_max_pain", 4525)),
-                        "smi": inst_data['smi']['value'], # <-- TAMBAH INI
-                        "smi_bias": inst_data['smi']['bias'], # <-- TAMBAH INI
-                        "smi_updated": inst_data['smi']['updated'], # <-- TAMBAH INI
+                        "smi": inst_data['smi']['value'],
+                        "smi_bias": inst_data['smi']['bias'],
+                        "smi_updated": inst_data['smi']['updated'],
                         "account": latest_tick_data.get("account", {}),
                         "positions": latest_tick_data.get("positions", []),
                         "liquidity_zones": latest_tick_data.get("liquidity_zones", []),
@@ -287,11 +289,13 @@ def get_data():
             "retail_long": tick.get("retail_long", 65),
             "retail_short": tick.get("retail_short", 35),
             "cftc_net": int(market_data.get("cftc_net", 245678)),
+            "cftc_long": int(market_data.get("cftc_long", 200704)),
+            "cftc_short": int(market_data.get("cftc_short", 46444)),
             "cftc_date": str(market_data.get("cftc_date", "01/06/26")),
             "cme_max_pain": int(market_data.get("cme_max_pain", 4525)),
-            "smi": inst_data['smi']['value'], # <-- TAMBAH INI
-            "smi_bias": inst_data['smi']['bias'], # <-- TAMBAH INI
-            "smi_updated": inst_data['smi']['updated'], # <-- TAMBAH INI
+            "smi": inst_data['smi']['value'],
+            "smi_bias": inst_data['smi']['bias'],
+            "smi_updated": inst_data['smi']['updated'],
             "account": tick.get("account", {}),
             "positions": tick.get("positions", []),
             "liquidity_zones": tick.get("liquidity_zones", []),
@@ -349,6 +353,9 @@ def get_liquidity():
             "asia_session": asia_session,
             "london_session": london_session,
             "new_york_session": ny_session,
+            "asia": asia_session, # <-- TAMBAH ALIAS
+            "london": london_session, # <-- TAMBAH ALIAS
+            "ny": ny_session, # <-- TAMBAH ALIAS
             "timestamp": tick.get("updated", "--:--:--"),
         })
     except Exception as e:
