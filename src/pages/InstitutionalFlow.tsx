@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import PageLayout from "../components/PageLayout"; // TAMBAH INI
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,7 +16,7 @@ interface FlowSummary {
   managed_short: number | null;
   commercial_hedgers: number | null;
   non_reportable: number | null;
-  yoy_change: number | null; // TAMBAH INI
+  yoy_change: number | null;
 }
 
 interface CotData {
@@ -48,9 +49,9 @@ interface FlowState {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n: number | null, dec = 0) =>
-  n == null? "---" : n.toLocaleString("en-US", { maximumFractionDigits: dec });
+  n == null ? "---" : n.toLocaleString("en-US", { maximumFractionDigits: dec });
 
-const pct = (n: number | null) => (n == null? "--%" : `${n.toFixed(0)}%`);
+const pct = (n: number | null) => (n == null ? "--%" : `${n.toFixed(0)}%`);
 
 const signalColor = (signal: string | null) => {
   if (!signal) return "#a0a0a0";
@@ -69,14 +70,14 @@ function LiveBadge({ live, price }: { live: boolean; price?: number }) {
           width: 8,
           height: 8,
           borderRadius: "50%",
-          background: live? "#22c55e" : "#ef4444",
+          background: live ? "#22c55e" : "#ef4444",
           display: "inline-block",
-          boxShadow: live? "0 0 6px #22c55e" : "none",
-          animation: live? "pulse 2s infinite" : "none",
+          boxShadow: live ? "0 0 6px #22c55e" : "none",
+          animation: live ? "pulse 2s infinite" : "none",
         }}
       />
-      <span style={{ color: live? "#22c55e" : "#ef4444", fontSize: 14, fontWeight: 600 }}>
-        {live? "WebSocket Live" : "Disconnected"} {price? `| $${fmt(price, 2)}` : ""}
+      <span style={{ color: live ? "#22c55e" : "#ef4444", fontSize: 14, fontWeight: 600 }}>
+        {live ? "WebSocket Live" : "Disconnected"} {price ? `| $${fmt(price, 2)}` : ""}
       </span>
     </div>
   );
@@ -189,7 +190,7 @@ export default function InstitutionalFlow() {
       const mainRes = await fetch(`${API_URL}/api`, { signal: AbortSignal.timeout(4000) });
       const mainJson = await mainRes.json();
       
-      const instRes = await fetch(`${API_URL}/api/institutional`, { signal: AbortSignal.timeout(4000) });
+      const instRes = await fetch(`${API_URL}/api/institutional?v=${Date.now()}`, { signal: AbortSignal.timeout(4000) }); // CACHE BUST
       const instJson = await instRes.json();
 
       setCurrentPrice(mainJson.price || 0);
@@ -213,12 +214,12 @@ export default function InstitutionalFlow() {
           updated: instJson.smi?.updated || null,
         },
         flow_summary: {
-          institutional_net: instJson.flow_summary?.institutional_net || null,
-          managed_long: instJson.flow_summary?.managed_long || null,
-          managed_short: instJson.flow_summary?.managed_short || null,
-          commercial_hedgers: instJson.flow_summary?.commercial_hedgers || null,
-          non_reportable: instJson.flow_summary?.non_reportable || null,
-          yoy_change: instJson.flow_summary?.yoy_change || null,
+          institutional_net: instJson.flow_summary?.institutional_net ?? null,
+          managed_long: instJson.flow_summary?.managed_long ?? null,
+          managed_short: instJson.flow_summary?.managed_short ?? null,
+          commercial_hedgers: instJson.flow_summary?.commercial_hedgers ?? null,
+          non_reportable: instJson.flow_summary?.non_reportable ?? null,
+          yoy_change: instJson.flow_summary?.yoy_change ?? null,
         },
       });
     } catch (e) {
@@ -245,23 +246,18 @@ export default function InstitutionalFlow() {
       : fmt(cot.netNonCommercial);
 
   return (
-    <div style={{ background: "#0c0e12", minHeight: "100vh", padding: "28px 24px", fontFamily: "'Inter', 'Segoe UI', sans-serif", color: "#e0e0e0" }}>
+    <PageLayout title="INSTITUTIONAL FLOW ANALYSIS" badge="Live from MT5 + Tailscale" badgeColor="text-green-400">
       <style>{`@keyframes pulse {0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1.5, margin: 0, color: "#ffffff", textTransform: "uppercase" }}>
-          Institutional Flow Analysis
-        </h1>
-        <div style={{ marginTop: 6 }}>
-          <LiveBadge live={isLive} price={currentPrice} />
-        </div>
+        <LiveBadge live={isLive} price={currentPrice} />
       </div>
 
       {/* ── Row 1: CFTC COT | Retail Sentiment | Smart Money ───────────────── */}
       <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
         <Card title="CFTC COT Report" subtitle={`As of ${cot.asOf}`} accent="#f5c518">
           <div style={{ textAlign: "center", padding: "12px 0 16px" }}>
-            <span style={{ fontSize: 32, fontWeight: 800, color: cot.netNonCommercial == null? "#6b7280" : cot.netNonCommercial >= 0? "#f5c518" : "#ef4444", letterSpacing: 2, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontSize: 32, fontWeight: 800, color: cot.netNonCommercial == null ? "#6b7280" : cot.netNonCommercial >= 0 ? "#f5c518" : "#ef4444", letterSpacing: 2, fontVariantNumeric: "tabular-nums" }}>
               {netDisplay}
             </span>
             <p style={{ color: "#6b7280", fontSize: 12, margin: "6px 0 0" }}>Net Non-Commercial</p>
@@ -293,22 +289,22 @@ export default function InstitutionalFlow() {
 
         <Card title="Smart Money Index" accent="#a78bfa">
           <div style={{ textAlign: "center", padding: "12px 0 8px" }}>
-            <div style={{ fontSize: 36, fontWeight: 900, color: smartMoney.value == null? "#f5c518" : signalColor(smartMoney.signal), letterSpacing: 1, marginBottom: 6 }}>
-              {smartMoney.value == null? "--" : fmt(smartMoney.value, 0)}
+            <div style={{ fontSize: 36, fontWeight: 900, color: smartMoney.value == null ? "#f5c518" : signalColor(smartMoney.signal), letterSpacing: 1, marginBottom: 6 }}>
+              {smartMoney.value == null ? "--" : fmt(smartMoney.value, 0)}
             </div>
             <div style={{ color: signalColor(smartMoney.signal), fontSize: 14, fontWeight: 700, marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
-              {smartMoney.signal?? "NEUTRAL"}
+              {smartMoney.signal ?? "NEUTRAL"}
             </div>
-            <div style={{ color: "#6b7280", fontSize: 11 }}>Updated: {smartMoney.updated?? "--:--:--"}</div>
+            <div style={{ color: "#6b7280", fontSize: 11 }}>Updated: {smartMoney.updated ?? "--:--:--"}</div>
           </div>
         </Card>
       </div>
 
       {/* ── Row 2: COT History | Flow Summary ──────────────── */}
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 40 }}>
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
         <Card title="COT Positioning History" accent="#f5c518">
           <div style={{ marginTop: 4 }}>
-            {cot.history.length > 0? cot.history.map((h) => (
+            {cot.history.length > 0 ? cot.history.map((h) => (
               <CotBar key={h.week} week={h.week} value={h.value} />
             )) : <div style={{ color: "#6b7280", fontSize: 12, textAlign: "center", padding: "20px 0" }}>No history data</div>}
           </div>
@@ -320,7 +316,7 @@ export default function InstitutionalFlow() {
               label="Institutional Net Position"
               value={fmt(flow_summary.institutional_net)}
               color={
-                flow_summary.institutional_net!= null
+                flow_summary.institutional_net != null
                  ? flow_summary.institutional_net >= 0
                    ? "#22c55e"
                     : "#ef4444"
@@ -331,16 +327,11 @@ export default function InstitutionalFlow() {
             <FlowSummaryRow label="Managed Money Short" value={fmt(flow_summary.managed_short)} color="#ef4444" />
             <FlowSummaryRow label="Commercial Hedgers" value={fmt(flow_summary.commercial_hedgers)} color="#3b82f6" />
             <FlowSummaryRow label="Non-Reportable" value={fmt(flow_summary.non_reportable)} color="#a78bfa" />
-            <FlowSummaryRow label="YoY Change" value={flow_summary.yoy_change!= null? `${flow_summary.yoy_change}%` : '---'} color="#a78bfa" />
+            <FlowSummaryRow label="YoY Change" value={flow_summary.yoy_change != null ? `${flow_summary.yoy_change}%` : '---%'} color={flow_summary.yoy_change != null && flow_summary.yoy_change >= 0 ? "#22c55e" : "#ef4444"} />
           </div>
         </Card>
       </div>
-
-      {/* FOOTER - JANGAN DIHAPUS */}
-      <div style={{ borderTop: "1px solid #2a2d35", paddingTop: 16, display: "flex", justifyContent: "space-between", fontSize: 11, color: "#6b7280" }}>
-        <span>© 2025 FARONE AI — Powered by MetaTrader 5</span>
-        <span>Risk Disclosure: Margin trading carries high risk.</span>
-      </div>
-    </div>
+      {/* FOOTER DIHAPUS - SUDAH DIHANDLE PageLayout.tsx */}
+    </PageLayout>
   );
 }
