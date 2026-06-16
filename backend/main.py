@@ -27,7 +27,7 @@ try:
     MT5_AVAILABLE = True
     logger.info("✅ MetaTrader5 tersedia (Windows mode)")
 except ImportError:
-    logger.info("⚠  MetaTrader5 tidak tersedia (Linux/Railway mode - gunakan /api/mt5-tick push)")
+    logger.info("⚠ MetaTrader5 tidak tersedia (Linux/Railway mode - gunakan /api/mt5-tick push)")
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -150,6 +150,14 @@ def get_institutional_data():
     smi = int((cftc_norm * 0.7) + (retail_contrarian * 0.3))
     smi_bias = "BULLISH" if smi > 60 else "BEARISH" if smi < 40 else "NEUTRAL"
 
+    # Hitung YoY Change dari cot_history
+    yoy_change = None
+    if len(cot_history) >= 2:
+        current_week = cot_history[0]['value'] 
+        month_ago_week = cot_history[-1]['value']
+        if month_ago_week!= 0:
+            yoy_change = round(((current_week - month_ago_week) / month_ago_week) * 100, 1)
+
     return {
         "cftc": {"net": cftc_net, "long": cftc_long, "short": cftc_short, "date": cftc_date},
         "retail": {"long": retail_long, "short": retail_short, "source": "Live MT5"},
@@ -160,7 +168,8 @@ def get_institutional_data():
             "managed_long": cftc_long,
             "managed_short": cftc_short,
             "commercial_hedgers": commercial_hedgers,
-            "non_reportable": non_reportable
+            "non_reportable": non_reportable,
+            "yoy_change": yoy_change
         }
     }
 
@@ -204,7 +213,7 @@ def ws_connect():
 
 @socketio.on('disconnect', namespace='/ws/signals')
 def ws_disconnect():
-    logger.info("⚠  WebSocket client disconnected")
+    logger.info("⚠ WebSocket client disconnected")
 
 # ====== ENDPOINT UTAMA ======
 @app.route('/api')
@@ -286,7 +295,7 @@ def get_data():
                         "mode": "live_mt5"
                     })
             except Exception as e:
-                logger.warning(f"⚠  MT5 live mode error: {e}")
+                logger.warning(f"⚠ MT5 live mode error: {e}")
 
         # Mode 2: Push dari mt5_push_railway.py
         with tick_data_lock:
@@ -490,7 +499,7 @@ def get_cot_endpoint():
 def index():
     return jsonify({
         "service": "FARONE Gold Trading Analytics API",
-        "version": "3.5",
+        "version": "3.6",
         "endpoints": {
             "/api": "Get latest trading data",
             "/api/dashboard": "Alias for /api",
@@ -510,7 +519,7 @@ def index():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 FARONE API v3.5 - RAILWAY READY")
+    print("🚀 FARONE API v3.6 - RAILWAY READY")
     print("="*60)
     print(f"Mode: {'MT5 Windows' if MT5_AVAILABLE else 'Push from mt5_push_railway.py'}")
     print("="*60 + "\n")
